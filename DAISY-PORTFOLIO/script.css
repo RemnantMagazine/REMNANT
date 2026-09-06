@@ -1,0 +1,525 @@
+@import url('https://fonts.googleapis.com/css2?family=Archivo+Black&family=Jura:wght@300..700&family=Oswald:wght@200..700&family=Space+Grotesk:ital,wght@0,300..700;1,300..700&display=swap');
+
+/* GLOBAL RESETS */
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: #ffffff;
+    color: #000000;
+    font-family: "Space Grotesk", sans-serif;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* NAVIGATION (USED ON BOTH PAGES) */
+nav {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background-color: #ffffff;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px 70px;
+}
+
+.logo, .Logo {
+    font-family: "Archivo Black", sans-serif !important;
+    text-decoration: none;
+    color: #302c2c;
+    font-size: 26px;
+    letter-spacing: 0.5px;
+    margin-bottom: 14px;
+    display: inline-block;
+}
+
+.NavLinks {
+    display: flex;
+    gap: 30px;
+}
+
+.NavLinks a {
+    text-decoration: none;
+    color: #111111;
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    padding-bottom: 3px;
+}
+
+.NavLinks a.active {
+    border-bottom: 1.5px solid #000000;
+}
+
+/* =========================================
+   ARTICLE PAGE STYLES (Fashionweek.html)
+   ========================================= */
+.article-page {
+    width: 100%;
+    margin: 50px auto 100px;
+    padding: 0 20px;
+}
+
+.article-header {
+    text-align: center;
+    max-width: 860px;
+    margin: 0 auto 50px;
+}
+
+.article-title {
+    font-family: "Archivo Black", sans-serif;
+    font-size: clamp(30px, 4.5vw, 56px);
+    line-height: 1.1;
+    text-transform: uppercase;
+    letter-spacing: -0.5px;
+    margin-bottom: 24px;
+}
+.article-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 3;
+    text-align: center;
+    color: #ffffff;
+    width: 90%;
+    max-width: 800px;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centers items horizontally */
+}
+
+.article-content .standfirst {
+    font-family: "Space Grotesk", sans-serif;
+    font-style: italic;
+    font-size: clamp(14px, 1.4vw, 16px);
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.92);
+    margin: 0 auto 36px auto; /* Centers the block itself */
+    max-width: 480px;
+    text-align: center; /* Centers each line of text */
+}
+
+/* SHARED WIDTH COLUMN: Text and images align to the exact same width */
+.article-content-column {
+    max-width: 660px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.article-content-column p {
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 15px;
+    line-height: 1.7;
+    color: #1a1a1a;
+    margin-bottom: 22px;
+    width: 100%;
+    text-align: left;
+}
+
+.article-content-column .section-title {
+    font-family: "Archivo Black", sans-serif;
+    font-size: clamp(24px, 3.2vw, 34px);
+    line-height: 1.15;
+    text-transform: uppercase;
+    color: #000000;
+    margin: 50px 0 25px;
+    text-align: left;
+    width: 100%;
+}
+
+.article-content-column .designer-heading {
+    font-family: "Archivo Black", sans-serif;
+    font-size: clamp(17px, 2.2vw, 22px);
+    line-height: 1.2;
+    text-transform: uppercase;
+    color: #000000;
+    margin: 30px 0 20px;
+    text-align: left;
+    width: 100%;
+}
+
+.article-content-column .article-media {
+    width: 100%;
+    margin-bottom: 30px;
+}
+
+.article-content-column .article-media img {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: cover;
+}
+
+/* =========================================
+   HOMEPAGE STYLES (index.html)
+   ========================================= */
+.featured-article {
+    position: relative;
+    width: 100%;
+    height: calc(100vh - 120px);
+    min-height: 500px;
+    overflow: hidden;
+    margin-bottom: 30px;
+}
+
+.featured-article img {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    top: 0;
+    left: 0;
+    z-index: 0;
+}
+
+.article-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+    text-align: center;
+    color: white;
+    width: 80%;
+    max-width: 800px;
+}
+
+.article-content h1 {
+    font-family: "Archivo Black", sans-serif;
+    font-size: clamp(28px, 4.5vw, 48px);
+    margin-bottom: 15px;
+}
+
+.standfirst {
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 15px;
+    line-height: 1.5;
+}
+
+.read-more {
+    display: inline-block;
+    background-color: white;
+    color: #302c2c;
+    padding: 14px 35px;
+    border-radius: 30px;
+    text-decoration: none;
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    margin-top: 20px;
+}
+
+.second-article {
+    display: flex;
+    width: 100%;
+    min-height: 650px;
+    background-color: black;
+}
+
+.second-image {
+    width: 50%;
+    padding: 50px;
+}
+
+.second-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.second-content {
+    width: 50%;
+    background-color: black;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 70px;
+}
+
+.second-content h2 {
+    font-family: "Archivo Black", sans-serif;
+    font-size: clamp(26px, 3.5vw, 40px);
+    margin-bottom: 25px;
+}
+
+.second-content .standfirst {
+    margin-bottom: 30px;
+    color: #d1d1d1;
+}
+
+.coming-soon {
+    padding: 80px 0;
+    background-color: white;
+}
+
+.coming-soon h2 {
+    font-family: "Archivo Black", sans-serif;
+    font-size: 36px;
+    margin: 0 0 40px 60px;
+}
+
+.coming-scroll {
+    display: flex;
+    gap: 24px;
+    overflow-x: auto;
+    padding: 0 60px 20px;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+}
+
+.coming-scroll::-webkit-scrollbar {
+    display: none;
+}
+
+.coming-card {
+    flex: 0 0 320px;
+    scroll-snap-align: start;
+}
+
+.coming-card img {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    display: block;
+}
+
+.coming-card h3 {
+    font-family: "Archivo Black", sans-serif;
+    font-size: 18px;
+    margin-top: 18px;
+}
+
+.subscribe {
+    background-color: white;
+    text-align: center;
+    padding: 80px 20px;
+}
+
+.subscribe h2 {
+    font-family: "Archivo Black", sans-serif;
+    font-size: 38px;
+    margin-bottom: 20px;
+}
+
+.subscribe p {
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 16px;
+    margin-bottom: 40px;
+}
+
+.subscribe-form {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.subscribe-form input {
+    flex: 1;
+    height: 56px;
+    border: 1px solid #ddd;
+    padding: 0 20px;
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 15px;
+}
+
+.subscribe-form button {
+    height: 56px;
+    padding: 0 32px;
+    border: none;
+    border-radius: 40px;
+    background-color: black;
+    color: white;
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.subscribe-links {
+    display: flex;
+    justify-content: center;
+    gap: 25px;
+    margin-top: 60px;
+}
+
+.subscribe-links a {
+    color: black;
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 16px;
+    text-decoration: underline;
+}
+
+footer {
+    background-color: black;
+    color: white;
+    padding: 70px 60px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.footer-left h2 {
+    font-family: "Archivo Black", sans-serif;
+    font-size: 46px;
+    margin: 0;
+}
+
+.footer-right p {
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 15px;
+    margin: 0;
+}
+
+.footer-right a {
+    color: white;
+    text-decoration: none;
+}
+
+/* =========================================
+   RESPONSIVE / MOBILE VIEW
+   ========================================= */
+@media (max-width: 768px) {
+    nav {
+        padding: 16px 20px;
+    }
+
+    .second-article {
+        flex-direction: column;
+    }
+
+    .second-image, .second-content {
+        width: 100%;
+        padding: 30px 20px;
+    }
+
+    .coming-soon h2,
+    .coming-scroll {
+        margin-left: 20px;
+        padding-left: 20px;
+    }
+
+    .coming-card {
+        flex: 0 0 240px;
+    }
+
+    .subscribe-form {
+        flex-direction: column;
+    }
+
+    footer {
+        flex-direction: column;
+        gap: 20px;
+        align-items: flex-start;
+        padding: 40px 20px;
+    }
+
+    .article-page {
+        margin: 40px auto 60px;
+    }
+}
+/* ================= MARQUEE / TICKER BANNER ================= */
+.ticker-wrap {
+    width: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+    background-color: #ffffff;
+    padding: 30px 0;
+    border-top: 1px solid #f0f0f0;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.ticker-track {
+    display: inline-flex;
+    animation: marquee 25s linear infinite;
+}
+
+.ticker-track span {
+    font-family: "Archivo Black", sans-serif;
+    font-size: 22px;
+    letter-spacing: 1px;
+    color: #000000;
+    text-transform: uppercase;
+    display: inline-block;
+}
+
+@keyframes marquee {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(-50%);
+    }
+}
+
+/* ================= FOOTER DETAIL ADJUSTMENTS ================= */
+.footer-left .made-with {
+    margin-top: 14px;
+    font-size: 13px;
+    color: #888888;
+}
+
+.footer-left .made-with a {
+    color: #888888;
+    text-decoration: underline;
+}
+.read-more {
+    display: inline-block;
+    background-color: #ffffff;
+    color: #302c2c;
+    padding: 14px 35px;
+    border-radius: 30px;
+    text-decoration: none;
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    margin-top: 15px;
+    transition: transform 0.25s ease, background-color 0.25s ease; /* Smooth growth animation */
+}
+
+.read-more:hover {
+    transform: scale(1.08); /* Grows the button by 8% */
+    background-color: #f2f2f2;
+}
+
+.second-content {
+    width: 50%;
+    background-color: black;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start; /* Keeps all children from stretching */
+    padding: 70px;
+}
+
+.read-more-alt,
+.second-content .read-more {
+    display: inline-block;
+    width: fit-content;
+    align-self: flex-start; /* Locks button to its own text width */
+    background-color: white;
+    color: #000000;
+    padding: 14px 35px;
+    border-radius: 30px;
+    text-decoration: none;
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    margin-top: 20px;
+    transition: transform 0.25s ease, background-color 0.25s ease;
+}
+
+.read-more-alt:hover,
+.second-content .read-more:hover {
+    transform: scale(1.08);
+    background-color: #f2f2f2;
+}
