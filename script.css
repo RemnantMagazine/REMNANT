@@ -523,3 +523,525 @@ footer {
     transform: scale(1.08);
     background-color: #f2f2f2;
 }
+
+/* =========================================================
+   ANIMAL PRINT ARTICLE - PAGE 2
+   ========================================================= */
+
+
+/* =========================================================
+   HERO
+   ========================================================= */
+
+.animal-hero-2 {
+    width: 100%;
+    max-width: 1350px;
+    margin: 160px auto 130px;
+    padding: 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+}
+
+.animal-hero-image-2 {
+    width: 100%;
+}
+
+.animal-hero-image-2 img {
+    width: 100%;
+    height: 550px;
+    object-fit: cover;
+    display: block;
+}
+
+.animal-hero-text-2 {
+    width: 100%;
+}
+
+.animal-hero-text-2 h1 {
+    font-family: "Archivo Black", sans-serif;
+    font-size: clamp(38px, 4.2vw, 62px);
+    line-height: 1.05;
+    text-transform: uppercase;
+    color: #000000;
+
+    margin-bottom: 45px;
+}
+
+.animal-hero-text-2 p {
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 17px;
+    line-height: 1.65;
+    font-weight: 500;
+
+    color: #111111;
+
+    text-align: justify;
+}
+
+
+/* =========================================================
+   WHY IS ANIMAL PRINT TRENDING?
+   ========================================================= */
+
+.animal-why-2 {
+    width: 100%;
+    max-width: 1350px;
+    margin: 0 auto 140px;
+    padding: 0 40px;
+}
+
+.animal-why-2 > h2 {
+    font-family: "Archivo Black", sans-serif;
+    font-size: clamp(32px, 3.5vw, 50px);
+    line-height: 1.05;
+    text-transform: uppercase;
+    text-align: center;
+
+    margin-bottom: 65px;
+}
+
+
+/* THREE IMAGES */
+
+.animal-print-grid-2 {
+    width: 100%;
+
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 55px;
+
+    margin-bottom: 75px;
+}
+
+.animal-print-grid-2 img {
+    width: 100%;
+    height: 270px;
+
+    object-fit: cover;
+    display: block;
+}
+
+
+/* HISTORY TEXT */
+
+.animal-history-2 {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.animal-history-2 p {
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 17px;
+    line-height: 1.7;
+
+    color: #111111;
+
+    margin-bottom: 27px;
+
+    text-align: justify;
+}
+
+
+/* =========================================================
+   LEOPARD PRINT
+   ========================================================= */
+
+.leopard-section-2 {
+    width: 100%;
+    max-width: 1350px;
+    margin: 0 auto 150px;
+    padding: 0 40px;
+    display: grid;
+    grid-template-columns: 1fr 480px;
+    gap: 100px;
+    align-items: start;
+}
+
+
+/* LEOPARD TEXT */
+
+.leopard-text-2 {
+    width: 100%;
+}
+
+.leopard-text-2 h2 {
+    font-family: "Archivo Black", sans-serif;
+    font-size: clamp(30px, 3vw, 43px);
+    line-height: 1.05;
+    text-transform: uppercase;
+
+    color: #000000;
+
+    margin-bottom: 50px;
+}
+
+.leopard-text-2 p {
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 17px;
+    line-height: 1.7;
+
+    color: #111111;
+
+    margin-bottom: 27px;
+
+    text-align: justify;
+}
+
+
+/* TWO LEOPARD IMAGES */
+
+.leopard-images-2 {
+    width: 100%;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 40px;
+}
+
+.leopard-images-2 img {
+    width: 100%;
+    height: 300px;
+
+    object-fit: cover;
+    display: block;
+}
+.leopard-images-2 {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    margin-top: 150px;
+}
+
+
+/* =========================================================
+   COW PRINT
+   ========================================================= */
+
+.cow-section-2 {
+    width: 100%;
+    max-width: 1350px;
+
+    margin: 0 auto 150px;
+    padding: 0 40px;
+
+    display: grid;
+    grid-template-columns: 480px 1fr;
+
+    gap: 100px;
+
+    align-items: center;
+}
+
+
+/* COW IMAGE */
+
+.cow-image-2 {
+    width: 100%;
+}
+
+.cow-image-2 img {
+    width: 100%;
+    height: 420px;
+
+    object-fit: cover;
+    display: block;
+}
+
+
+/* COW TEXT */
+
+.cow-text-2 {
+    width: 100%;
+}
+
+.cow-text-2 h2 {
+    font-family: "Archivo Black", sans-serif;
+    font-size: clamp(30px, 3vw, 43px);
+    line-height: 1.05;
+    text-transform: uppercase;
+
+    color: #000000;
+
+    margin-bottom: 50px;
+}
+
+.cow-text-2 p {
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 17px;
+    line-height: 1.7;
+
+    color: #111111;
+
+    margin-bottom: 27px;
+
+    text-align: justify;
+}
+
+
+/* =========================================================
+   SNAKE PRINT
+   ========================================================= */
+
+.snake-section-2 {
+    width: 100%;
+    max-width: 1350px;
+
+    margin: 0 auto 150px;
+    padding: 0 40px;
+
+    display: grid;
+    grid-template-columns: 1fr 480px;
+
+    gap: 100px;
+
+    align-items: center;
+}
+
+
+/* SNAKE TEXT */
+
+.snake-text-2 {
+    width: 100%;
+}
+
+.snake-text-2 h2 {
+    font-family: "Archivo Black", sans-serif;
+    font-size: clamp(30px, 3vw, 43px);
+    line-height: 1.05;
+    text-transform: uppercase;
+
+    color: #000000;
+
+    margin-bottom: 50px;
+}
+
+.snake-text-2 p {
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 17px;
+    line-height: 1.7;
+
+    color: #111111;
+
+    margin-bottom: 27px;
+
+    text-align: justify;
+}
+
+
+/* SNAKE IMAGE */
+
+.snake-image-2 {
+    width: 100%;
+}
+
+.snake-image-2 img {
+    width: 100%;
+    height: 500px;
+
+    object-fit: cover;
+    display: block;
+}
+
+
+/* =========================================================
+   REMNANT'S TAKE
+   ========================================================= */
+
+.remnant-take-2 {
+    width: 100%;
+    max-width: 900px;
+
+    margin: 170px auto 150px;
+    padding: 0 30px;
+}
+
+.remnant-take-2 h2 {
+    font-family: "Archivo Black", sans-serif;
+    font-size: clamp(32px, 3.5vw, 48px);
+    line-height: 1.05;
+    text-transform: uppercase;
+
+    text-align: center;
+
+    margin-bottom: 65px;
+}
+
+.remnant-take-text-2 {
+    width: 100%;
+}
+
+.remnant-take-text-2 p {
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 17px;
+    line-height: 1.7;
+
+    color: #111111;
+
+    margin-bottom: 27px;
+
+    text-align: justify;
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 900px) {
+
+    /* HERO */
+
+    .animal-hero-2 {
+        margin-top: 100px;
+        padding: 0 25px;
+
+        grid-template-columns: 1fr;
+
+        gap: 50px;
+    }
+
+    .animal-hero-image-2 img {
+        height: 500px;
+    }
+
+    .animal-hero-text-2 h1 {
+        font-size: 40px;
+        margin-bottom: 30px;
+    }
+
+
+    /* WHY SECTION */
+
+    .animal-why-2 {
+        padding: 0 25px;
+    }
+
+    .animal-print-grid-2 {
+        grid-template-columns: 1fr;
+
+        gap: 25px;
+    }
+
+    .animal-print-grid-2 img {
+        height: 300px;
+    }
+
+
+    /* LEOPARD */
+
+    .leopard-section-2 {
+        grid-template-columns: 1fr;
+
+        padding: 0 25px;
+
+        gap: 50px;
+    }
+
+    .leopard-images-2 {
+        gap: 25px;
+    }
+
+    .leopard-images-2 img {
+        height: 300px;
+    }
+
+
+    /* COW */
+
+    .cow-section-2 {
+        grid-template-columns: 1fr;
+
+        padding: 0 25px;
+
+        gap: 50px;
+    }
+
+    .cow-image-2 img {
+        height: 350px;
+    }
+
+
+    /* SNAKE */
+
+    .snake-section-2 {
+        grid-template-columns: 1fr;
+
+        padding: 0 25px;
+
+        gap: 50px;
+    }
+
+    .snake-image-2 img {
+        height: 400px;
+    }
+
+
+    /* REMNANT */
+
+    .remnant-take-2 {
+        padding: 0 25px;
+    }
+
+}
+
+
+/* =========================================================
+   SMALL MOBILE
+   ========================================================= */
+
+@media (max-width: 600px) {
+
+    .animal-hero-2 {
+        margin-top: 70px;
+        padding: 0 20px;
+    }
+
+    .animal-hero-image-2 img {
+        height: 400px;
+    }
+
+    .animal-hero-text-2 h1 {
+        font-size: 32px;
+    }
+
+    .animal-hero-text-2 p,
+    .animal-history-2 p,
+    .leopard-text-2 p,
+    .cow-text-2 p,
+    .snake-text-2 p,
+    .remnant-take-text-2 p {
+        font-size: 15px;
+    }
+
+    .animal-why-2 {
+        padding: 0 20px;
+    }
+
+    .animal-why-2 > h2 {
+        font-size: 28px;
+    }
+
+    .leopard-section-2,
+    .cow-section-2,
+    .snake-section-2 {
+        padding: 0 20px;
+    }
+
+    .leopard-images-2 img {
+        height: 250px;
+    }
+
+    .cow-image-2 img {
+        height: 300px;
+    }
+
+    .snake-image-2 img {
+        height: 320px;
+    }
+
+}
+
