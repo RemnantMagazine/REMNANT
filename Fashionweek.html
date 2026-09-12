@@ -1,15 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-HWRT95QKQ1"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-HWRT95QKQ1');
-</script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PARIS FASHION WEEK 2026: WHAT TO EXPECT FROM SS27 | REMNANT</title>
@@ -17,14 +8,17 @@
 </head>
 <body>
 
-    <nav>
-        <a href="index.html" class="logo">REMNANT</a>
-        <div class="NavLinks">
-            <a href="FashionNew.html">Fashion News</a>
-            <a href="Fashionweek.html" class="active">People In Fashion</a>
-            <a href="FashionExplained.html">Fashion Explained</a>
-        </div>
-    </nav>
+<nav>
+    <a href="index.html" class="Logo">REMNANT</a>
+
+    <div class="NavLinks">
+        <a href="FashionNew.html">Fashion News</a>
+        <a href="PeopleInFashion.html">People In Fashion</a>
+        <a href="FashionExplained.html">Fashion Explained</a>
+    </div>
+
+    <a href="admin-login.html" class="login-link" id="login-link">LOGIN</a>
+</nav>
 
     <main class="article-page">
         <!-- HEADER (Centered) -->
@@ -226,26 +220,12 @@
         </div>
     </div>
 
-    <!-- SUBSCRIBE SECTION -->
-    <section class="subscribe">
-        <h2>SUBSCRIBE</h2>
-        <p>Sign up with your email address to receive news and updates.</p>
 
-        <form class="subscribe-form" action="#" method="POST">
-            <input type="email" placeholder="Email Address" required>
-            <button type="submit">SIGN UP</button>
-        </form>
-
-        <div class="subscribe-links">
-            <a href="#">About</a>
-            <a href="#">Contact</a>
-            <a href="#">Follow</a>
-        </div>
-    </section>
 
     <!-- FOOTER -->
   <!-- FOOTER -->
     <footer>
+
         <div class="footer-left">
             <h2>REMNANT</h2>
         </div>
@@ -254,5 +234,45 @@
             <p><a href="mailto:Daisystibbs@hotmail.com">Daisystibbs@hotmail.com</a></p>
         </div>
     </footer>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+  
+
+    const SUPABASE_URL = "https://ghnjdfmnsmoiqdilsxzn.supabase.co";
+    const SUPABASE_KEY = "YOUR EXISTING KEY";
+
+    const supabaseClient = window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY,
+        {
+            auth: {
+                persistSession: true,
+                autoRefreshToken: true,
+                detectSessionInUrl: true
+            }
+        }
+    );
+
+    async function updateLoginLink() {
+
+        const loginLink = document.getElementById("login-link");
+
+        const { data: { session } } =
+            await supabaseClient.auth.getSession();
+
+        if (session) {
+
+            const name = session.user.user_metadata?.name;
+
+            if (name) {
+                loginLink.textContent = name;
+            }
+        }
+    }
+
+    updateLoginLink();
+</script>
+</script>
+</script>
 </body>
 </html>

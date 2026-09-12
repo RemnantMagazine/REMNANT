@@ -5,16 +5,17 @@
 </head>
 
 <body>
-    <nav>
-      <a rhef="index.html" class="Logo">REMNANT</a>
+<nav>
+    <a href="index.html" class="Logo">REMNANT</a>
 
-        <div class="NavLinks">
-        <a rhef="FashionNew.html"> Fashion News</a>
-        <a rhef="PeopleInFashion"> People In Fashion</a>
-        <a rhef="FashionExplained"> Fashion Explained</a>
-        </div>
-    </nav>
+    <div class="NavLinks">
+        <a href="FashionNew.html">Fashion News</a>
+        <a href="PeopleInFashion.html">People In Fashion</a>
+        <a href="FashionExplained.html">Fashion Explained</a>
+    </div>
 
+  <a href="account.html" class="login-link" id="login-link">LOGIN</a>
+</nav>
 <section class="featured-article">
 
     <img src="images/Paris_Fashion_Week.jpg" alt="Paris Fashion Week">
@@ -51,49 +52,10 @@
 
     <h2>COMING SOON</h2>
 
-    <div class="coming-scroll">
+    <div class="coming-scroll" id="coming-articles">
 
-        <article class="coming-card">
-            <img src="images/image1.jpg" alt="">
-            <h3>coming soon</h3>
-        </article>
+</div>
 
-        <article class="coming-card">
-            <img src="images/image2.jpg" alt="">
-            <h3>coming soon</h3>
-        </article>
-
-        <article class="coming-card">
-            <img src="images/image3.jpg" alt="">
-            <h3>coming soon</h3>
-        </article>
-
-        <article class="coming-card">
-            <img src="images/image4.jpg" alt="">
-            <h3>coming soon</h3>
-        </article>
-
-    </div>
-
-</section>
-<section class="subscribe">
-
-    <h2>SUBSCRIBE</h2>
-
-    <p>Sign up with your email address to receive news and updates.</p>
-
-    <div class="subscribe-form">
-        <input type="email" placeholder="Email Address">
-        <button type="submit">SIGN UP</button>
-    </div>
-
-    <div class="subscribe-links">
-        <a href="#">About</a>
-        <a href="#">Contact</a>
-        <a href="#">Follow</a>
-    </div>
-
-</section>
 
 
 <footer>
@@ -109,4 +71,67 @@
 
 
 </footer>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+    const SUPABASE_URL = "https://ghnjdfmnsmoiqdilsxzn.supabase.co";
+    const SUPABASE_KEY = "sb_publishable_bh-ZnMGseMcTzemZMq8QVQ_5mEXim9w";
+
+    const supabaseClient = window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+    );
+
+    async function updateLoginLink() {
+
+        const loginLink = document.getElementById("login-link");
+
+        const { data: { user } } =
+            await supabaseClient.auth.getUser();
+
+        if (user) {
+
+            const name = user.user_metadata?.name;
+
+            if (name) {
+                loginLink.textContent = name;
+            }
+        }
+    }
+
+    updateLoginLink();
+</script>
+
+<script>
+async function loadArticles() {
+
+    const { data, error } = await supabaseClient
+        .from("Articles")
+        .select("*")
+        .eq("status", "published")
+        .order("created_at", { ascending: false });
+
+    if (error) {
+        console.error("Could not load articles:", error);
+        return;
+    }
+
+    const container = document.getElementById("coming-articles");
+
+    data.forEach(article => {
+
+        const card = document.createElement("article");
+        card.className = "coming-card";
+
+        card.innerHTML = `
+  <img src="${SUPABASE_URL}/storage/v1/object/public/article-images/${article.image_url}" alt="${article.title}">
+            <h3>${article.title}</h3>
+<a href="article.html?slug=${article.slug}" class="read-more">READ MORE</a>
+        `;
+
+        container.appendChild(card);
+    });
+}
+
+loadArticles();
+</script>
 </body>

@@ -13,17 +13,18 @@
 <body>
 
     <!-- NAVIGATION -->
-    <nav>
-        <a href="index.html" class="logo">REMNANT</a>
 
-        <div class="NavLinks">
-            <a href="FashionNew.html">Fashion News</a>
-            <a href="PeopleInFashion.html">People In Fashion</a>
-            <a href="FashionExplained.html">Fashion Explained</a>
-        </div>
+  <nav>
+    <a href="index.html" class="Logo">REMNANT</a>
 
-      
-    </nav>
+    <div class="NavLinks">
+        <a href="FashionNew.html">Fashion News</a>
+        <a href="PeopleInFashion.html">People In Fashion</a>
+        <a href="FashionExplained.html">Fashion Explained</a>
+    </div>
+
+    <a href="admin-login.html" class="login-link" id="login-link">LOGIN</a>
+</nav>
 
 
     <!-- HERO -->
@@ -322,26 +323,9 @@
 
 
     <!-- SUBSCRIBE -->
-    <section class="subscribe">
+   
 
-        <h2>SUBSCRIBE</h2>
-
-        <p>
-            Sign up with your email address to receive news and updates.
-        </p>
-
-        <form class="subscribe-form">
-            <input type="email" placeholder="Email Address" required>
-            <button type="submit">SIGN UP</button>
-        </form>
-
-        <div class="subscribe-links">
-            <a href="#">About</a>
-            <a href="#">Contact</a>
-            <a href="#">Follow</a>
-        </div>
-
-    </section>
+  
 
 
     <!-- FOOTER -->
@@ -360,6 +344,43 @@
         </div>
 
     </footer>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+    const SUPABASE_URL = "https://ghnjdfmnsmoiqdilsxzn.supabase.co";
+    const SUPABASE_KEY = "YOUR EXISTING KEY";
+
+    const supabaseClient = window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY,
+        {
+            auth: {
+                persistSession: true,
+                autoRefreshToken: true,
+                detectSessionInUrl: true
+            }
+        }
+    );
+
+    async function updateLoginLink() {
+
+        const loginLink = document.getElementById("login-link");
+
+        const { data: { session } } =
+            await supabaseClient.auth.getSession();
+
+        if (session) {
+
+            const name = session.user.user_metadata?.name;
+
+            if (name) {
+                loginLink.textContent = name;
+            }
+        }
+    }
+
+    updateLoginLink();
+</script>
 
 </body>
 </html>

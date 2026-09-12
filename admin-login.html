@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Login | Remnant</title>
+
+    <link rel="stylesheet" href="script.css">
+</head>
+
+<body>
+
+    <nav>
+    <a href="index.html" class="Logo">REMNANT</a>
+
+    <div class="NavLinks">
+        <a href="FashionNew.html">Fashion News</a>
+        <a href="PeopleInFashion.html">People In Fashion</a>
+        <a href="FashionExplained.html">Fashion Explained</a>
+    </div>
+
+    <a href="admin-login.html" class="login-link" id="login-link">LOGIN</a>
+</nav>
+
+  <main class="login-page">
+
+    <div class="login-content">
+
+        <h1>LET'S GET YOU<br>LOGGED IN</h1>
+
+        <form id="login-form">
+
+            <label for="email">EMAIL</label>
+
+            <input
+                type="email"
+                id="email"
+                placeholder="Your email"
+                required
+            >
+
+            <label for="password">PASSWORD</label>
+
+            <input
+                type="password"
+                id="password"
+                placeholder="Your password"
+                required
+            >
+
+            <button type="submit">LOG IN</button>
+
+            <p id="login-message"></p>
+
+        </form>
+
+        <p class="login-or">OR</p>
+
+        <a href="signup.html" class="signup-button">
+            SIGN UP
+        </a>
+
+    </div>
+
+</main>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <script>
+
+        const SUPABASE_URL = "https://ghnjdfmnsmoiqdilsxzn.supabase.co";
+
+        const SUPABASE_KEY = "sb_publishable_bh-ZnMGseMcTzemZMq8QVQ_5mEXim9w";
+
+        const supabaseClient = window.supabase.createClient(
+            SUPABASE_URL,
+            SUPABASE_KEY
+        );
+
+
+        const ADMIN_USER_ID = "02a09814-bc5a-4b56-81f6-6033176a243f";
+
+
+        document
+            .getElementById("login-form")
+            .addEventListener("submit", async function(event) {
+
+                event.preventDefault();
+
+                const email = document.getElementById("email").value;
+                const password = document.getElementById("password").value;
+                const message = document.getElementById("login-message");
+
+                message.textContent = "Logging in...";
+
+
+                const { data, error } =
+                    await supabaseClient.auth.signInWithPassword({
+                        email: email,
+                        password: password
+                    });
+
+
+                if (error) {
+                    message.textContent = error.message;
+                    return;
+                }
+
+
+                if (data.user.id === ADMIN_USER_ID) {
+
+                    window.location.href = "admin.html";
+
+                } else {
+
+                    window.location.href = "index.html";
+
+                }
+
+            });
+
+
+        document
+            .getElementById("signup-link")
+            .addEventListener("click", async function(event) {
+
+                event.preventDefault();
+
+                const email = prompt("Enter your email:");
+
+                if (!email) return;
+
+                const password = prompt("Create a password:");
+
+                if (!password) return;
+
+
+                const { error } =
+                    await supabaseClient.auth.signUp({
+                        email: email,
+                        password: password
+                    });
+
+
+                const message = document.getElementById("login-message");
+
+
+                if (error) {
+
+                    message.textContent = error.message;
+                    return;
+
+                }
+
+
+                message.textContent =
+                    "Account created! You can now log in.";
+
+            });
+
+    </script>
+
+</body>
+
+</html>

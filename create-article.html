@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Create Article | Remnant</title>
+
+    <link rel="stylesheet" href="script.css">
+</head>
+
+<body>
+
+    <nav>
+        <a href="index.html" class="logo">REMNANT</a>
+
+        <div class="NavLinks">
+            <a href="FashionNew.html">Fashion News</a>
+            <a href="PeopleInFashion.html">People In Fashion</a>
+            <a href="FashionExplained.html">Fashion Explained</a>
+        </div>
+
+        <a href="admin.html" class="login-link">Admin</a>
+    </nav>
+
+
+    <main class="create-article-page">
+
+        <h1>CREATE ARTICLE</h1>
+
+        <p>Build a new article for Remnant.</p>
+        <label for="article-title">ARTICLE TITLE</label>
+
+<input
+    type="text"
+    id="article-title"
+    name="article-title"
+    placeholder="Enter your article title"
+
+    <label for="article-image">HERO IMAGE</label>
+
+<input
+    type="file"
+    id="article-image"
+    name="article-image"
+    accept="image/*"
+>
+
+<label for="article-category">ARTICLE CATEGORY</label>
+
+<select id="article-category" name="article-category">
+    <option value="fashion-news">Fashion News</option>
+    <option value="people-in-fashion">People In Fashion</option>
+    <option value="fashion-explained">Fashion Explained</option>
+</select>
+<label for="article-template">ARTICLE LAYOUT</label>
+
+<select id="article-template">
+    <option value="classic">Classic</option>
+    <option value="editorial">Editorial Split</option>
+    <option value="full-image">Full Image</option>
+    <option value="magazine">Magazine</option>
+    <option value="minimal">Minimal</option>
+</select>
+
+<label for="article-description">SEO DESCRIPTION</label>
+
+<textarea
+    id="article-description"
+    name="article-description"
+    placeholder="Write a short description for search engines..."
+    rows="3"
+></textarea>
+
+<label for="article-slug">ARTICLE URL</label>
+
+<input
+    type="text"
+    id="article-slug"
+    name="article-slug"
+    placeholder="e.g. animal-print-winter-2026"
+
+>
+<label for="article-status">ARTICLE STATUS</label>
+
+<select id="article-status" name="article-status">
+    <option value="draft">Draft</option>
+    <option value="published">Published</option>
+</select>
+<label for="article-standfirst">STANDFIRST</label>
+
+<textarea
+    id="article-standfirst"
+    name="article-standfirst"
+    placeholder="Enter your article standfirst"
+    rows="4"
+></textarea>
+
+<label for="article-content">ARTICLE CONTENT</label>
+
+<div class="editor-toolbar">
+
+    <button type="button" onclick="formatText('bold')">
+        B
+    </button>
+
+    <button type="button" onclick="formatText('italic')">
+        I
+    </button>
+
+    <button type="button" onclick="formatText('formatBlock', 'h2')">
+        H2
+    </button>
+
+    <button type="button" onclick="formatText('formatBlock', 'p')">
+        P
+    </button>
+
+    <button type="button" onclick="addLink()">
+        LINK
+    </button>
+
+</div>
+
+<div
+    id="article-content"
+    class="article-editor"
+    contenteditable="true"
+>
+    <p>Start writing your article here...</p>
+</div>
+</div>
+<div class="article-actions">
+    <button type="button" class="save-draft">SAVE DRAFT</button>
+    <button type="button" class="publish-article">PUBLISH ARTICLE</button>
+</div>
+    </main>
+
+    <script>
+
+function formatText(command, value = null) {
+    document.execCommand(command, false, value);
+}
+
+function addLink() {
+    const url = prompt("Enter the link:");
+    
+    if (url) {
+        document.execCommand("createLink", false, url);
+    }
+}
+
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+const SUPABASE_URL = "https://ghnjdfmnsmoiqdilsxzn.supabase.co";
+    const SUPABASE_KEY = "sb_publishable_bh-ZnMGseMcTzemZMq8QVQ_5mEXim9w";
+
+   const supabaseClient = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+);
+    
+</script>
+
+<script>
+document.querySelector(".save-draft").addEventListener("click", async function() {
+
+    const title = document.getElementById("article-title").value;
+    const standfirst = document.getElementById("article-standfirst").value;
+    const content = document.getElementById("article-content").innerHTML;
+    const category = document.getElementById("article-category").value;
+    const slug = document.getElementById("article-slug").value;
+    const seoDescription = document.getElementById("article-description").value;
+    const layout = document.getElementById("article-template").value;
+const imageFile = document.getElementById("article-image").files[0];
+let imageUrl = null;
+if (imageFile) {
+
+    const fileName = Date.now() + "-" + imageFile.name;
+
+    const { data, error } = await supabaseClient
+        .storage
+        .from("article-images")
+        .upload(fileName, imageFile);
+
+    if (error) {
+        alert("Image upload failed.");
+        console.error(error);
+        return;
+    }
+
+    imageUrl = data.path;
+}
+   const { data, error } = await supabaseClient
+    .from("Articles")
+        .insert([
+            {
+                title: title,
+                standfirst: standfirst,
+                content: content,
+                category: category,
+                slug: slug,
+                seo_description: seoDescription,
+image_url: imageUrl,
+layout: layout,
+status: "draft"
+            }
+        ]);
+
+ if (error) {
+    alert(error.message);
+    console.error(error);
+    return;
+}
+
+    alert("Draft saved!");
+});
+</script>
+
+<script>
+document.querySelector(".publish-article").addEventListener("click", async function() {
+
+    const title = document.getElementById("article-title").value;
+    const standfirst = document.getElementById("article-standfirst").value;
+    const content = document.getElementById("article-content").innerHTML;
+    const category = document.getElementById("article-category").value;
+    const slug = document.getElementById("article-slug").value;
+    const seoDescription = document.getElementById("article-description").value;
+    const layout = document.getElementById("article-template").value;
+
+    const imageFile = document.getElementById("article-image").files[0];
+    let imageUrl = null;
+
+    if (imageFile) {
+
+        const fileName = Date.now() + "-" + imageFile.name;
+
+        const { data, error } = await supabaseClient
+            .storage
+            .from("article-images")
+            .upload(fileName, imageFile);
+
+        if (error) {
+            alert("Image upload failed.");
+            console.error(error);
+            return;
+        }
+
+        imageUrl = data.path;
+    }
+
+    const { data, error } = await supabaseClient
+        .from("Articles")
+        .insert([
+            {
+                title: title,
+                standfirst: standfirst,
+                content: content,
+                category: category,
+                slug: slug,
+              seo_description: seoDescription,
+image_url: imageUrl,
+layout: layout,
+status: "published"
+            }
+        ]);
+
+    if (error) {
+        alert(error.message);
+        console.error(error);
+        return;
+    }
+
+    alert("Article published!");
+});
+</script>
+
+</body>
+
+</html>

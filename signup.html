@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Sign Up | Remnant</title>
+
+    <link rel="stylesheet" href="script.css">
+</head>
+
+
+   
+    <nav>
+        <a href="index.html" class="logo">REMNANT</a>
+
+        <div class="NavLinks">
+            <a href="FashionNew.html">Fashion News</a>
+            <a href="PeopleInFashion.html">People In Fashion</a>
+            <a href="FashionExplained.html">Fashion Explained</a>
+        </div>
+
+        <a href="index.html" class="login-link">Exit</a>
+    </nav>
+
+        
+
+<main class="signup-page">
+
+    <section class="signup-left">
+
+        <div class="signup-content">
+
+            <h1>CREATE AN<br>ACCOUNT</h1>
+
+            <form id="signup-form">
+
+                <label for="name">NAME</label>
+
+                <input
+                    type="text"
+                    id="name"
+                    placeholder="Your name"
+                    required
+                >
+
+                <label for="email">EMAIL</label>
+
+                <input
+                    type="email"
+                    id="email"
+                    placeholder="Your email"
+                    required
+                >
+
+                <label for="password">PASSWORD</label>
+
+                <input
+                    type="password"
+                    id="password"
+                    placeholder="Create a password"
+                    required
+                >
+
+                <label for="confirm-password">REPEAT PASSWORD</label>
+
+                <input
+                    type="password"
+                    id="confirm-password"
+                    placeholder="Repeat your password"
+                    required
+                >
+
+                <button type="submit">SIGN UP</button>
+
+                <p class="signup-or">OR</p>
+
+                <a href="admin-login.html" class="login-button">
+                    LOG IN
+                </a>
+
+                <p id="signup-message"></p>
+
+            </form>
+
+        </div>
+
+    </section>
+
+
+    <section class="signup-image">
+
+        <img src="images/Runway.jpg" alt="Remnant">
+
+    </section>
+
+</main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <script>
+
+        const SUPABASE_URL = "https://ghnjdfmnsmoiqdilsxzn.supabase.co";
+
+        const SUPABASE_KEY = "sb_publishable_bh-ZnMGseMcTzemZMq8QVQ_5mEXim9w";
+
+        const supabaseClient = window.supabase.createClient(
+            SUPABASE_URL,
+            SUPABASE_KEY
+        );
+
+
+        document
+            .getElementById("signup-form")
+            .addEventListener("submit", async function(event) {
+
+                event.preventDefault();
+
+ const name =
+    document.getElementById("name").value;
+
+const email =
+    document.getElementById("email").value;
+
+const password =
+    document.getElementById("password").value;
+
+                const confirmPassword =
+                    document.getElementById("confirm-password").value;
+
+                const message =
+                    document.getElementById("signup-message");
+
+
+                if (password !== confirmPassword) {
+
+                    message.textContent =
+                        "Passwords do not match.";
+
+                    return;
+
+                }
+
+const { error } =
+    await supabaseClient.auth.signUp({
+        email: email,
+        password: password,
+        options: {
+            data: {
+                name: name
+            },
+            emailRedirectTo: "https://remnantmagazine.com"
+        }
+    });
+
+
+                if (error) {
+
+                    message.textContent =
+                        error.message;
+
+                    return;
+
+                }
+
+
+               window.location.href = "confirm-email.html";
+              
+
+            });
+
+    </script>
+
+</body>
+
+</html>

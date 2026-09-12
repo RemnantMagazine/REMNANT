@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Edit Articles | Remnant</title>
+
+    <link rel="stylesheet" href="script.css">
+</head>
+
+<body>
+
+
+    <nav>
+        <a href="index.html" class="logo">REMNANT</a>
+
+        <div class="NavLinks">
+            <a href="FashionNew.html">Fashion News</a>
+            <a href="PeopleInFashion.html">People In Fashion</a>
+            <a href="FashionExplained.html">Fashion Explained</a>
+        </div>
+
+        <a href="index.html" class="login-link">Exit</a>
+    </nav>
+
+
+    <main class="edit-articles-page">
+
+        <h1>EDIT ARTICLES</h1>
+
+        <p>Select an article to edit.</p>
+
+        <div id="article-list" class="article-list"></div>
+
+    </main>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <script>
+
+        const SUPABASE_URL = "https://ghnjdfmnsmoiqdilsxzn.supabase.co";
+
+        const SUPABASE_KEY = "sb_publishable_bh-ZnMGseMcTzemZMq8QVQ_5mEXim9w";
+
+        const supabaseClient = window.supabase.createClient(
+            SUPABASE_URL,
+            SUPABASE_KEY
+        );
+
+
+        async function loadArticles() {
+
+            const { data, error } = await supabaseClient
+                .from("Articles")
+                .select("*")
+                .order("created_at", { ascending: false });
+
+
+            if (error) {
+                console.error("Could not load articles:", error);
+                return;
+            }
+
+
+            const container = document.getElementById("article-list");
+
+            data.forEach(article => {
+
+                const articleItem = document.createElement("div");
+
+                articleItem.className = "article-list-item";
+articleItem.innerHTML = `
+    <div>
+        <h2>${article.title}</h2>
+        <p>${article.status}</p>
+    </div>
+
+    <div>
+        <a href="edit-article.html?id=${article.id}">EDIT</a>
+        <button onclick="deleteArticle('${article.id}')">DELETE</button>
+    </div>
+`;
+
+                container.appendChild(articleItem);
+
+            });
+
+        }
+async function deleteArticle(id) {
+    const confirmed = confirm("Are you sure you want to delete this article?");
+
+    if (!confirmed) {
+        return;
+    }
+
+    const { error } = await supabaseClient
+        .from("Articles")
+        .delete()
+        .eq("id", id);
+
+    if (error) {
+        console.error("Could not delete article:", error);
+        alert(error.message);
+        return;
+    }
+
+    alert("Article deleted!");
+
+    loadArticles();
+}
+
+        loadArticles();
+
+    </script>
+
+</body>
+</html>

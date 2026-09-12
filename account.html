@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Account | Remnant</title>
+
+    <link rel="stylesheet" href="script.css">
+</head>
+
+<body>
+
+<nav>
+
+    <a href="index.html" class="logo">REMNANT</a>
+
+    <div class="NavLinks">
+        <a href="FashionNew.html">Fashion News</a>
+        <a href="PeopleInFashion.html">People In Fashion</a>
+        <a href="FashionExplained.html">Fashion Explained</a>
+    </div>
+
+    <a href="account.html" class="login-link">ACCOUNT</a>
+
+</nav>
+
+
+<main class="account-page">
+
+    <div class="account-content">
+
+        <h1>YOUR ACCOUNT</h1>
+
+        <div class="account-details">
+
+            <div class="account-detail">
+                <span>NAME</span>
+                <p id="account-name">Loading...</p>
+            </div>
+
+            <div class="account-detail">
+                <span>EMAIL</span>
+                <p id="account-email">Loading...</p>
+            </div>
+
+        </div>
+
+
+        <div class="account-actions">
+
+            <button id="logout-button">
+                LOG OUT
+            </button>
+
+            <button id="delete-button" class="delete-button">
+                DELETE ACCOUNT
+            </button>
+
+        </div>
+
+        <p id="account-message"></p>
+
+    </div>
+
+</main>
+
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+
+const SUPABASE_URL = "https://ghnjdfmnsmoiqdilsxzn.supabase.co";
+
+const SUPABASE_KEY = "sb_publishable_bh-ZnMGseMcTzemZMq8QVQ_5mEXim9w";
+
+const supabaseClient = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY,
+    {
+        auth: {
+            persistSession: true,
+            autoRefreshToken: true,
+            detectSessionInUrl: true
+        }
+    }
+);
+
+
+async function loadAccount() {
+
+    const {
+        data: { session }
+    } = await supabaseClient.auth.getSession();
+
+    if (!session) {
+        window.location.href = "admin-login.html";
+        return;
+    }
+
+    const user = session.user;
+
+    document.getElementById("account-name").textContent =
+        user.user_metadata?.name || "No name added";
+
+    document.getElementById("account-email").textContent =
+        user.email;
+
+}
+
+
+loadAccount();
+
+
+document.getElementById("logout-button").addEventListener("click", async function() {
+
+    const { error } = await supabaseClient.auth.signOut();
+
+    if (error) {
+        document.getElementById("account-message").textContent =
+            error.message;
+        return;
+    }
+
+    window.location.href = "index.html";
+
+});
+document.getElementById("delete-button").addEventListener("click", async function() {
+
+    const confirmed = confirm(
+        "Are you sure you want to permanently delete your Remnant account?"
+    );
+
+    if (!confirmed) {
+        return;
+    }
+
+    const message = document.getElementById("account-message");
+
+    message.textContent = "Deleting your account...";
+
+    const {
+        data: { session }
+    } = await supabaseClient.auth.getSession();
+
+    if (!session) {
+        window.location.href = "admin-login.html";
+        return;
+    }
+
+    const { data, error } = await supabaseClient.functions.invoke(
+        "delete-account",
+        {
+            headers: {
+                Authorization: `Bearer ${session.access_token}`
+            }
+        }
+    );
+
+    if (error) {
+        message.textContent = error.message;
+        return;
+    }
+
+    if (data?.error) {
+        message.textContent = data.error;
+        return;
+    }
+
+    await supabaseClient.auth.signOut();
+
+    window.location.href = "index.html";
+
+});
+
+</script>
+
+</body>
+
+</html>

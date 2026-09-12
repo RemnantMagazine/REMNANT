@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>FASHION NEWS | REMNANT</title>
+
+    <link rel="stylesheet" href="script.css">
+
+</head>
+
+<body>
+
+<nav>
+
+    <a href="index.html" class="Logo">REMNANT</a>
+
+    <div class="NavLinks">
+        <a href="FashionNew.html">Fashion News</a>
+        <a href="PeopleInFashion.html">People In Fashion</a>
+        <a href="FashionExplained.html">Fashion Explained</a>
+    </div>
+
+    <a href="account.html" class="login-link" id="login-link">LOGIN</a>
+
+</nav>
+
+
+<section class="fashion-news-header">
+
+    <h1>FASHION NEWS</h1>
+
+    <p>
+        The latest stories, conversations and changes shaping fashion.
+        From the runway to the wider industry, this is where fashion keeps moving.
+    </p>
+
+</section>
+
+
+<main class="fashion-news-grid" id="fashion-news-grid">
+
+    <!-- Articles will appear here automatically -->
+
+</main>
+
+
+<footer>
+
+    <div class="footer-left">
+        <h2>REMNANT</h2>
+    </div>
+
+    <div class="footer-right">
+        <p>
+            <a href="mailto:Daisystibbs@hotmail.com">
+                Daisystibbs@hotmail.com
+            </a>
+        </p>
+    </div>
+
+</footer>
+
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+
+const SUPABASE_URL = "https://ghnjdfmnsmoiqdilsxzn.supabase.co";
+
+const SUPABASE_KEY = "sb_publishable_bh-ZnMGseMcTzemZMq8QVQ_5mEXim9w";
+
+const supabaseClient = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY,
+    {
+        auth: {
+            persistSession: true,
+            autoRefreshToken: true,
+            detectSessionInUrl: true
+        }
+    }
+);
+
+
+// LOGIN NAME
+
+async function updateLoginLink() {
+
+    const loginLink = document.getElementById("login-link");
+
+    const {
+        data: { session }
+    } = await supabaseClient.auth.getSession();
+
+    if (session) {
+
+        const name = session.user.user_metadata?.name;
+
+        if (name) {
+            loginLink.textContent = name;
+        }
+
+    }
+
+}
+
+updateLoginLink();
+
+
+// LOAD FASHION NEWS
+
+async function loadFashionNews() {
+
+    const grid = document.getElementById("fashion-news-grid");
+
+    const { data, error } = await supabaseClient
+        .from("Articles")
+        .select("*")
+        .eq("category", "fashion-news")
+        .eq("status", "published")
+        .order("created_at", { ascending: false });
+
+
+    if (error) {
+
+    console.error("Could not load Fashion News:", error);
+
+    grid.innerHTML = `
+        <p>ERROR: ${error.message}</p>
+    `;
+
+    return;
+
+}
+
+
+    if (!data || data.length === 0) {
+
+        grid.innerHTML = `
+            <p class="no-articles">
+                No Fashion News articles yet.
+            </p>
+        `;
+
+        return;
+
+    }
+
+
+    grid.innerHTML = "";
+
+
+    data.forEach(article => {
+
+        const date = new Date(article.created_at).toLocaleDateString(
+            "en-GB",
+            {
+                day: "2-digit",
+                month: "2-digit",
+                year: "numeric"
+            }
+        );
+
+
+        const card = document.createElement("article");
+
+        card.className = "fashion-news-card";
+
+
+        card.innerHTML = `
+
+            <img
+                src="${SUPABASE_URL}/storage/v1/object/public/article-images/${article.image_url}"
+                alt="${article.title}"
+            >
+
+            <p class="fashion-news-date">
+                ${date}
+            </p>
+
+            <h2>
+                ${article.title}
+            </h2>
+
+            <a
+                href="article.html?slug=${article.slug}"
+                class="fashion-news-read"
+            >
+                READ MORE
+            </a>
+
+        `;
+
+
+        grid.appendChild(card);
+
+    });
+
+}
+
+
+loadFashionNews();
+
+</script>
+
+</body>
+</html>

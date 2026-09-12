@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Remnant Admin</title>
+
+    <link rel="stylesheet" href="script.css">
+</head>
+
+<body>
+
+    <nav>
+        <a href="index.html" class="logo">REMNANT</a>
+
+        <div class="NavLinks">
+            <a href="FashionNew.html">Fashion News</a>
+            <a href="PeopleInFashion.html">People In Fashion</a>
+            <a href="FashionExplained.html">Fashion Explained</a>
+        </div>
+
+        <a href="index.html" class="login-link">Exit</a>
+    </nav>
+
+
+    <main class="admin-page">
+
+        <h1>REMNANT ADMIN</h1>
+
+        <p>Welcome back. What would you like to do?</p>
+
+        <div class="admin-options">
+
+            <div class="admin-card">
+                <h2>CREATE ARTICLE</h2>
+                <p>Create a new article for Remnant.</p>
+                <a href="create-article.html">
+    <button>CREATE</button>
+</a>
+            </div>
+
+            <div class="admin-card">
+                <h2>EDIT ARTICLES</h2>
+                <p>Edit articles that are already published.</p>
+           <a href="edit-articles.html">
+    <button>EDIT</button>
+</a>
+            </div>
+
+        </div>
+
+    </main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+    const SUPABASE_URL = "https://ghnjdfmnsmoiqdilsxzn.supabase.co";
+    const SUPABASE_KEY = "sb_publishable_bh-ZnMGseMcTzemZMq8QVQ_5mEXim9w";
+
+    const supabaseClient = window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+    );
+
+    async function checkLogin() {
+        const { data: { session } } = await supabaseClient.auth.getSession();
+
+        if (!session) {
+            window.location.href = "admin-login.html";
+        }
+    }
+
+    checkLogin();
+</script>
+</body>
+
+</html>

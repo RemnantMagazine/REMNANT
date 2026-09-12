@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Remnant</title>
+
+    <link rel="stylesheet" href="script.css">
+</head>
+
+<body>
+
+   
+    <nav>
+        <a href="index.html" class="logo">REMNANT</a>
+
+        <div class="NavLinks">
+            <a href="FashionNew.html">Fashion News</a>
+            <a href="PeopleInFashion.html">People In Fashion</a>
+            <a href="FashionExplained.html">Fashion Explained</a>
+        </div>
+
+       <a href="account.html" class="login-link" id="login-link">LOGIN</a>
+    </nav>
+
+
+  <main class="dynamic-article" id="article-page">
+
+        <img id="article-image" src="" alt="">
+
+        <h1 id="article-title"></h1>
+
+        <p id="article-standfirst" class="standfirst"></p>
+
+        <div id="article-content"></div>
+
+        <section class="comments-section">
+
+    <h2>COMMENTS</h2>
+
+    <div id="comments-list"></div>
+
+    <div id="comment-form-container">
+        <textarea
+            id="comment-input"
+            placeholder="Write a comment..."
+            rows="4">
+        </textarea>
+
+        <button id="comment-submit">
+            POST COMMENT
+        </button>
+    </div>
+
+    <p id="comment-message"></p>
+
+</section>
+    </main>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <script>
+    const SUPABASE_URL = "https://ghnjdfmnsmoiqdilsxzn.supabase.co";
+    const SUPABASE_KEY = "sb_publishable_bh-ZnMGseMcTzemZMq8QVQ_5mEXim9w";
+
+   const supabaseClient = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY,
+    {
+        auth: {
+            persistSession: true,
+            autoRefreshToken: true,
+            detectSessionInUrl: true
+        }
+    }
+);
+
+    async function updateLoginLink() {
+
+        const loginLink = document.getElementById("login-link");
+
+        const { data: { user } } =
+            await supabaseClient.auth.getUser();
+
+        if (user) {
+
+            const name = user.user_metadata?.name;
+
+            if (name) {
+                loginLink.textContent = name;
+            }
+        }
+    }
+
+    updateLoginLink();
+
+
+
+        async function loadArticle() {
+
+            const params = new URLSearchParams(window.location.search);
+
+            const slug = params.get("slug");
+
+
+            const { data, error } = await supabaseClient
+                .from("Articles")
+                .select("*")
+                .eq("slug", slug)
+                .eq("status", "published")
+                .single();
+
+
+            if (error) {
+                console.error("Could not load article:", error);
+                return;
+            }
+
+
+            document.title = data.title;
+            document.getElementById("article-page").classList.add(`layout-${data.layout || "classic"}`);
+
+            document.getElementById("article-title").textContent = data.title;
+
+            document.getElementById("article-standfirst").textContent = data.standfirst;
+
+            document.getElementById("article-content").innerHTML = data.content;
+
+            document.getElementById("article-image").src =
+                `${SUPABASE_URL}/storage/v1/object/public/article-images/${data.image_url}`;
+
+    document.getElementById("article-image").alt = data.title;
+
+loadComments(data.id);
+
+}
+
+        
+
+
+        loadArticle();
+
+        // COMMENTS
+async function loadComments(articleId) {
+
+    const commentsList = document.getElementById("comments-list");
+
+    const { data, error } = await supabaseClient
+        .from("comments")
+        .select("id, user_name, content, created_at, user_id")
+        .eq("article_id", articleId)
+        .order("created_at", { ascending: true });
+
+    if (error) {
+        console.error("Error loading comments:", error);
+        return;
+    }
+
+    commentsList.innerHTML = "";
+
+    if (data.length === 0) {
+        commentsList.innerHTML = `
+            <p class="no-comments">
+                No comments yet. Be the first to comment.
+            </p>
+        `;
+        return;
+    }
+
+    const {
+        data: { session }
+    } = await supabaseClient.auth.getSession();
+
+    data.forEach(comment => {
+
+        const date = new Date(comment.created_at).toLocaleDateString(
+            "en-GB",
+            {
+                day: "numeric",
+                month: "long",
+                year: "numeric"
+            }
+        );
+
+        const canDelete =
+            session && session.user.id === comment.user_id;
+
+        commentsList.innerHTML += `
+            <div class="comment">
+
+                <div class="comment-name">
+                    ${comment.user_name || "Remnant Reader"}
+                </div>
+
+                <div class="comment-date">
+                    ${date}
+                </div>
+
+                <p class="comment-text">
+                    ${comment.content}
+                </p>
+
+                ${
+                    canDelete
+                        ? `<button class="delete-comment" data-id="${comment.id}">
+                            DELETE
+                           </button>`
+                        : ""
+                }
+
+            </div>
+        `;
+
+    });
+
+
+    document.querySelectorAll(".delete-comment").forEach(button => {
+
+        button.addEventListener("click", async function() {
+
+            const commentId = this.dataset.id;
+
+            const confirmed = confirm(
+                "Are you sure you want to delete this comment?"
+            );
+
+            if (!confirmed) {
+                return;
+            }
+
+            const { error } = await supabaseClient
+                .from("comments")
+                .delete()
+                .eq("id", commentId);
+
+            if (error) {
+                console.error("Error deleting comment:", error);
+                return;
+            }
+
+            loadComments(articleId);
+
+        });
+
+    });
+
+
+}
+document.getElementById("comment-submit").addEventListener("click", async function() {
+
+    const input = document.getElementById("comment-input");
+    const message = document.getElementById("comment-message");
+
+    const content = input.value.trim();
+
+    if (!content) {
+        message.textContent = "Please write a comment first.";
+        return;
+    }
+
+    const {
+        data: { session }
+    } = await supabaseClient.auth.getSession();
+
+    if (!session) {
+        message.textContent = "Please log in to comment.";
+        return;
+    }
+
+    const user = session.user;
+
+    const name =
+        user.user_metadata?.name || "Remnant Reader";
+
+    const params = new URLSearchParams(window.location.search);
+    const slug = params.get("slug");
+
+    const {
+        data: article,
+        error: articleError
+    } = await supabaseClient
+        .from("Articles")
+        .select("id")
+        .eq("slug", slug)
+        .single();
+
+    if (articleError) {
+        message.textContent = "Could not find this article.";
+        return;
+    }
+
+    const { error } = await supabaseClient
+        .from("comments")
+        .insert({
+            article_id: article.id,
+            user_id: user.id,
+            user_name: name,
+            content: content
+        });
+
+    if (error) {
+        console.error(error);
+        message.textContent = error.message;
+        return;
+    }
+
+    input.value = "";
+    message.textContent = "Comment posted.";
+
+    loadComments(article.id);
+
+});
+    </script>
+
+</body>
+</html>
