@@ -1263,8 +1263,8 @@ footer {
 
 .dynamic-article {
     max-width: 1000px;
-    margin: 160px auto 120px;
-    padding: 0 40px;
+    margin: 0 auto 120px;
+    padding: 60px 40px 0;
 }
 
 .dynamic-article #article-image {
@@ -1316,7 +1316,7 @@ footer {
 
 .layout-classic {
     max-width: 1000px;
-    margin: 160px auto 120px;
+    margin: 50px auto 120px;
     padding: 0 40px;
 }
 
