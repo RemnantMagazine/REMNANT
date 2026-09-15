@@ -351,10 +351,9 @@ function addElement(type) {
 
     else if (type === "heading") {
 
-        element.innerHTML = `
-            <input type="text" placeholder="Enter heading...">
-            <div class="resize-handle"></div>
-        `;
+    element.innerHTML =
+    `<textarea placeholder="Enter heading..."></textarea>
+     <div class="resize-handle"></div>`;
 
     }
 
