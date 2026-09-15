@@ -1263,8 +1263,8 @@ footer {
 
 .dynamic-article {
     max-width: 1000px;
-    margin: 0 auto 120px;
-    padding: 60px 40px 0;
+    margin: 160px auto 120px;
+    padding: 0 40px;
 }
 
 .dynamic-article #article-image {
@@ -1316,7 +1316,7 @@ footer {
 
 .layout-classic {
     max-width: 1000px;
-    margin: 50px auto 120px;
+    margin: 160px auto 120px;
     padding: 0 40px;
 }
 
@@ -2144,7 +2144,7 @@ footer {
     object-fit: contain;
 }
 /* =========================================================
-   ARTICLE DESIGN BUILDER
+   VISUAL ARTICLE DESIGN BUILDER
 ========================================================= */
 
 .design-builder {
@@ -2152,18 +2152,11 @@ footer {
     margin-top: 30px;
 }
 
-/* BUILDER LABEL */
-
-
-
-/* TOOLBAR */
-
 .design-toolbar {
     display: flex;
     align-items: center;
     gap: 8px;
     flex-wrap: wrap;
-
     padding: 14px;
     background: #111;
     border-radius: 10px 10px 0 0;
@@ -2174,252 +2167,195 @@ footer {
     border: 1px solid #444;
     background: #222;
     color: #fff;
-
     padding: 10px 15px;
     border-radius: 6px;
-
     font-family: "Space Grotesk", sans-serif;
     font-size: 12px;
     font-weight: 600;
-    letter-spacing: 0.3px;
-
+    letter-spacing: .3px;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: .2s ease;
 }
 
 .design-toolbar button:hover {
     background: #fff;
     color: #000;
     border-color: #fff;
-    transform: translateY(-1px);
 }
+
 
 /* CANVAS */
 
 .design-canvas {
     position: relative;
-
     width: 100%;
-    min-height: 1000px;
-
-    margin-top: 0;
-
-    background:
-        linear-gradient(rgba(0,0,0,0.035) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0,0,0,0.035) 1px, transparent 1px);
-    background-size: 25px 25px;
-
+    min-height: 850px;
+    padding: 30px;
+    background: #f3f3f3;
     border: 1px solid #d5d5d5;
     border-top: none;
-
     border-radius: 0 0 10px 10px;
-
-    overflow: visible;
-
-    box-shadow:
-        0 10px 35px rgba(0,0,0,0.08);
+    box-sizing: border-box;
+    overflow: auto;
 }
 
-/* EMPTY CANVAS */
+
+/* EMPTY */
 
 .empty-design {
     position: absolute;
-
     top: 50%;
     left: 50%;
-
     transform: translate(-50%, -50%);
-
     width: 280px;
-
     padding: 35px 25px;
-
-    border: 1px dashed #bbb;
-    border-radius: 8px;
-
-    background: rgba(255,255,255,0.8);
-
+    border: 1px dashed #aaa;
+    background: #fff;
     color: #888;
-
     text-align: center;
-
     font-family: "Space Grotesk", sans-serif;
     font-size: 12px;
     line-height: 1.5;
-
     letter-spacing: 1px;
     text-transform: uppercase;
 }
 
-/* =========================================================
-   DESIGN ELEMENTS
-========================================================= */
+
+/* ELEMENT */
 
 .design-element {
     position: absolute;
-
     min-width: 120px;
     min-height: 50px;
-
-    padding: 15px;
-
+    padding: 18px;
     background: #fff;
-
     border: 1px solid #aaa;
     border-radius: 4px;
-
-    cursor: move;
-
     box-sizing: border-box;
-
-    resize: both;
-    overflow: auto;
-
-    box-shadow:
-        0 4px 12px rgba(0,0,0,0.08);
-
-    transition:
-        box-shadow 0.15s ease,
-        border-color 0.15s ease;
+    cursor: move;
+    box-shadow: 0 4px 12px rgba(0,0,0,.08);
 }
 
-.design-element:hover {
+.design-element:hover,
+.design-element.selected {
     border-color: #000;
-
-    box-shadow:
-        0 8px 20px rgba(0,0,0,0.12);
+    box-shadow: 0 8px 20px rgba(0,0,0,.14);
 }
 
-/* TEXTAREAS / INPUTS */
 
-.design-element textarea,
-.design-element input[type="text"] {
+/* ELEMENT BODY */
+
+.element-body {
     width: 100%;
     height: 100%;
+    min-height: 30px;
+}
 
+.element-content {
+    width: 100%;
     min-height: 40px;
-
-    border: none;
     outline: none;
-
-    background: transparent;
-
     font-family: "Space Grotesk", sans-serif;
     font-size: 16px;
     line-height: 1.5;
-
     color: #000;
-
-    resize: none;
+    cursor: text;
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
 }
 
-.design-element textarea::placeholder,
-.design-element input::placeholder {
+.element-content:empty::before {
+    content: attr(data-placeholder);
     color: #aaa;
 }
 
-/* =========================================================
-   IMAGES
-========================================================= */
+.heading-content {
+    font-family: "Archivo Black", sans-serif;
+    font-size: 36px;
+    line-height: 1.05;
+}
 
-.design-element img {
+.quote-content {
+    font-family: Georgia, serif;
+    font-size: 24px;
+    font-style: italic;
+    line-height: 1.4;
+}
+
+
+/* IMAGE */
+
+.element-body img {
     display: block;
-
     width: 100%;
     height: 100%;
-
     object-fit: cover;
-
-    pointer-events: none;
 }
 
-/* =========================================================
-   RESIZE HANDLE
-========================================================= */
-
-.resize-handle {
-    position: absolute;
-
-    right: -1px;
-    bottom: -1px;
-
-    width: 18px;
-    height: 18px;
-
-    background: #000;
-
-    border-radius: 3px 0 3px 0;
-
-    cursor: nwse-resize;
+.image-placeholder {
+    width: 100%;
+    height: 100%;
+    min-height: 200px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    border: 1px dashed #aaa;
+    background: #f7f7f7;
+    box-sizing: border-box;
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 11px;
+    letter-spacing: 1px;
 }
 
-.resize-handle::after {
-    content: "";
-    position: absolute;
-
-    right: 4px;
-    bottom: 4px;
-
-    width: 6px;
-    height: 6px;
-
-    border-right: 1px solid #fff;
-    border-bottom: 1px solid #fff;
+.design-image-input {
+    max-width: 90%;
 }
 
-/* =========================================================
-   ELEMENT CONTROLS
-========================================================= */
+
+/* CONTROLS */
 
 .element-controls {
-   
     position: absolute;
-    top: -42px;
+   top:-85px!important;
     left: 0;
-
+    z-index: 10000;
     display: flex;
     align-items: center;
-
     gap: 3px;
-
     padding: 5px;
-
     background: #000;
-
     border-radius: 6px;
+    white-space: nowrap;
+    box-shadow: 0 5px 15px rgba(0,0,0,.2);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .15s ease;
+}
 
-    z-index: 10000;
-white-space: nowrap;
-    box-shadow:
-        0 5px 15px rgba(0,0,0,0.2);
+.design-element:hover .element-controls,
+.design-element.selected .element-controls {
+    opacity: 1;
+    pointer-events: auto;
 }
 
 .element-controls button,
 .element-controls select,
 .element-controls input[type="color"] {
     height: 28px;
-
     border: none;
     border-radius: 4px;
-
     background: #fff;
     color: #000;
-
     font-family: "Space Grotesk", sans-serif;
     font-size: 10px;
-
     cursor: pointer;
 }
 
 .element-controls button {
     min-width: 28px;
     padding: 0 7px;
-
-    font-weight: 600;
-}
-
-.element-controls button:hover {
-    background: #ddd;
 }
 
 .element-controls select {
@@ -2431,32 +2367,58 @@ white-space: nowrap;
     padding: 2px;
 }
 
-/* =========================================================
-   SPACER
-========================================================= */
 
-.design-element.spacer-element {
-    background:
-        repeating-linear-gradient(
-            45deg,
-            transparent,
-            transparent 8px,
-            rgba(0,0,0,0.04) 8px,
-            rgba(0,0,0,0.04) 16px
-        );
+/* RESIZE */
 
+.resize-handle {
+    position: absolute;
+    right: -1px;
+    bottom: -1px;
+    width: 18px;
+    height: 18px;
+    background: #000;
+    border-radius: 3px 0 3px 0;
+    cursor: nwse-resize;
+}
+
+.resize-handle::after {
+    content: "";
+    position: absolute;
+    right: 4px;
+    bottom: 4px;
+    width: 6px;
+    height: 6px;
+    border-right: 1px solid #fff;
+    border-bottom: 1px solid #fff;
+}
+
+
+/* SPACER */
+
+.spacer-preview {
+    width: 100%;
+    height: 100%;
+    min-height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     border: 1px dashed #aaa;
-
-    box-shadow: none;
+    background: repeating-linear-gradient(
+        45deg,
+        transparent,
+        transparent 8px,
+        rgba(0,0,0,.04) 8px,
+        rgba(0,0,0,.04) 16px
+    );
+    color: #999;
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 10px;
+    letter-spacing: 1px;
+    box-sizing: border-box;
 }
 
-.design-element.spacer-element:hover {
-    border-color: #000;
-}
 
-/* =========================================================
-   MOBILE
-========================================================= */
+/* MOBILE */
 
 @media (max-width: 700px) {
 
@@ -2470,51 +2432,15 @@ white-space: nowrap;
     }
 
     .design-canvas {
-        min-height: 800px;
+        min-height: 700px;
     }
 
     .element-controls {
         top: -40px;
+        max-width: calc(100vw - 40px);
+        overflow-x: auto;
     }
 
-}
-
-/* Individual design elements */
-.design-element {
-    position: absolute;
-    min-width: 120px;
-    min-height: 50px;
-    padding: 15px;
-    background: white;
-    border: 1px dashed #aaa;
-    cursor: move;
-    box-sizing: border-box;
-
-    resize: none;
-    overflow: visible;
-}
-
-.design-element img {
-    display: block;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    pointer-events: none;
-}
-
-.resize-handle {
-    position: absolute;
-    right: 0;
-    bottom: 0;
-    width: 15px;
-    height: 15px;
-    background: #000;
-    cursor: nwse-resize;
-}
-
-.design-element.spacer-element {
-    background: transparent;
-    border: 1px dashed #aaa;
 }
 .create-link {
     margin-left: 20px;
@@ -2821,27 +2747,29 @@ white-space: nowrap;
     top: 50%;
     transform: translateY(-50%);
     display: flex;
-    align-items: baseline;
+   align-items: center;
     gap: 20px;
+    height: 30px;
 }
+.account-links .create-link {
+    position: relative;
+    top: -2px;
+}
+
 .account-links .login-link,
 .account-links .create-link {
     position: static;
     transform: none;
     margin: 0;
     padding: 0;
-    display: block;
-    height: auto;
-    line-height: 1;
+    display: flex;
+    align-items: center;
+    height: 30px;
+    line-height: 30px;
     text-decoration: none;
     color: #000;
     font-family: "Space Grotesk", sans-serif;
     font-size: 16px;
-    font-weight: 600;
-}
-
-.account-links .create-link {
-    font-weight: 400;
 }
 
 .account-links .create-link:hover {

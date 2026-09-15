@@ -8,6 +8,30 @@
     <title>Create Article | Remnant</title>
 
     <link rel="stylesheet" href="script.css">
+
+<style>
+/* REMNANT VISUAL BUILDER - OVERRIDES */
+.design-builder{margin-top:30px!important;width:100%!important}
+.design-toolbar{display:flex!important;gap:8px!important;flex-wrap:wrap!important;padding:14px!important;background:#111!important;border-radius:10px 10px 0 0!important}
+.design-toolbar button{background:#fff!important;color:#000!important;border:0!important;padding:11px 16px!important;border-radius:4px!important;font-family:"Space Grotesk",sans-serif!important;font-size:12px!important;font-weight:700!important;cursor:pointer!important}
+.design-canvas{position:relative!important;width:100%!important;height:1100px!important;min-height:1100px!important;margin:0!important;padding:0!important;background-color:#fafafa!important;background-image:linear-gradient(#e5e5e5 1px,transparent 1px),linear-gradient(90deg,#e5e5e5 1px,transparent 1px)!important;background-size:25px 25px!important;border:2px solid #111!important;border-top:0!important;overflow:hidden!important}
+.empty-design{position:absolute!important;top:50%!important;left:50%!important;transform:translate(-50%,-50%)!important;width:300px!important;padding:30px!important;border:2px dashed #aaa!important;background:#fff!important;color:#777!important;text-align:center!important;font-family:"Space Grotesk",sans-serif!important;font-size:12px!important;z-index:0!important}
+.design-element{position:absolute!important;min-width:120px!important;min-height:60px!important;padding:18px!important;background:#fff!important;border:2px solid #111!important;border-radius:0!important;box-sizing:border-box!important;cursor:grab!important;box-shadow:5px 5px 0 #ddd!important;overflow:visible!important;user-select:none!important}
+.design-element:active{cursor:grabbing!important}
+.design-element.selected{border:2px solid #000!important;box-shadow:6px 6px 0 #000!important}
+.element-body{width:100%!important;height:100%!important}
+.element-content{width:100%!important;min-height:30px!important;outline:none!important;font-family:"Space Grotesk",sans-serif!important;font-size:16px!important;line-height:1.5!important;color:#000!important;cursor:text!important;white-space:pre-wrap!important;overflow-wrap:break-word!important;user-select:text!important}
+.heading-content{font-family:"Archivo Black",sans-serif!important;font-size:36px!important;line-height:1.05!important}
+.quote-content{font-family:Georgia,serif!important;font-size:24px!important;font-style:italic!important;line-height:1.4!important}
+.element-controls{position:absolute!important;top:-55px!important;left:0!important;display:flex!important;gap:3px!important;padding:5px!important;background:#000!important;border-radius:4px!important;z-index:99999!important;white-space:nowrap!important;opacity:0!important;pointer-events:none!important}
+.design-element.selected .element-controls,.design-element:hover .element-controls{opacity:1!important;pointer-events:auto!important}
+.element-controls button,.element-controls select,.element-controls input[type=color]{height:28px!important;border:0!important;border-radius:3px!important;background:#fff!important;color:#000!important;font-family:"Space Grotesk",sans-serif!important;font-size:10px!important;cursor:pointer!important}
+.element-controls button{min-width:28px!important;padding:0 7px!important}.element-controls select{padding:0 6px!important}.element-controls input[type=color]{width:32px!important;padding:2px!important}
+.resize-handle{position:absolute!important;right:6px!important;bottom:6px!important;width:18px!important;height:18px!important;background:#000!important;border:2px solid #fff!important;border-radius:50%!important;cursor:nwse-resize!important;z-index:100000!important}
+.element-body img{display:block!important;width:100%!important;height:100%!important;object-fit:cover!important;pointer-events:none!important}
+.image-placeholder{width:100%!important;height:100%!important;min-height:200px!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:15px!important;border:1px dashed #aaa!important;background:#f7f7f7!important;box-sizing:border-box!important;font-family:"Space Grotesk",sans-serif!important;font-size:11px!important;letter-spacing:1px!important}
+.spacer-preview{width:100%!important;height:100%!important;min-height:40px!important;display:flex!important;align-items:center!important;justify-content:center!important;border:1px dashed #aaa!important;background:#eee!important;color:#888!important;font-family:"Space Grotesk",sans-serif!important;font-size:10px!important;letter-spacing:1px!important}
+</style>
 </head>
 
 <body>
@@ -37,6 +61,7 @@
     id="article-title"
     name="article-title"
     placeholder="Enter your article title"
+>
 
     <label for="article-image">HERO IMAGE</label>
 
@@ -102,37 +127,19 @@
 <div class="design-builder">
 
     <div class="design-toolbar">
-
-        <button type="button" onclick="addElement('text')">
-            + TEXT
-        </button>
-
-        <button type="button" onclick="addElement('heading')">
-            + HEADING
-        </button>
-
-        <button type="button" onclick="addElement('image')">
-            + IMAGE
-        </button>
-
-        <button type="button" onclick="addElement('quote')">
-            + QUOTE
-        </button>
-        <button type="button" onclick="addElement('spacer')">
-    + SPACER
-</button>
-
+        <button type="button" onclick="addElement('text')">+ TEXT</button>
+        <button type="button" onclick="addElement('heading')">+ HEADING</button>
+        <button type="button" onclick="addElement('image')">+ IMAGE</button>
+        <button type="button" onclick="addElement('quote')">+ QUOTE</button>
+        <button type="button" onclick="addElement('spacer')">+ SPACER</button>
     </div>
 
     <div id="design-canvas" class="design-canvas">
-
         <div class="empty-design">
             Add an element to start designing your article.
-        
-
+        </div>
     </div>
 
-</div>
 </div>
 <div class="article-actions">
     <button type="button" class="save-draft">SAVE DRAFT</button>
@@ -146,253 +153,645 @@
 
 <script>
 const SUPABASE_URL = "https://ghnjdfmnsmoiqdilsxzn.supabase.co";
-    const SUPABASE_KEY = "sb_publishable_bh-ZnMGseMcTzemZMq8QVQ_5mEXim9w";
+const SUPABASE_KEY = "sb_publishable_bh-ZnMGseMcTzemZMq8QVQ_5mEXim9w";
 
-   const supabaseClient = window.supabase.createClient(
+const supabaseClient = window.supabase.createClient(
     SUPABASE_URL,
     SUPABASE_KEY
 );
-    
-</script>
 
-<script>
-document.querySelector(".save-draft").addEventListener("click", async function() {
 
-    const title = document.getElementById("article-title").value;
-    const standfirst = document.getElementById("article-standfirst").value;
-    const category = document.getElementById("article-category").value;
-    const slug = document.getElementById("article-slug").value;
-    const seoDescription = document.getElementById("article-description").value;
-    const homepagePlacement = document.getElementById("homepage-placement").value;
+/* =========================================================
+   VISUAL ARTICLE BUILDER
+========================================================= */
 
-    const imageFile = document.getElementById("article-image").files[0];
+let selectedElement = null;
+let highestZIndex = 1;
 
-    let imageUrl = null;
+const canvas = document.getElementById("design-canvas");
 
-    if (imageFile) {
 
-        const fileName = Date.now() + "-" + imageFile.name;
+function removeEmptyMessage() {
+    const empty = canvas.querySelector(".empty-design");
+    if (empty) empty.remove();
+}
 
-        const { data, error } = await supabaseClient
-            .storage
-            .from("article-images")
-            .upload(fileName, imageFile);
 
-        if (error) {
-            alert("Image upload failed.");
-            console.error(error);
+function showEmptyMessage() {
+    if (!canvas.querySelector(".design-element")) {
+        if (!canvas.querySelector(".empty-design")) {
+            canvas.insertAdjacentHTML(
+                "afterbegin",
+                '<div class="empty-design">Add an element to start designing your article.</div>'
+            );
+        }
+    }
+}
+
+
+/* =========================================================
+   ADD ELEMENT
+========================================================= */
+
+function addElement(type, savedData = null) {
+
+    removeEmptyMessage();
+
+    const element = document.createElement("div");
+
+    element.className = "design-element";
+    element.dataset.type = type;
+
+    element.style.left = savedData?.left || "60px";
+    element.style.top = savedData?.top || `${60 + canvas.querySelectorAll(".design-element").length * 30}px`;
+    element.style.width = savedData?.width || "420px";
+    element.style.height = savedData?.height || (
+        type === "heading" ? "100px" :
+        type === "quote" ? "130px" :
+        type === "image" ? "350px" :
+        type === "spacer" ? "80px" : "150px"
+    );
+
+    element.style.zIndex = savedData?.zIndex || ++highestZIndex;
+
+
+    let content = "";
+
+    if (type === "text") {
+        content = `
+            <div class="element-content text-content"
+                 contenteditable="true"
+                 data-placeholder="Write your text..."></div>
+        `;
+    }
+
+    if (type === "heading") {
+        content = `
+            <div class="element-content heading-content"
+                 contenteditable="true"
+                 data-placeholder="Enter heading..."></div>
+        `;
+    }
+
+    if (type === "quote") {
+        content = `
+            <div class="element-content quote-content"
+                 contenteditable="true"
+                 data-placeholder="Enter quote..."></div>
+        `;
+    }
+
+    if (type === "spacer") {
+        content = `<div class="spacer-preview">SPACER</div>`;
+    }
+
+    if (type === "image") {
+        content = `
+            <div class="image-placeholder">
+                <span>CHOOSE IMAGE</span>
+                <input type="file" accept="image/*" class="design-image-input">
+            </div>
+        `;
+    }
+
+
+    element.innerHTML = `
+        <div class="element-controls">
+
+            <button type="button" data-action="bold"><strong>B</strong></button>
+            <button type="button" data-action="italic"><em>I</em></button>
+            <button type="button" data-action="underline"><u>U</u></button>
+
+            <select data-action="fontSize">
+                <option value="">SIZE</option>
+                <option value="14px">14</option>
+                <option value="16px">16</option>
+                <option value="20px">20</option>
+                <option value="28px">28</option>
+                <option value="36px">36</option>
+                <option value="48px">48</option>
+                <option value="64px">64</option>
+            </select>
+
+            <select data-action="fontFamily">
+                <option value="">FONT</option>
+                <option value="Space Grotesk">SPACE</option>
+                <option value="Archivo Black">ARCHIVO</option>
+                <option value="Jura">JURA</option>
+                <option value="Oswald">OSWALD</option>
+                <option value="Georgia">GEORGIA</option>
+            </select>
+
+            <select data-action="textAlign">
+                <option value="left">LEFT</option>
+                <option value="center">CENTRE</option>
+                <option value="right">RIGHT</option>
+                <option value="justify">JUSTIFY</option>
+            </select>
+
+            <input type="color" value="#000000" data-action="color">
+
+            <button type="button" data-action="back">↓</button>
+            <button type="button" data-action="front">↑</button>
+            <button type="button" data-action="duplicate">DUP</button>
+            <button type="button" data-action="delete">×</button>
+
+        </div>
+
+        <div class="element-body">
+            ${content}
+        </div>
+
+        <div class="resize-handle"></div>
+    `;
+
+    canvas.appendChild(element);
+
+    applySavedStyles(element, savedData);
+    attachElementEvents(element);
+
+    if (savedData?.image) {
+        const body = element.querySelector(".element-body");
+        body.innerHTML = `
+            <img src="${savedData.image}" alt="">
+        `;
+    }
+
+    selectElement(element);
+
+    return element;
+}
+
+
+/* =========================================================
+   SAVED STYLES
+========================================================= */
+
+function applySavedStyles(element, data) {
+
+    if (!data) return;
+
+    const content = element.querySelector(".element-content");
+
+    if (content) {
+        content.innerHTML = data.text || "";
+
+        if (data.textAlign) content.style.setProperty("text-align", data.textAlign, "important");
+        if (data.fontSize) content.style.setProperty("font-size", data.fontSize, "important");
+        if (data.fontFamily) content.style.setProperty("font-family", data.fontFamily, "important");
+        if (data.fontWeight) content.style.setProperty("font-weight", data.fontWeight, "important");
+        if (data.fontStyle) content.style.setProperty("font-style", data.fontStyle, "important");
+        if (data.textDecoration) content.style.setProperty("text-decoration", data.textDecoration, "important");
+        if (data.color) content.style.setProperty("color", data.color, "important");
+    }
+}
+
+
+/* =========================================================
+   SELECT ELEMENT
+========================================================= */
+
+function selectElement(element) {
+
+    if (selectedElement) {
+        selectedElement.classList.remove("selected");
+    }
+
+    selectedElement = element;
+
+    if (selectedElement) {
+        selectedElement.classList.add("selected");
+        selectedElement.style.zIndex = ++highestZIndex;
+    }
+}
+
+
+/* =========================================================
+   ELEMENT EVENTS
+========================================================= */
+
+function attachElementEvents(element) {
+
+    const controls = element.querySelector(".element-controls");
+
+    element.addEventListener("mousedown", function(event) {
+
+        if (event.target.closest(".element-content")) {
             return;
         }
 
-        imageUrl = data.path;
-    }
-
-    const { data, error } = await supabaseClient
-        .from("Articles")
-        .insert([
-            {
-                title: title,
-                standfirst: standfirst,
-                category: category,
-                slug: slug,
-                seo_description: seoDescription,
-                image_url: imageUrl,
-                content: getDesignData(),
-                homepage_placement: homepagePlacement,
-                status: "draft"
-            }
-        ]);
-
-    if (error) {
-        alert(error.message);
-        console.error(error);
-        return;
-    }
-
-    alert("Draft saved!");
-
-});
-</script>
-
-<script>
-document.querySelector(".publish-article").addEventListener("click", async function() {
-
-    const title = document.getElementById("article-title").value;
-    const standfirst = document.getElementById("article-standfirst").value;
-    
-    const category = document.getElementById("article-category").value;
-    const slug = document.getElementById("article-slug").value;
-    const seoDescription = document.getElementById("article-description").value;
-
-    const homepagePlacement = document.getElementById("homepage-placement").value;
-
-    const imageFile = document.getElementById("article-image").files[0];
-    let imageUrl = null;
-
-    if (imageFile) {
-
-        const fileName = Date.now() + "-" + imageFile.name;
-
-        const { data, error } = await supabaseClient
-            .storage
-            .from("article-images")
-            .upload(fileName, imageFile);
-
-        if (error) {
-            alert("Image upload failed.");
-            console.error(error);
+        if (
+            event.target.closest(".element-controls") ||
+            event.target.closest(".resize-handle") ||
+            event.target.closest("input") ||
+            event.target.closest("textarea") ||
+            event.target.closest("select") ||
+            event.target.closest("button")
+        ) {
             return;
         }
 
-        imageUrl = data.path;
+        selectElement(element);
+        startDrag(event, element);
+    });
+
+
+    element.addEventListener("click", function(event) {
+
+        if (!event.target.closest(".element-controls")) {
+            selectElement(element);
+        }
+    });
+
+
+    const imageInput = element.querySelector(".design-image-input");
+
+    if (imageInput) {
+
+        imageInput.addEventListener("change", function(event) {
+
+            const file = event.target.files[0];
+
+            if (!file) return;
+
+            const reader = new FileReader();
+
+            reader.onload = function(e) {
+
+                const body = element.querySelector(".element-body");
+
+                body.innerHTML = `
+                    <img src="${e.target.result}" alt="">
+                `;
+
+                selectElement(element);
+            };
+
+            reader.readAsDataURL(file);
+        });
     }
-if (homepagePlacement === "main-showcase") {
 
-    await supabaseClient
-        .from("Articles")
-        .update({ homepage_placement: "none" })
-        .eq("homepage_placement", "main-showcase");
 
-}
+    if (controls) {
 
-if (homepagePlacement === "new-trends") {
+        controls.addEventListener("click", function(event) {
 
-    await supabaseClient
-        .from("Articles")
-        .update({ homepage_placement: "none" })
-        .eq("homepage_placement", "new-trends");
+            const control = event.target.closest("[data-action]");
 
-}
-    const { data, error } = await supabaseClient
-        .from("Articles")
-        .insert([
-            {
-                title: title,
-                standfirst: standfirst,
-                content: content,
-                category: category,
-                slug: slug,
-              seo_description: seoDescription,
-image_url: imageUrl,
-content: getDesignData(),
-homepage_placement: homepagePlacement,
-status: "published"
+            if (!control) return;
+
+            event.preventDefault();
+            event.stopPropagation();
+
+            const action = control.dataset.action;
+            const content = element.querySelector(".element-content");
+
+
+            if (action === "delete") {
+                element.remove();
+                selectedElement = null;
+                showEmptyMessage();
+                return;
             }
-        ]);
 
-    if (error) {
-        alert(error.message);
-        console.error(error);
-        return;
+
+            if (action === "duplicate") {
+
+                const data = elementToData(element);
+
+                data.left =
+                    (parseFloat(element.style.left) + 30) + "px";
+
+                data.top =
+                    (parseFloat(element.style.top) + 30) + "px";
+
+                addElement(data.type, data);
+                return;
+            }
+
+
+            if (action === "back") {
+
+                element.style.zIndex =
+                    Math.max(
+                        1,
+                        parseInt(element.style.zIndex || 1) - 1
+                    );
+
+                return;
+            }
+
+
+            if (action === "front") {
+                element.style.zIndex = ++highestZIndex;
+                return;
+            }
+
+
+            if (!content) return;
+
+
+            if (action === "bold") {
+
+                const current =
+                    window.getComputedStyle(content).fontWeight;
+
+                content.style.setProperty(
+                    "font-weight",
+                    current === "700" || current === "bold"
+                        ? "400"
+                        : "700",
+                    "important"
+                );
+
+                return;
+            }
+
+
+            if (action === "italic") {
+
+                const current =
+                    window.getComputedStyle(content).fontStyle;
+
+                content.style.setProperty(
+                    "font-style",
+                    current === "italic" ? "normal" : "italic",
+                    "important"
+                );
+
+                return;
+            }
+
+
+            if (action === "underline") {
+
+                const current =
+                    window.getComputedStyle(content).textDecorationLine;
+
+                content.style.setProperty(
+                    "text-decoration",
+                    current.includes("underline")
+                        ? "none"
+                        : "underline",
+                    "important"
+                );
+
+                return;
+            }
+
+        });
+
+
+        controls.addEventListener("change", function(event) {
+
+            const control = event.target.closest("[data-action]");
+
+            if (!control) return;
+
+            event.stopPropagation();
+
+            const action = control.dataset.action;
+            const content = element.querySelector(".element-content");
+
+            if (!content) return;
+
+
+            if (action === "fontSize") {
+
+                if (control.value) {
+                    content.style.setProperty(
+                        "font-size",
+                        control.value,
+                        "important"
+                    );
+                }
+
+                return;
+            }
+
+
+            if (action === "fontFamily") {
+
+                if (control.value) {
+                    content.style.setProperty(
+                        "font-family",
+                        control.value,
+                        "important"
+                    );
+                }
+
+                return;
+            }
+
+
+            if (action === "textAlign") {
+
+                content.style.setProperty(
+                    "text-align",
+                    control.value,
+                    "important"
+                );
+
+                return;
+            }
+
+
+            if (action === "color") {
+
+                content.style.setProperty(
+                    "color",
+                    control.value,
+                    "important"
+                );
+
+                return;
+            }
+
+        });
     }
 
-    alert("Article published!");
-});
+
+    const resizeHandle =
+        element.querySelector(".resize-handle");
+
+
+    if (resizeHandle) {
+
+        resizeHandle.addEventListener(
+            "mousedown",
+            function(event) {
+
+                event.preventDefault();
+                event.stopPropagation();
+
+                selectElement(element);
+
+                startResize(event, element);
+            }
+        );
+    }
+}
+
+/* =========================================================
+   DRAGGING
+========================================================= */
+
+function startDrag(event, element) {
+    event.preventDefault();
+    const startX = event.clientX;
+    const startY = event.clientY;
+    const startLeft = parseFloat(element.style.left) || 0;
+    const startTop = parseFloat(element.style.top) || 0;
+
+    function move(e) {
+        let left = startLeft + (e.clientX - startX);
+        let top = startTop + (e.clientY - startY);
+        const maxLeft = canvas.clientWidth - element.offsetWidth;
+        const maxTop = canvas.clientHeight - element.offsetHeight;
+        left = Math.max(0, Math.min(left, maxLeft));
+        top = Math.max(0, Math.min(top, maxTop));
+        element.style.left = left + "px";
+        element.style.top = top + "px";
+    }
+
+    function stop() {
+        document.removeEventListener("mousemove", move);
+        document.removeEventListener("mouseup", stop);
+    }
+    document.addEventListener("mousemove", move);
+    document.addEventListener("mouseup", stop);
+}
+
+
+/* =========================================================
+   RESIZING
+========================================================= */
+
+function startResize(event, element) {
+    const startX = event.clientX;
+    const startY = event.clientY;
+    const startWidth = element.offsetWidth;
+    const startHeight = element.offsetHeight;
+
+    function resize(e) {
+        const width = Math.max(120, startWidth + e.clientX - startX);
+        const height = Math.max(60, startHeight + e.clientY - startY);
+        element.style.width = width + "px";
+        element.style.height = height + "px";
+    }
+    function stop() {
+        document.removeEventListener("mousemove", resize);
+        document.removeEventListener("mouseup", stop);
+    }
+    document.addEventListener("mousemove", resize);
+    document.addEventListener("mouseup", stop);
+}
+
+
+/* =========================================================
+   SERIALISE DESIGN
+========================================================= */
+
+function elementToData(element) {
+
+    const content = element.querySelector(".element-content");
+    const image = element.querySelector(".element-body img");
+
+    return {
+        type: element.dataset.type || "text",
+
+        left: element.style.left,
+        top: element.style.top,
+        width: element.style.width,
+        height: element.style.height,
+        zIndex: element.style.zIndex || "1",
+
+        text: content ? content.innerHTML : "",
+
+        textAlign: content?.style.textAlign || "left",
+        fontSize: content?.style.fontSize || "",
+        fontFamily: content?.style.fontFamily || "",
+        fontWeight: content?.style.fontWeight || "",
+        fontStyle: content?.style.fontStyle || "",
+        textDecoration: content?.style.textDecoration || "",
+        color: content?.style.color || "",
+
+        image: image ? image.src : ""
+    };
+
+}
+
+
 function getDesignData() {
 
     const elements = [];
 
-    document.querySelectorAll("#design-canvas .design-element").forEach(element => {
+    document
+        .querySelectorAll("#design-canvas .design-element")
+        .forEach(element => {
 
-        const type = element.dataset.type || "text";
+            elements.push(elementToData(element));
 
-        const data = {
-            type: type,
-            left: element.style.left,
-            top: element.style.top,
-            width: element.style.width,
-            height: element.style.height
-        };
-
-        const input = element.querySelector("input, textarea");
-
-        if (input) {
-
-            data.text = input.value;
-
-            data.textAlign = input.style.textAlign || "left";
-
-            data.fontSize = input.style.fontSize || "";
-            data.fontFamily = input.style.fontFamily || "";
-            data.fontWeight = input.style.fontWeight || "";
-            data.fontStyle = input.style.fontStyle || "";
-            data.textDecoration = input.style.textDecoration || "";
-            data.color = input.style.color || "";
-
-        }
-
-       const image = element.querySelector("img");
-
-if (image) {
-    data.image = image.src;
-    data.imagePath = element.dataset.imagePath || "";
-}
-
-        elements.push(data);
-    });
+        });
 
     return JSON.stringify(elements);
+
 }
-</script>
-<script>
 
-function addElement(type) {
 
-    const canvas = document.getElementById("design-canvas");
+/* =========================================================
+   SAVE / PUBLISH
+========================================================= */
 
-    const emptyMessage = canvas.querySelector(".empty-design");
+async function uploadDesignImages() {
 
-    if (emptyMessage) {
-        emptyMessage.remove();
-    }
+    const elements = document.querySelectorAll(
+        "#design-canvas .design-element"
+    );
 
-  const element = document.createElement("div");
-  element.dataset.type = type;
-  
+    for (const element of elements) {
 
-element.classList.add("design-element");
+        const image = element.querySelector(".element-body img");
 
-element.style.left = "50px";
-element.style.top = "50px";
-element.style.width = "400px";
-element.style.height = "250px";
+        if (!image) continue;
 
-    if (type === "text") {
+        if (!image.src.startsWith("data:image/")) continue;
 
- element.innerHTML =
-    `<textarea placeholder="Write your text..."></textarea>
-     <div class="resize-handle"></div>`;
+        const response = await fetch(image.src);
+        const blob = await response.blob();
 
-    }
+        const fileName =
+            "design-" +
+            Date.now() +
+            "-" +
+            Math.random().toString(36).slice(2) +
+            ".png";
 
-    if (type === "heading") {
+        const { data, error } =
+            await supabaseClient
+                .storage
+                .from("article-images")
+                .upload(fileName, blob);
 
-      element.innerHTML =
-    `<input type="text" placeholder="Enter heading...">
-     <div class="resize-handle"></div>`;
+        if (error) throw error;
 
-    }
-
-    if (type === "quote") {
-element.innerHTML =
-    `<textarea placeholder="Enter quote..."></textarea>
-     <div class="resize-handle"></div>`;
+        image.src =
+            `${SUPABASE_URL}/storage/v1/object/public/article-images/${data.path}`;
 
     }
-    if (type === "spacer") {
-element.classList.add("spacer-element");
-    element.style.backgroundColor = "transparent";
-    element.style.border = "1px dashed #aaa";
-    const fileInput = element.querySelector("input");
 
-fileInput.addEventListener("change", async function(event) {
+}
 
-    const file = event.target.files[0];
 
-    if (!file) return;
+async function uploadHeroImage() {
+
+    const file =
+        document.getElementById("article-image").files[0];
+
+    if (!file) return null;
 
     const fileName =
-        `${Date.now()}-${file.name}`;
+        Date.now() + "-" + file.name.replace(/\s+/g, "-");
 
     const { data, error } =
         await supabaseClient
@@ -400,431 +799,157 @@ fileInput.addEventListener("change", async function(event) {
             .from("article-images")
             .upload(fileName, file);
 
-    if (error) {
-        console.error("Image upload failed:", error);
-        alert("Could not upload image.");
+    if (error) throw error;
+
+    return data.path;
+
+}
+
+
+async function prepareHomepagePlacement(placement) {
+
+    if (placement === "main-showcase") {
+
+        const { error } =
+            await supabaseClient
+                .from("Articles")
+                .update({ homepage_placement: "none" })
+                .eq("homepage_placement", "main-showcase");
+
+        if (error) throw error;
+    }
+
+
+    if (placement === "new-trends") {
+
+        const { error } =
+            await supabaseClient
+                .from("Articles")
+                .update({ homepage_placement: "none" })
+                .eq("homepage_placement", "new-trends");
+
+        if (error) throw error;
+    }
+
+}
+
+
+async function saveArticle(status) {
+
+    const title =
+        document.getElementById("article-title").value.trim();
+
+    const standfirst =
+        document.getElementById("article-standfirst").value.trim();
+
+    const category =
+        document.getElementById("article-category").value;
+
+    const slug =
+        document.getElementById("article-slug").value.trim();
+
+    const seoDescription =
+        document.getElementById("article-description").value.trim();
+
+    const homepagePlacement =
+        document.getElementById("homepage-placement").value;
+
+
+    if (!title) {
+        alert("Please enter an article title.");
         return;
     }
 
-    element.dataset.imagePath = data.path;
-
-    const { data: publicUrlData } =
-        supabaseClient
-            .storage
-            .from("article-images")
-            .getPublicUrl(data.path);
-
-    element.innerHTML =
-        `<img src="${publicUrlData.publicUrl}" alt="">
-         <div class="resize-handle"></div>`;
-
-    const image = element.querySelector("img");
-
-    image.style.width = "100%";
-    image.style.height = "100%";
-    image.style.objectFit = "cover";
-
-    makeDraggable(element, canvas);
-
-});element.style.height = "100px";
-    element.style.width = "400px";
-
-    element.innerHTML =
-        `<div class="resize-handle"></div>`;
-
-}
-
-if (type === "image") {
-
-    element.innerHTML =
-        `<input type="file" accept="image/*">`;
-
-   
-
-}
-  canvas.appendChild(element);
-const controls = document.createElement("div");
-
-controls.className = "element-controls";
-
-controls.innerHTML = `
-    <button type="button" class="align-left">L</button>
-    <button type="button" class="align-center">C</button>
-    <button type="button" class="align-right">R</button>
-
-    <select class="font-size-control">
-        <option value="14px">14</option>
-        <option value="16px" selected>16</option>
-        <option value="20px">20</option>
-        <option value="24px">24</option>
-        <option value="32px">32</option>
-        <option value="48px">48</option>
-        <option value="64px">64</option>
-    </select>
-    <select class="font-family-control">
-    <option value="Arial">Arial</option>
-    <option value="Georgia">Georgia</option>
-    <option value="Times New Roman">Times New Roman</option>
-    <option value="Helvetica">Helvetica</option>
-    <option value="Courier New">Courier New</option>
-</select>
-<input type="color" class="text-color-control" value="#000000">
-<input type="color" class="background-color-control" value="#ffffff">
-<button type="button" class="bring-forward">↑</button>
-<button type="button" class="send-back">↓</button>
-<button type="button" class="duplicate-element">⧉</button>
-<button type="button" class="delete-element">×</button>
-`;
-const alignLeft = controls.querySelector(".align-left");
-const alignCenter = controls.querySelector(".align-center");
-const alignRight = controls.querySelector(".align-right");
-
-alignLeft.addEventListener("click", function(event) {
-    event.preventDefault();
-    event.stopPropagation();
-
-  element.querySelector("textarea, input").style.textAlign = "left";
-});
-
-alignCenter.addEventListener("click", function(event) {
-    event.preventDefault();
-    event.stopPropagation();
-
-   element.querySelector("textarea, input").style.textAlign = "center";
-});
-
-alignRight.addEventListener("click", function(event) {
-    event.preventDefault();
-    event.stopPropagation();
-
-   element.querySelector("textarea, input").style.textAlign = "right";
-});
-const fontSizeControl = controls.querySelector(".font-size-control");
-const fontFamilyControl = controls.querySelector(".font-family-control");
-const textColorControl = controls.querySelector(".text-color-control");
-const backgroundColorControl = controls.querySelector(".background-color-control");
-
-backgroundColorControl.addEventListener("input", function(event) {
-    event.preventDefault();
-    event.stopPropagation();
-
-    element.style.backgroundColor = backgroundColorControl.value;
-});
-
-textColorControl.addEventListener("input", function(event) {
-    event.preventDefault();
-    event.stopPropagation();
-
-    const content = element.querySelector("textarea, input");
-
-    if (content) {
-        content.style.color = textColorControl.value;
+    if (!slug) {
+        alert("Please enter an article URL.");
+        return;
     }
-});
 
-fontFamilyControl.addEventListener("change", function(event) {
-    event.preventDefault();
-    event.stopPropagation();
 
-    const content = element.querySelector("textarea, input");
+    try {
 
-    if (content) {
-        content.style.fontFamily = fontFamilyControl.value;
-    }
-});
-const boldButton = document.createElement("button");
-boldButton.type = "button";
-boldButton.textContent = "B";
+        await uploadDesignImages();
 
-boldButton.addEventListener("click", function(event) {
-    event.preventDefault();
-    event.stopPropagation();
+        const heroImagePath =
+            await uploadHeroImage();
 
-    const content = element.querySelector("textarea, input");
+        await prepareHomepagePlacement(homepagePlacement);
 
-    if (content) {
-        content.style.fontWeight =
-            content.style.fontWeight === "bold"
-                ? "normal"
-                : "bold";
-    }
-});
 
-controls.insertBefore(boldButton, fontSizeControl);
-const italicButton = document.createElement("button");
-italicButton.type = "button";
-italicButton.textContent = "I";
+        const { error } =
+            await supabaseClient
+                .from("Articles")
+                .insert([{
 
-italicButton.addEventListener("click", function(event) {
-    event.preventDefault();
-    event.stopPropagation();
+                    title: title,
+                    standfirst: standfirst,
+                    category: category,
+                    slug: slug,
+                    seo_description: seoDescription,
+                    image_url: heroImagePath,
+                    content: getDesignData(),
+                    homepage_placement: homepagePlacement,
+                    status: status
 
-    const content = element.querySelector("textarea, input");
+                }]);
 
-    if (content) {
-        content.style.fontStyle =
-            content.style.fontStyle === "italic"
-                ? "normal"
-                : "italic";
-    }
-});
 
-controls.insertBefore(italicButton, fontSizeControl);
-const underlineButton = document.createElement("button");
-underlineButton.type = "button";
-underlineButton.textContent = "U";
+        if (error) throw error;
 
-underlineButton.addEventListener("click", function(event) {
-    event.preventDefault();
-    event.stopPropagation();
 
-    const content = element.querySelector("textarea, input");
-
-    if (content) {
-        content.style.textDecoration =
-            content.style.textDecoration === "underline"
-                ? "none"
-                : "underline";
-    }
-});
-
-controls.insertBefore(underlineButton, fontSizeControl);
-
-fontSizeControl.addEventListener("change", function(event) {
-    event.preventDefault();
-    event.stopPropagation();
-
-    const content = element.querySelector("textarea, input");
-
-    if (content) {
-        content.style.fontSize = fontSizeControl.value;
-    }
-});
-const bringForwardButton = controls.querySelector(".bring-forward");
-const sendBackButton = controls.querySelector(".send-back");
-bringForwardButton.addEventListener("click", function(event) {
-    event.preventDefault();
-    event.stopPropagation();
-
-    element.style.zIndex = 9999;
-});
-sendBackButton.addEventListener("click", function(event) {
-    event.preventDefault();
-    event.stopPropagation();
-
-    element.style.zIndex = 0;
-});
-const deleteButton = controls.querySelector(".delete-element");
-
-deleteButton.addEventListener("click", function(event) {
-
-    event.stopPropagation();
-
-    element.remove();
-
-});
-const duplicateButton = controls.querySelector(".duplicate-element");
-
-duplicateButton.addEventListener("click", function(event) {
-
-    event.preventDefault();
-    event.stopPropagation();
-
-    const clone = element.cloneNode(true);
-
-    clone.style.left =
-        (parseInt(element.style.left) + 30) + "px";
-
-    clone.style.top =
-        (parseInt(element.style.top) + 30) + "px";
-
-    canvas.appendChild(clone);
-
-    const clonedControls =
-        clone.querySelector(".element-controls");
-
-    const clonedDelete =
-        clonedControls.querySelector(".delete-element");
-
-    const clonedDuplicate =
-        clonedControls.querySelector(".duplicate-element");
-
-    clonedDelete.addEventListener("click", function(event) {
-
-        event.preventDefault();
-        event.stopPropagation();
-
-        clone.remove();
-
-    });
-
-    clonedDuplicate.addEventListener("click", function(event) {
-
-        event.preventDefault();
-        event.stopPropagation();
-
-        const secondClone = clone.cloneNode(true);
-
-        secondClone.style.left =
-            (parseInt(clone.style.left) + 30) + "px";
-
-        secondClone.style.top =
-            (parseInt(clone.style.top) + 30) + "px";
-
-        canvas.appendChild(secondClone);
-
-        makeDraggable(secondClone, canvas);
-
-    });
-
-    makeDraggable(clone, canvas);
-
-});
-
-element.appendChild(controls);
-
-canvas.appendChild(element);
-
-if (type !== "image") {
-    makeDraggable(element, canvas);
-}
-
-}
-
-function makeDraggable(element, canvas) {
-    
-
-    let isDragging = false;
-
-    let offsetX = 0;
-    let offsetY = 0;
-
-    const resizeHandle = element.querySelector(".resize-handle");
-
-if (resizeHandle) {
-
-    let isResizing = false;
-
-    resizeHandle.addEventListener("mousedown", function(event) {
-
-        event.preventDefault();
-        event.stopPropagation();
-
-        isResizing = true;
-
-        const startX = event.clientX;
-        const startY = event.clientY;
-
-        const startWidth = element.offsetWidth;
-        const startHeight = element.offsetHeight;
-
-        function resize(event) {
-
-            if (!isResizing) return;
-
-            const newWidth =
-                startWidth + (event.clientX - startX);
-
-            const newHeight =
-                startHeight + (event.clientY - startY);
-
-            element.style.width =
-                Math.max(120, newWidth) + "px";
-
-            element.style.height =
-                Math.max(50, newHeight) + "px";
-        }
-
-        function stopResize() {
-
-            isResizing = false;
-
-            document.removeEventListener("mousemove", resize);
-            document.removeEventListener("mouseup", stopResize);
-        }
-
-        document.addEventListener("mousemove", resize);
-        document.addEventListener("mouseup", stopResize);
-
-    });
-}
-
-
-    element.addEventListener("mousedown", function(event) {
-
-      if (
-    event.target.closest(".element-controls") ||
-    event.target.tagName === "INPUT" ||
-    event.target.tagName === "TEXTAREA" ||
-    event.target.tagName === "SELECT" ||
-    event.target.tagName === "BUTTON"
-) {
-    return;
-}
-
-        isDragging = true;
-
-        const elementRect = element.getBoundingClientRect();
-
-        offsetX = event.clientX - elementRect.left;
-        offsetY = event.clientY - elementRect.top;
-
-        element.style.zIndex = 1000;
-
-    });
-
-
-    document.addEventListener("mousemove", function(event) {
-
-        if (!isDragging) return;
-
-        const canvasRect = canvas.getBoundingClientRect();
-
-        let newLeft =
-            event.clientX - canvasRect.left - offsetX;
-
-        let newTop =
-            event.clientY - canvasRect.top - offsetY;
-
-
-        const maxLeft =
-            canvas.clientWidth - element.offsetWidth;
-
-        const maxTop =
-            canvas.clientHeight - element.offsetHeight;
-
-
-        newLeft = Math.max(
-            0,
-            Math.min(newLeft, maxLeft)
-        );
-
-        newTop = Math.max(
-            0,
-            Math.min(newTop, maxTop)
+        alert(
+            status === "published"
+                ? "Article published!"
+                : "Draft saved!"
         );
 
 
-        element.style.left = newLeft + "px";
-        element.style.top = newTop + "px";
+        window.location.href = "edit-articles.html";
 
-    });
+    } catch (error) {
 
+        console.error(error);
 
-    document.addEventListener("mouseup", function() {
+        alert(
+            "Something went wrong: " +
+            error.message
+        );
 
-        if (isDragging) {
-
-            isDragging = false;
-
-            element.style.zIndex = "";
-
-        }
-
-    });
+    }
 
 }
 
+
+document
+    .querySelector(".save-draft")
+    .addEventListener("click", function() {
+
+        saveArticle("draft");
+
+    });
+
+
+document
+    .querySelector(".publish-article")
+    .addEventListener("click", function() {
+
+        saveArticle("published");
+
+    });
+
+
+/* Prevent accidental text selection while dragging */
+
+document.addEventListener("selectstart", function(event) {
+
+    if (
+        event.target.closest(".design-element") &&
+        !event.target.closest(".element-content")
+    ) {
+        event.preventDefault();
+    }
+
+});
 </script>
 </body>
 
