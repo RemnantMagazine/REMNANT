@@ -8,6 +8,45 @@
     <title>Remnant</title>
 
     <link rel="stylesheet" href="script.css">
+    <style>
+    /* VISUAL ARTICLE DESIGN */
+
+    #article-content {
+        position: relative !important;
+        width: 100% !important;
+        min-height: 1200px;
+        margin: 0 !important;
+        padding: 0 !important;
+        overflow: visible !important;
+    }
+
+    .public-design-element {
+        box-sizing: border-box;
+        position: absolute;
+        margin: 0;
+        padding: 0;
+    }
+
+    .public-design-element p,
+    .public-design-element h2,
+    .public-design-element blockquote {
+        margin: 0;
+        padding: 0;
+    }
+
+    .public-design-element img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    /* Don't let the old article layout interfere */
+    .dynamic-article > #article-title,
+    .dynamic-article > #article-standfirst {
+        display: none !important;
+    }
+</style>
 </head>
 
 <body>
@@ -129,94 +168,151 @@ try {
 
     const design = JSON.parse(data.content);
 
-    articleContent.innerHTML = "";
+    if (Array.isArray(design) && design.length > 0) {
 
-    design.forEach(item => {
+        articleContent.innerHTML = "";
 
-        const element = document.createElement("div");
+        let canvasHeight = 1200;
 
-        element.className = "public-design-element";
+        design.forEach(item => {
 
-        element.style.position = "absolute";
-        element.style.left = item.left;
-        element.style.top = item.top;
-        element.style.width = item.width;
-        element.style.height = item.height;
+            const element = document.createElement("div");
 
-  if (item.type === "text") {
-    element.innerHTML = `
-        <p>${item.text || ""}</p>
-    `;
-}
+            element.className = "public-design-element";
 
-else if (item.type === "heading") {
-    element.innerHTML = `
-        <h2>${item.text || ""}</h2>
-    `;
-}
+            element.style.position = "absolute";
+            element.style.left = item.left || "0px";
+            element.style.top = item.top || "0px";
+            element.style.width = item.width || "300px";
+            element.style.height = item.height || "100px";
+            element.style.zIndex = item.zIndex || "1";
 
-else if (item.type === "quote") {
-    element.innerHTML = `
-        <blockquote>${item.text || ""}</blockquote>
-    `;
-}
+            /* TEXT */
+            if (item.type === "text") {
 
-const contentElement = element.querySelector("p, h2, blockquote");
+                element.innerHTML = `
+                    <p>${item.text || ""}</p>
+                `;
 
-if (contentElement) {
+            }
 
-    contentElement.style.textAlign = item.textAlign || "left";
+            /* HEADING */
+            else if (item.type === "heading") {
 
-    if (item.fontSize) {
-        contentElement.style.fontSize = item.fontSize;
+                element.innerHTML = `
+                    <h2>${item.text || ""}</h2>
+                `;
+
+            }
+
+            /* QUOTE */
+            else if (item.type === "quote") {
+
+                element.innerHTML = `
+                    <blockquote>${item.text || ""}</blockquote>
+                `;
+
+            }
+
+            /* IMAGE */
+            else if (item.type === "image") {
+
+                element.innerHTML = `
+                    <img src="${item.image || ""}" alt="">
+                `;
+
+            }
+
+            /* SPACER */
+            else if (item.type === "spacer") {
+
+                element.innerHTML = "";
+
+            }
+
+
+            /* APPLY SAVED TEXT STYLING */
+
+            const contentElement =
+                element.querySelector("p, h2, blockquote");
+
+            if (contentElement) {
+
+                contentElement.style.textAlign =
+                    item.textAlign || "left";
+
+                if (item.fontSize) {
+                    contentElement.style.fontSize =
+                        item.fontSize;
+                }
+
+                if (item.fontFamily) {
+                    contentElement.style.fontFamily =
+                        item.fontFamily;
+                }
+
+                if (item.fontWeight) {
+                    contentElement.style.fontWeight =
+                        item.fontWeight;
+                }
+
+                if (item.fontStyle) {
+                    contentElement.style.fontStyle =
+                        item.fontStyle;
+                }
+
+                if (item.textDecoration) {
+                    contentElement.style.textDecoration =
+                        item.textDecoration;
+                }
+
+                if (item.color) {
+                    contentElement.style.color =
+                        item.color;
+                }
+
+            }
+
+
+            articleContent.appendChild(element);
+
+
+            /* Make canvas tall enough for every element */
+
+            const top =
+                parseFloat(item.top) || 0;
+
+            const height =
+                parseFloat(item.height) || 0;
+
+            canvasHeight =
+                Math.max(
+                    canvasHeight,
+                    top + height + 100
+                );
+
+        });
+
+
+        articleContent.style.minHeight =
+            canvasHeight + "px";
+
+        articleContent.style.height =
+            canvasHeight + "px";
+
+
+    } else {
+
+        articleContent.innerHTML = data.content || "";
+
     }
-
-    if (item.fontFamily) {
-        contentElement.style.fontFamily = item.fontFamily;
-    }
-
-    if (item.fontWeight) {
-        contentElement.style.fontWeight = item.fontWeight;
-    }
-
-    if (item.fontStyle) {
-        contentElement.style.fontStyle = item.fontStyle;
-    }
-
-    if (item.textDecoration) {
-        contentElement.style.textDecoration = item.textDecoration;
-    }
-
-    if (item.color) {
-        contentElement.style.color = item.color;
-    }
-
-}
-
-else if (item.type === "image") {
-    element.innerHTML = `
-        <img src="${item.image || ""}" alt="">
-    `;
-
-    const image = element.querySelector("img");
-
-    image.style.width = "100%";
-    image.style.height = "100%";
-    image.style.objectFit = "cover";
-}
-
-else if (item.type === "spacer") {
-            element.innerHTML = "";
-        }
-
-        articleContent.appendChild(element);
-
-    });
 
 } catch (error) {
 
-    // Old articles still use normal HTML
-    articleContent.innerHTML = data.content;
+    console.error("Could not load visual article design:", error);
+
+    /* Old articles still use normal HTML */
+    articleContent.innerHTML = data.content || "";
 
 }
 
