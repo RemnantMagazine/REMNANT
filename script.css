@@ -2123,3 +2123,396 @@ footer {
     }
 
 }
+
+/* Main article image */
+#article-image {
+    width: 100%;
+    max-width: 900px;
+    height: 550px;
+    object-fit: cover;
+    display: block;
+    margin: 0 auto 40px auto;
+}
+
+/* Images inside article content */
+#article-content img {
+    display: block;
+    width: 100%;
+    max-width: 800px;
+    height: auto;
+    margin: 40px auto;
+    object-fit: contain;
+}
+/* =========================================================
+   ARTICLE DESIGN BUILDER
+========================================================= */
+
+.design-builder {
+    width: 100%;
+    margin-top: 30px;
+}
+
+/* BUILDER LABEL */
+
+
+
+/* TOOLBAR */
+
+.design-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+
+    padding: 14px;
+    background: #111;
+    border-radius: 10px 10px 0 0;
+}
+
+.design-toolbar button {
+    appearance: none;
+    border: 1px solid #444;
+    background: #222;
+    color: #fff;
+
+    padding: 10px 15px;
+    border-radius: 6px;
+
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.design-toolbar button:hover {
+    background: #fff;
+    color: #000;
+    border-color: #fff;
+    transform: translateY(-1px);
+}
+
+/* CANVAS */
+
+.design-canvas {
+    position: relative;
+
+    width: 100%;
+    min-height: 1000px;
+
+    margin-top: 0;
+
+    background:
+        linear-gradient(rgba(0,0,0,0.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,0,0,0.035) 1px, transparent 1px);
+    background-size: 25px 25px;
+
+    border: 1px solid #d5d5d5;
+    border-top: none;
+
+    border-radius: 0 0 10px 10px;
+
+    overflow: visible;
+
+    box-shadow:
+        0 10px 35px rgba(0,0,0,0.08);
+}
+
+/* EMPTY CANVAS */
+
+.empty-design {
+    position: absolute;
+
+    top: 50%;
+    left: 50%;
+
+    transform: translate(-50%, -50%);
+
+    width: 280px;
+
+    padding: 35px 25px;
+
+    border: 1px dashed #bbb;
+    border-radius: 8px;
+
+    background: rgba(255,255,255,0.8);
+
+    color: #888;
+
+    text-align: center;
+
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 12px;
+    line-height: 1.5;
+
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+/* =========================================================
+   DESIGN ELEMENTS
+========================================================= */
+
+.design-element {
+    position: absolute;
+
+    min-width: 120px;
+    min-height: 50px;
+
+    padding: 15px;
+
+    background: #fff;
+
+    border: 1px solid #aaa;
+    border-radius: 4px;
+
+    cursor: move;
+
+    box-sizing: border-box;
+
+    resize: both;
+    overflow: auto;
+
+    box-shadow:
+        0 4px 12px rgba(0,0,0,0.08);
+
+    transition:
+        box-shadow 0.15s ease,
+        border-color 0.15s ease;
+}
+
+.design-element:hover {
+    border-color: #000;
+
+    box-shadow:
+        0 8px 20px rgba(0,0,0,0.12);
+}
+
+/* TEXTAREAS / INPUTS */
+
+.design-element textarea,
+.design-element input[type="text"] {
+    width: 100%;
+    height: 100%;
+
+    min-height: 40px;
+
+    border: none;
+    outline: none;
+
+    background: transparent;
+
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 16px;
+    line-height: 1.5;
+
+    color: #000;
+
+    resize: none;
+}
+
+.design-element textarea::placeholder,
+.design-element input::placeholder {
+    color: #aaa;
+}
+
+/* =========================================================
+   IMAGES
+========================================================= */
+
+.design-element img {
+    display: block;
+
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+
+    pointer-events: none;
+}
+
+/* =========================================================
+   RESIZE HANDLE
+========================================================= */
+
+.resize-handle {
+    position: absolute;
+
+    right: -1px;
+    bottom: -1px;
+
+    width: 18px;
+    height: 18px;
+
+    background: #000;
+
+    border-radius: 3px 0 3px 0;
+
+    cursor: nwse-resize;
+}
+
+.resize-handle::after {
+    content: "";
+    position: absolute;
+
+    right: 4px;
+    bottom: 4px;
+
+    width: 6px;
+    height: 6px;
+
+    border-right: 1px solid #fff;
+    border-bottom: 1px solid #fff;
+}
+
+/* =========================================================
+   ELEMENT CONTROLS
+========================================================= */
+
+.element-controls {
+   
+    position: absolute;
+    top: -42px;
+    left: 0;
+
+    display: flex;
+    align-items: center;
+
+    gap: 3px;
+
+    padding: 5px;
+
+    background: #000;
+
+    border-radius: 6px;
+
+    z-index: 10000;
+white-space: nowrap;
+    box-shadow:
+        0 5px 15px rgba(0,0,0,0.2);
+}
+
+.element-controls button,
+.element-controls select,
+.element-controls input[type="color"] {
+    height: 28px;
+
+    border: none;
+    border-radius: 4px;
+
+    background: #fff;
+    color: #000;
+
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 10px;
+
+    cursor: pointer;
+}
+
+.element-controls button {
+    min-width: 28px;
+    padding: 0 7px;
+
+    font-weight: 600;
+}
+
+.element-controls button:hover {
+    background: #ddd;
+}
+
+.element-controls select {
+    padding: 0 6px;
+}
+
+.element-controls input[type="color"] {
+    width: 32px;
+    padding: 2px;
+}
+
+/* =========================================================
+   SPACER
+========================================================= */
+
+.design-element.spacer-element {
+    background:
+        repeating-linear-gradient(
+            45deg,
+            transparent,
+            transparent 8px,
+            rgba(0,0,0,0.04) 8px,
+            rgba(0,0,0,0.04) 16px
+        );
+
+    border: 1px dashed #aaa;
+
+    box-shadow: none;
+}
+
+.design-element.spacer-element:hover {
+    border-color: #000;
+}
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 700px) {
+
+    .design-toolbar {
+        padding: 10px;
+    }
+
+    .design-toolbar button {
+        padding: 9px 11px;
+        font-size: 11px;
+    }
+
+    .design-canvas {
+        min-height: 800px;
+    }
+
+    .element-controls {
+        top: -40px;
+    }
+
+}
+
+/* Individual design elements */
+.design-element {
+    position: absolute;
+    min-width: 120px;
+    min-height: 50px;
+    padding: 15px;
+    background: white;
+    border: 1px dashed #aaa;
+    cursor: move;
+    box-sizing: border-box;
+
+    resize: none;
+    overflow: visible;
+}
+
+.design-element img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    pointer-events: none;
+}
+
+.resize-handle {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: 15px;
+    height: 15px;
+    background: #000;
+    cursor: nwse-resize;
+}
+
+.design-element.spacer-element {
+    background: transparent;
+    border: 1px dashed #aaa;
+}

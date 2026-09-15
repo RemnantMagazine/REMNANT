@@ -126,8 +126,102 @@
             document.getElementById("article-title").textContent = data.title;
 
             document.getElementById("article-standfirst").textContent = data.standfirst;
+const articleContent = document.getElementById("article-content");
 
-            document.getElementById("article-content").innerHTML = data.content;
+try {
+
+    const design = JSON.parse(data.content);
+
+    articleContent.innerHTML = "";
+
+    design.forEach(item => {
+
+        const element = document.createElement("div");
+
+        element.className = "public-design-element";
+
+        element.style.position = "absolute";
+        element.style.left = item.left;
+        element.style.top = item.top;
+        element.style.width = item.width;
+        element.style.height = item.height;
+
+  if (item.type === "text") {
+    element.innerHTML = `
+        <p>${item.text || ""}</p>
+    `;
+}
+
+else if (item.type === "heading") {
+    element.innerHTML = `
+        <h2>${item.text || ""}</h2>
+    `;
+}
+
+else if (item.type === "quote") {
+    element.innerHTML = `
+        <blockquote>${item.text || ""}</blockquote>
+    `;
+}
+
+const contentElement = element.querySelector("p, h2, blockquote");
+
+if (contentElement) {
+
+    contentElement.style.textAlign = item.textAlign || "left";
+
+    if (item.fontSize) {
+        contentElement.style.fontSize = item.fontSize;
+    }
+
+    if (item.fontFamily) {
+        contentElement.style.fontFamily = item.fontFamily;
+    }
+
+    if (item.fontWeight) {
+        contentElement.style.fontWeight = item.fontWeight;
+    }
+
+    if (item.fontStyle) {
+        contentElement.style.fontStyle = item.fontStyle;
+    }
+
+    if (item.textDecoration) {
+        contentElement.style.textDecoration = item.textDecoration;
+    }
+
+    if (item.color) {
+        contentElement.style.color = item.color;
+    }
+
+}
+
+else if (item.type === "image") {
+    element.innerHTML = `
+        <img src="${item.image || ""}" alt="">
+    `;
+
+    const image = element.querySelector("img");
+
+    image.style.width = "100%";
+    image.style.height = "100%";
+    image.style.objectFit = "cover";
+}
+
+else if (item.type === "spacer") {
+            element.innerHTML = "";
+        }
+
+        articleContent.appendChild(element);
+
+    });
+
+} catch (error) {
+
+    // Old articles still use normal HTML
+    articleContent.innerHTML = data.content;
+
+}
 
             document.getElementById("article-image").src =
                 `${SUPABASE_URL}/storage/v1/object/public/article-images/${data.image_url}`;

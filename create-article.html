@@ -54,14 +54,14 @@
     <option value="people-in-fashion">People In Fashion</option>
     <option value="fashion-explained">Fashion Explained</option>
 </select>
-<label for="article-template">ARTICLE LAYOUT</label>
 
-<select id="article-template">
-    <option value="classic">Classic</option>
-    <option value="editorial">Editorial Split</option>
-    <option value="full-image">Full Image</option>
-    <option value="magazine">Magazine</option>
-    <option value="minimal">Minimal</option>
+
+
+<label for="homepage-placement">HOMEPAGE PLACEMENT</label>
+<select id="homepage-placement">
+    <option value="none">Don't feature on homepage</option>
+    <option value="main-showcase">Main Event</option>
+    <option value="new-trends">New Trends</option>
 </select>
 
 <label for="article-description">SEO DESCRIPTION</label>
@@ -97,38 +97,41 @@
     rows="4"
 ></textarea>
 
-<label for="article-content">ARTICLE CONTENT</label>
+<label>ARTICLE DESIGN</label>
 
-<div class="editor-toolbar">
+<div class="design-builder">
 
-    <button type="button" onclick="formatText('bold')">
-        B
-    </button>
+    <div class="design-toolbar">
 
-    <button type="button" onclick="formatText('italic')">
-        I
-    </button>
+        <button type="button" onclick="addElement('text')">
+            + TEXT
+        </button>
 
-    <button type="button" onclick="formatText('formatBlock', 'h2')">
-        H2
-    </button>
+        <button type="button" onclick="addElement('heading')">
+            + HEADING
+        </button>
 
-    <button type="button" onclick="formatText('formatBlock', 'p')">
-        P
-    </button>
+        <button type="button" onclick="addElement('image')">
+            + IMAGE
+        </button>
 
-    <button type="button" onclick="addLink()">
-        LINK
-    </button>
+        <button type="button" onclick="addElement('quote')">
+            + QUOTE
+        </button>
+        <button type="button" onclick="addElement('spacer')">
+    + SPACER
+</button>
 
-</div>
+    </div>
 
-<div
-    id="article-content"
-    class="article-editor"
-    contenteditable="true"
->
-    <p>Start writing your article here...</p>
+    <div id="design-canvas" class="design-canvas">
+
+        <div class="empty-design">
+            Add an element to start designing your article.
+        
+
+    </div>
+
 </div>
 </div>
 <div class="article-actions">
@@ -137,21 +140,7 @@
 </div>
     </main>
 
-    <script>
 
-function formatText(command, value = null) {
-    document.execCommand(command, false, value);
-}
-
-function addLink() {
-    const url = prompt("Enter the link:");
-    
-    if (url) {
-        document.execCommand("createLink", false, url);
-    }
-}
-
-</script>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -171,68 +160,13 @@ document.querySelector(".save-draft").addEventListener("click", async function()
 
     const title = document.getElementById("article-title").value;
     const standfirst = document.getElementById("article-standfirst").value;
-    const content = document.getElementById("article-content").innerHTML;
     const category = document.getElementById("article-category").value;
     const slug = document.getElementById("article-slug").value;
     const seoDescription = document.getElementById("article-description").value;
-    const layout = document.getElementById("article-template").value;
-const imageFile = document.getElementById("article-image").files[0];
-let imageUrl = null;
-if (imageFile) {
-
-    const fileName = Date.now() + "-" + imageFile.name;
-
-    const { data, error } = await supabaseClient
-        .storage
-        .from("article-images")
-        .upload(fileName, imageFile);
-
-    if (error) {
-        alert("Image upload failed.");
-        console.error(error);
-        return;
-    }
-
-    imageUrl = data.path;
-}
-   const { data, error } = await supabaseClient
-    .from("Articles")
-        .insert([
-            {
-                title: title,
-                standfirst: standfirst,
-                content: content,
-                category: category,
-                slug: slug,
-                seo_description: seoDescription,
-image_url: imageUrl,
-layout: layout,
-status: "draft"
-            }
-        ]);
-
- if (error) {
-    alert(error.message);
-    console.error(error);
-    return;
-}
-
-    alert("Draft saved!");
-});
-</script>
-
-<script>
-document.querySelector(".publish-article").addEventListener("click", async function() {
-
-    const title = document.getElementById("article-title").value;
-    const standfirst = document.getElementById("article-standfirst").value;
-    const content = document.getElementById("article-content").innerHTML;
-    const category = document.getElementById("article-category").value;
-    const slug = document.getElementById("article-slug").value;
-    const seoDescription = document.getElementById("article-description").value;
-    const layout = document.getElementById("article-template").value;
+    const homepagePlacement = document.getElementById("homepage-placement").value;
 
     const imageFile = document.getElementById("article-image").files[0];
+
     let imageUrl = null;
 
     if (imageFile) {
@@ -259,12 +193,89 @@ document.querySelector(".publish-article").addEventListener("click", async funct
             {
                 title: title,
                 standfirst: standfirst,
+                category: category,
+                slug: slug,
+                seo_description: seoDescription,
+                image_url: imageUrl,
+                content: getDesignData(),
+                homepage_placement: homepagePlacement,
+                status: "draft"
+            }
+        ]);
+
+    if (error) {
+        alert(error.message);
+        console.error(error);
+        return;
+    }
+
+    alert("Draft saved!");
+
+});
+</script>
+
+<script>
+document.querySelector(".publish-article").addEventListener("click", async function() {
+
+    const title = document.getElementById("article-title").value;
+    const standfirst = document.getElementById("article-standfirst").value;
+    
+    const category = document.getElementById("article-category").value;
+    const slug = document.getElementById("article-slug").value;
+    const seoDescription = document.getElementById("article-description").value;
+
+    const homepagePlacement = document.getElementById("homepage-placement").value;
+
+    const imageFile = document.getElementById("article-image").files[0];
+    let imageUrl = null;
+
+    if (imageFile) {
+
+        const fileName = Date.now() + "-" + imageFile.name;
+
+        const { data, error } = await supabaseClient
+            .storage
+            .from("article-images")
+            .upload(fileName, imageFile);
+
+        if (error) {
+            alert("Image upload failed.");
+            console.error(error);
+            return;
+        }
+
+        imageUrl = data.path;
+    }
+if (homepagePlacement === "main-showcase") {
+
+    await supabaseClient
+        .from("Articles")
+        .update({ homepage_placement: "none" })
+        .eq("homepage_placement", "main-showcase");
+
+}
+
+if (homepagePlacement === "new-trends") {
+
+    await supabaseClient
+        .from("Articles")
+        .update({ homepage_placement: "none" })
+        .eq("homepage_placement", "new-trends");
+
+}
+    const { data, error } = await supabaseClient
+        .from("Articles")
+        .insert([
+            {
+                title: title,
+                standfirst: standfirst,
                 content: content,
                 category: category,
                 slug: slug,
               seo_description: seoDescription,
 image_url: imageUrl,
-layout: layout,
+content: getDesignData(),
+homepage_placement: homepagePlacement,
 status: "published"
             }
         ]);
@@ -277,8 +288,544 @@ status: "published"
 
     alert("Article published!");
 });
-</script>
+function getDesignData() {
 
+    const elements = [];
+
+    document.querySelectorAll("#design-canvas .design-element").forEach(element => {
+
+        const type = element.dataset.type || "text";
+
+        const data = {
+            type: type,
+            left: element.style.left,
+            top: element.style.top,
+            width: element.style.width,
+            height: element.style.height
+        };
+
+        const input = element.querySelector("input, textarea");
+
+        if (input) {
+
+            data.text = input.value;
+
+            data.textAlign = input.style.textAlign || "left";
+
+            data.fontSize = input.style.fontSize || "";
+            data.fontFamily = input.style.fontFamily || "";
+            data.fontWeight = input.style.fontWeight || "";
+            data.fontStyle = input.style.fontStyle || "";
+            data.textDecoration = input.style.textDecoration || "";
+            data.color = input.style.color || "";
+
+        }
+
+       const image = element.querySelector("img");
+
+if (image) {
+    data.image = image.src;
+    data.imagePath = element.dataset.imagePath || "";
+}
+
+        elements.push(data);
+    });
+
+    return JSON.stringify(elements);
+}
+</script>
+<script>
+
+function addElement(type) {
+
+    const canvas = document.getElementById("design-canvas");
+
+    const emptyMessage = canvas.querySelector(".empty-design");
+
+    if (emptyMessage) {
+        emptyMessage.remove();
+    }
+
+  const element = document.createElement("div");
+  element.dataset.type = type;
+  
+
+element.classList.add("design-element");
+
+element.style.left = "50px";
+element.style.top = "50px";
+element.style.width = "400px";
+element.style.height = "250px";
+
+    if (type === "text") {
+
+ element.innerHTML =
+    `<textarea placeholder="Write your text..."></textarea>
+     <div class="resize-handle"></div>`;
+
+    }
+
+    if (type === "heading") {
+
+      element.innerHTML =
+    `<input type="text" placeholder="Enter heading...">
+     <div class="resize-handle"></div>`;
+
+    }
+
+    if (type === "quote") {
+element.innerHTML =
+    `<textarea placeholder="Enter quote..."></textarea>
+     <div class="resize-handle"></div>`;
+
+    }
+    if (type === "spacer") {
+element.classList.add("spacer-element");
+    element.style.backgroundColor = "transparent";
+    element.style.border = "1px dashed #aaa";
+    const fileInput = element.querySelector("input");
+
+fileInput.addEventListener("change", async function(event) {
+
+    const file = event.target.files[0];
+
+    if (!file) return;
+
+    const fileName =
+        `${Date.now()}-${file.name}`;
+
+    const { data, error } =
+        await supabaseClient
+            .storage
+            .from("article-images")
+            .upload(fileName, file);
+
+    if (error) {
+        console.error("Image upload failed:", error);
+        alert("Could not upload image.");
+        return;
+    }
+
+    element.dataset.imagePath = data.path;
+
+    const { data: publicUrlData } =
+        supabaseClient
+            .storage
+            .from("article-images")
+            .getPublicUrl(data.path);
+
+    element.innerHTML =
+        `<img src="${publicUrlData.publicUrl}" alt="">
+         <div class="resize-handle"></div>`;
+
+    const image = element.querySelector("img");
+
+    image.style.width = "100%";
+    image.style.height = "100%";
+    image.style.objectFit = "cover";
+
+    makeDraggable(element, canvas);
+
+});element.style.height = "100px";
+    element.style.width = "400px";
+
+    element.innerHTML =
+        `<div class="resize-handle"></div>`;
+
+}
+
+if (type === "image") {
+
+    element.innerHTML =
+        `<input type="file" accept="image/*">`;
+
+   
+
+}
+  canvas.appendChild(element);
+const controls = document.createElement("div");
+
+controls.className = "element-controls";
+
+controls.innerHTML = `
+    <button type="button" class="align-left">L</button>
+    <button type="button" class="align-center">C</button>
+    <button type="button" class="align-right">R</button>
+
+    <select class="font-size-control">
+        <option value="14px">14</option>
+        <option value="16px" selected>16</option>
+        <option value="20px">20</option>
+        <option value="24px">24</option>
+        <option value="32px">32</option>
+        <option value="48px">48</option>
+        <option value="64px">64</option>
+    </select>
+    <select class="font-family-control">
+    <option value="Arial">Arial</option>
+    <option value="Georgia">Georgia</option>
+    <option value="Times New Roman">Times New Roman</option>
+    <option value="Helvetica">Helvetica</option>
+    <option value="Courier New">Courier New</option>
+</select>
+<input type="color" class="text-color-control" value="#000000">
+<input type="color" class="background-color-control" value="#ffffff">
+<button type="button" class="bring-forward">↑</button>
+<button type="button" class="send-back">↓</button>
+<button type="button" class="duplicate-element">⧉</button>
+<button type="button" class="delete-element">×</button>
+`;
+const alignLeft = controls.querySelector(".align-left");
+const alignCenter = controls.querySelector(".align-center");
+const alignRight = controls.querySelector(".align-right");
+
+alignLeft.addEventListener("click", function(event) {
+    event.preventDefault();
+    event.stopPropagation();
+
+  element.querySelector("textarea, input").style.textAlign = "left";
+});
+
+alignCenter.addEventListener("click", function(event) {
+    event.preventDefault();
+    event.stopPropagation();
+
+   element.querySelector("textarea, input").style.textAlign = "center";
+});
+
+alignRight.addEventListener("click", function(event) {
+    event.preventDefault();
+    event.stopPropagation();
+
+   element.querySelector("textarea, input").style.textAlign = "right";
+});
+const fontSizeControl = controls.querySelector(".font-size-control");
+const fontFamilyControl = controls.querySelector(".font-family-control");
+const textColorControl = controls.querySelector(".text-color-control");
+const backgroundColorControl = controls.querySelector(".background-color-control");
+
+backgroundColorControl.addEventListener("input", function(event) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    element.style.backgroundColor = backgroundColorControl.value;
+});
+
+textColorControl.addEventListener("input", function(event) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    const content = element.querySelector("textarea, input");
+
+    if (content) {
+        content.style.color = textColorControl.value;
+    }
+});
+
+fontFamilyControl.addEventListener("change", function(event) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    const content = element.querySelector("textarea, input");
+
+    if (content) {
+        content.style.fontFamily = fontFamilyControl.value;
+    }
+});
+const boldButton = document.createElement("button");
+boldButton.type = "button";
+boldButton.textContent = "B";
+
+boldButton.addEventListener("click", function(event) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    const content = element.querySelector("textarea, input");
+
+    if (content) {
+        content.style.fontWeight =
+            content.style.fontWeight === "bold"
+                ? "normal"
+                : "bold";
+    }
+});
+
+controls.insertBefore(boldButton, fontSizeControl);
+const italicButton = document.createElement("button");
+italicButton.type = "button";
+italicButton.textContent = "I";
+
+italicButton.addEventListener("click", function(event) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    const content = element.querySelector("textarea, input");
+
+    if (content) {
+        content.style.fontStyle =
+            content.style.fontStyle === "italic"
+                ? "normal"
+                : "italic";
+    }
+});
+
+controls.insertBefore(italicButton, fontSizeControl);
+const underlineButton = document.createElement("button");
+underlineButton.type = "button";
+underlineButton.textContent = "U";
+
+underlineButton.addEventListener("click", function(event) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    const content = element.querySelector("textarea, input");
+
+    if (content) {
+        content.style.textDecoration =
+            content.style.textDecoration === "underline"
+                ? "none"
+                : "underline";
+    }
+});
+
+controls.insertBefore(underlineButton, fontSizeControl);
+
+fontSizeControl.addEventListener("change", function(event) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    const content = element.querySelector("textarea, input");
+
+    if (content) {
+        content.style.fontSize = fontSizeControl.value;
+    }
+});
+const bringForwardButton = controls.querySelector(".bring-forward");
+const sendBackButton = controls.querySelector(".send-back");
+bringForwardButton.addEventListener("click", function(event) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    element.style.zIndex = 9999;
+});
+sendBackButton.addEventListener("click", function(event) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    element.style.zIndex = 0;
+});
+const deleteButton = controls.querySelector(".delete-element");
+
+deleteButton.addEventListener("click", function(event) {
+
+    event.stopPropagation();
+
+    element.remove();
+
+});
+const duplicateButton = controls.querySelector(".duplicate-element");
+
+duplicateButton.addEventListener("click", function(event) {
+
+    event.preventDefault();
+    event.stopPropagation();
+
+    const clone = element.cloneNode(true);
+
+    clone.style.left =
+        (parseInt(element.style.left) + 30) + "px";
+
+    clone.style.top =
+        (parseInt(element.style.top) + 30) + "px";
+
+    canvas.appendChild(clone);
+
+    const clonedControls =
+        clone.querySelector(".element-controls");
+
+    const clonedDelete =
+        clonedControls.querySelector(".delete-element");
+
+    const clonedDuplicate =
+        clonedControls.querySelector(".duplicate-element");
+
+    clonedDelete.addEventListener("click", function(event) {
+
+        event.preventDefault();
+        event.stopPropagation();
+
+        clone.remove();
+
+    });
+
+    clonedDuplicate.addEventListener("click", function(event) {
+
+        event.preventDefault();
+        event.stopPropagation();
+
+        const secondClone = clone.cloneNode(true);
+
+        secondClone.style.left =
+            (parseInt(clone.style.left) + 30) + "px";
+
+        secondClone.style.top =
+            (parseInt(clone.style.top) + 30) + "px";
+
+        canvas.appendChild(secondClone);
+
+        makeDraggable(secondClone, canvas);
+
+    });
+
+    makeDraggable(clone, canvas);
+
+});
+
+element.appendChild(controls);
+
+canvas.appendChild(element);
+
+if (type !== "image") {
+    makeDraggable(element, canvas);
+}
+
+}
+
+function makeDraggable(element, canvas) {
+    
+
+    let isDragging = false;
+
+    let offsetX = 0;
+    let offsetY = 0;
+
+    const resizeHandle = element.querySelector(".resize-handle");
+
+if (resizeHandle) {
+
+    let isResizing = false;
+
+    resizeHandle.addEventListener("mousedown", function(event) {
+
+        event.preventDefault();
+        event.stopPropagation();
+
+        isResizing = true;
+
+        const startX = event.clientX;
+        const startY = event.clientY;
+
+        const startWidth = element.offsetWidth;
+        const startHeight = element.offsetHeight;
+
+        function resize(event) {
+
+            if (!isResizing) return;
+
+            const newWidth =
+                startWidth + (event.clientX - startX);
+
+            const newHeight =
+                startHeight + (event.clientY - startY);
+
+            element.style.width =
+                Math.max(120, newWidth) + "px";
+
+            element.style.height =
+                Math.max(50, newHeight) + "px";
+        }
+
+        function stopResize() {
+
+            isResizing = false;
+
+            document.removeEventListener("mousemove", resize);
+            document.removeEventListener("mouseup", stopResize);
+        }
+
+        document.addEventListener("mousemove", resize);
+        document.addEventListener("mouseup", stopResize);
+
+    });
+}
+
+
+    element.addEventListener("mousedown", function(event) {
+
+      if (
+    event.target.closest(".element-controls") ||
+    event.target.tagName === "INPUT" ||
+    event.target.tagName === "TEXTAREA" ||
+    event.target.tagName === "SELECT" ||
+    event.target.tagName === "BUTTON"
+) {
+    return;
+}
+
+        isDragging = true;
+
+        const elementRect = element.getBoundingClientRect();
+
+        offsetX = event.clientX - elementRect.left;
+        offsetY = event.clientY - elementRect.top;
+
+        element.style.zIndex = 1000;
+
+    });
+
+
+    document.addEventListener("mousemove", function(event) {
+
+        if (!isDragging) return;
+
+        const canvasRect = canvas.getBoundingClientRect();
+
+        let newLeft =
+            event.clientX - canvasRect.left - offsetX;
+
+        let newTop =
+            event.clientY - canvasRect.top - offsetY;
+
+
+        const maxLeft =
+            canvas.clientWidth - element.offsetWidth;
+
+        const maxTop =
+            canvas.clientHeight - element.offsetHeight;
+
+
+        newLeft = Math.max(
+            0,
+            Math.min(newLeft, maxLeft)
+        );
+
+        newTop = Math.max(
+            0,
+            Math.min(newTop, maxTop)
+        );
+
+
+        element.style.left = newLeft + "px";
+        element.style.top = newTop + "px";
+
+    });
+
+
+    document.addEventListener("mouseup", function() {
+
+        if (isDragging) {
+
+            isDragging = false;
+
+            element.style.zIndex = "";
+
+        }
+
+    });
+
+}
+
+</script>
 </body>
 
 </html>

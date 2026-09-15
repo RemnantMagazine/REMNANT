@@ -16,37 +16,10 @@
 
   <a href="account.html" class="login-link" id="login-link">LOGIN</a>
 </nav>
-<section class="featured-article">
-
-    <img src="images/Paris_Fashion_Week.jpg" alt="Paris Fashion Week">
-
-    <div class="article-content">
-        <h1>PARIS FASHION WEEK S/S27</h1>
-
-        <p class="standfirst">
-            As Paris Fashion Week 2026 draws closer and a new generation of creative directors emerges, old questions are being exposed. How far can fashion houses evolve before their histories become unrecognisable?
-        </p>
-
-        <a href="Fashionweek.html" class="read-more">READ MORE</a>
-    </div>
-
+<section class="featured-article" id="main-showcase">
 </section>
-<section class="second-article">
 
-    <div class="second-image">
-        <img src="images/animal-print.jpg" alt="Animal print fashion">
-    </div>
-
-    <div class="second-content">
-        <h2>Is Animal Print in Style for Winter 2026? The Prints to Know</h2>
-
-        <p class="standfirst">
-            Animal print, the timeless trend that won't stop coming back. From representing a cliché or a frowned-upon tacky costume, animal print has never accepted the ideology of moving on. Today, the stylised pattern strides back into fashion as a symbol of confidence and self-expression. In the present day, animal print is not seen as a microtrend, but as a maximalist print that returns to the runway almost every season. 
-        </p>
-
-        <a href="animalprint.html" class="read-more">READ MORE</a>
-    </div>
-
+<section class="second-article" id="new-trends">
 </section>
 <section class="coming-soon">
 
@@ -107,25 +80,92 @@ async function loadArticles() {
     const { data, error } = await supabaseClient
         .from("Articles")
         .select("*")
-        .eq("status", "published")
-        .order("created_at", { ascending: false });
+        .eq("status", "published");
 
     if (error) {
         console.error("Could not load articles:", error);
         return;
     }
 
+    // MAIN SHOWCASE
+    const mainArticle = data.find(
+        article => article.homepage_placement === "main-showcase"
+    );
+
+    const mainContainer = document.getElementById("main-showcase");
+
+    if (mainArticle) {
+        mainContainer.innerHTML = `
+            <img src="${SUPABASE_URL}/storage/v1/object/public/article-images/${mainArticle.image_url}" 
+                 alt="${mainArticle.title}">
+
+            <div class="article-content">
+                <h1>${mainArticle.title}</h1>
+
+                <p class="standfirst">
+                    ${mainArticle.standfirst}
+                </p>
+
+                <a href="article.html?slug=${mainArticle.slug}" class="read-more">
+                    READ MORE
+                </a>
+            </div>
+        `;
+    }
+
+
+    // NEW TRENDS
+    const trendsArticle = data.find(
+        article => article.homepage_placement === "new-trends"
+    );
+
+    const trendsContainer = document.getElementById("new-trends");
+
+    if (trendsArticle) {
+        trendsContainer.innerHTML = `
+            <div class="second-image">
+                <img src="${SUPABASE_URL}/storage/v1/object/public/article-images/${trendsArticle.image_url}" 
+                     alt="${trendsArticle.title}">
+            </div>
+
+            <div class="second-content">
+                <h2>${trendsArticle.title}</h2>
+
+                <p class="standfirst">
+                    ${trendsArticle.standfirst}
+                </p>
+
+                <a href="article.html?slug=${trendsArticle.slug}" class="read-more">
+                    READ MORE
+                </a>
+            </div>
+        `;
+    }
+
+
+    // COMING SOON
     const container = document.getElementById("coming-articles");
 
-    data.forEach(article => {
+    const comingArticles = data.filter(
+        article =>
+            article.homepage_placement !== "main-showcase" &&
+            article.homepage_placement !== "new-trends"
+    );
+
+    comingArticles.forEach(article => {
 
         const card = document.createElement("article");
         card.className = "coming-card";
 
         card.innerHTML = `
-  <img src="${SUPABASE_URL}/storage/v1/object/public/article-images/${article.image_url}" alt="${article.title}">
+            <img src="${SUPABASE_URL}/storage/v1/object/public/article-images/${article.image_url}" 
+                 alt="${article.title}">
+
             <h3>${article.title}</h3>
-<a href="article.html?slug=${article.slug}" class="read-more">READ MORE</a>
+
+            <a href="article.html?slug=${article.slug}" class="read-more">
+                READ MORE
+            </a>
         `;
 
         container.appendChild(card);
