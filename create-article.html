@@ -14,7 +14,20 @@
 .design-builder{margin-top:30px!important;width:100%!important}
 .design-toolbar{display:flex!important;gap:8px!important;flex-wrap:wrap!important;padding:14px!important;background:#111!important;border-radius:10px 10px 0 0!important}
 .design-toolbar button{background:#fff!important;color:#000!important;border:0!important;padding:11px 16px!important;border-radius:4px!important;font-family:"Space Grotesk",sans-serif!important;font-size:12px!important;font-weight:700!important;cursor:pointer!important}
-.design-canvas{position:relative!important;width:100%!important;height:1100px!important;min-height:1100px!important;margin:0!important;padding:0!important;background-color:#fafafa!important;background-image:linear-gradient(#e5e5e5 1px,transparent 1px),linear-gradient(90deg,#e5e5e5 1px,transparent 1px)!important;background-size:25px 25px!important;border:2px solid #111!important;border-top:0!important;overflow:hidden!important}
+.design-canvas{
+    position:relative!important;
+    width:100%!important;
+height:850px;
+min-height:850px;
+    margin:0!important;
+    padding:0!important;
+    background-color:#fafafa!important;
+    background-image:linear-gradient(#e5e5e5 1px,transparent 1px),linear-gradient(90deg,#e5e5e5 1px,transparent 1px)!important;
+    background-size:25px 25px!important;
+    border:2px solid #111!important;
+    border-top:0!important;
+    overflow:visible!important;
+}
 .empty-design{position:absolute!important;top:50%!important;left:50%!important;transform:translate(-50%,-50%)!important;width:300px!important;padding:30px!important;border:2px dashed #aaa!important;background:#fff!important;color:#777!important;text-align:center!important;font-family:"Space Grotesk",sans-serif!important;font-size:12px!important;z-index:0!important}
 .design-element{position:absolute!important;min-width:120px!important;min-height:60px!important;padding:18px!important;background:#fff!important;border:2px solid #111!important;border-radius:0!important;box-sizing:border-box!important;cursor:grab!important;box-shadow:5px 5px 0 #ddd!important;overflow:visible!important;user-select:none!important}
 .design-element:active{cursor:grabbing!important}
@@ -159,6 +172,38 @@ const supabaseClient = window.supabase.createClient(
     SUPABASE_URL,
     SUPABASE_KEY
 );
+
+function updateCanvasHeight() {
+
+    const canvas = document.getElementById("design-canvas");
+
+    if (!canvas) return;
+
+    let requiredHeight = 850;
+
+    const elements =
+        canvas.querySelectorAll(".design-element");
+
+    elements.forEach(function(element) {
+
+        const top =
+            parseFloat(element.style.top) || 0;
+
+        const height =
+            element.offsetHeight || 0;
+
+        const bottom =
+            top + height + 100;
+
+        if (bottom > requiredHeight) {
+            requiredHeight = bottom;
+        }
+
+    });
+
+    canvas.style.height = requiredHeight + "px";
+    canvas.style.minHeight = requiredHeight + "px";
+}
 
 
 /* =========================================================
@@ -317,9 +362,11 @@ function addElement(type, savedData = null) {
         `;
     }
 
-    selectElement(element);
+   selectElement(element);
 
-    return element;
+updateCanvasHeight();
+
+return element;
 }
 
 
@@ -637,54 +684,148 @@ function attachElementEvents(element) {
 ========================================================= */
 
 function startDrag(event, element) {
+
     event.preventDefault();
+
     const startX = event.clientX;
     const startY = event.clientY;
-    const startLeft = parseFloat(element.style.left) || 0;
-    const startTop = parseFloat(element.style.top) || 0;
+
+    const startLeft =
+        parseFloat(element.style.left) || 0;
+
+    const startTop =
+        parseFloat(element.style.top) || 0;
+
 
     function move(e) {
-        let left = startLeft + (e.clientX - startX);
-        let top = startTop + (e.clientY - startY);
-        const maxLeft = canvas.clientWidth - element.offsetWidth;
-        const maxTop = canvas.clientHeight - element.offsetHeight;
-        left = Math.max(0, Math.min(left, maxLeft));
-        top = Math.max(0, Math.min(top, maxTop));
-        element.style.left = left + "px";
-        element.style.top = top + "px";
+
+        let left =
+            startLeft + (e.clientX - startX);
+
+        let top =
+            startTop + (e.clientY - startY);
+
+
+        const maxLeft =
+            canvas.clientWidth - element.offsetWidth;
+
+
+        left =
+            Math.max(
+                0,
+                Math.min(left, maxLeft)
+            );
+
+
+        top =
+            Math.max(0, top);
+
+
+        element.style.left =
+            left + "px";
+
+        element.style.top =
+            top + "px";
+
+
+        updateCanvasHeight();
     }
+
 
     function stop() {
-        document.removeEventListener("mousemove", move);
-        document.removeEventListener("mouseup", stop);
-    }
-    document.addEventListener("mousemove", move);
-    document.addEventListener("mouseup", stop);
-}
 
+        document.removeEventListener(
+            "mousemove",
+            move
+        );
+
+        document.removeEventListener(
+            "mouseup",
+            stop
+        );
+
+        updateCanvasHeight();
+    }
+
+
+    document.addEventListener(
+        "mousemove",
+        move
+    );
+
+    document.addEventListener(
+        "mouseup",
+        stop
+    );
+}
 
 /* =========================================================
    RESIZING
 ========================================================= */
 
 function startResize(event, element) {
+
     const startX = event.clientX;
     const startY = event.clientY;
-    const startWidth = element.offsetWidth;
-    const startHeight = element.offsetHeight;
+
+    const startWidth =
+        element.offsetWidth;
+
+    const startHeight =
+        element.offsetHeight;
+
 
     function resize(e) {
-        const width = Math.max(120, startWidth + e.clientX - startX);
-        const height = Math.max(60, startHeight + e.clientY - startY);
-        element.style.width = width + "px";
-        element.style.height = height + "px";
+
+        const width =
+            Math.max(
+                120,
+                startWidth + e.clientX - startX
+            );
+
+        const height =
+            Math.max(
+                60,
+                startHeight + e.clientY - startY
+            );
+
+
+        element.style.width =
+            width + "px";
+
+        element.style.height =
+            height + "px";
+
+
+        updateCanvasHeight();
     }
+
+
     function stop() {
-        document.removeEventListener("mousemove", resize);
-        document.removeEventListener("mouseup", stop);
+
+        document.removeEventListener(
+            "mousemove",
+            resize
+        );
+
+        document.removeEventListener(
+            "mouseup",
+            stop
+        );
+
+        updateCanvasHeight();
     }
-    document.addEventListener("mousemove", resize);
-    document.addEventListener("mouseup", stop);
+
+
+    document.addEventListener(
+        "mousemove",
+        resize
+    );
+
+    document.addEventListener(
+        "mouseup",
+        stop
+    );
 }
 
 

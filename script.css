@@ -1262,9 +1262,13 @@ footer {
 }
 
 .dynamic-article {
+
     max-width: 1000px;
-    margin: 160px auto 120px;
+
+    margin: 40px auto 120px;
+
     padding: 0 40px;
+
 }
 
 .dynamic-article #article-image {
@@ -2190,13 +2194,8 @@ footer {
     position: relative;
     width: 100%;
     min-height: 850px;
-    padding: 30px;
-    background: #f3f3f3;
-    border: 1px solid #d5d5d5;
-    border-top: none;
-    border-radius: 0 0 10px 10px;
-    box-sizing: border-box;
-    overflow: auto;
+    height: auto;
+    overflow: visible;
 }
 
 

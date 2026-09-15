@@ -8,6 +8,36 @@
     <title>Edit Article | Remnant</title>
 
     <link rel="stylesheet" href="script.css">
+    <style>
+.design-canvas{
+    position:relative!important;
+    width:100%!important;
+    height:850px;
+    min-height:850px;
+    margin:0!important;
+    padding:0!important;
+    background-color:#fafafa!important;
+    background-image:linear-gradient(#e5e5e5 1px,transparent 1px),linear-gradient(90deg,#e5e5e5 1px,transparent 1px)!important;
+    background-size:25px 25px!important;
+    border:2px solid #111!important;
+    border-top:0!important;
+    overflow:visible!important;
+}
+
+.design-element{
+    position:absolute!important;
+    min-width:120px!important;
+    min-height:60px!important;
+    box-sizing:border-box!important;
+}
+
+.element-controls{
+    position:absolute!important;
+    top:-55px!important;
+    left:0!important;
+    z-index:99999!important;
+}
+</style>
 </head>
 
 <body>
@@ -112,6 +142,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <script>
+        
 
         const SUPABASE_URL = "https://ghnjdfmnsmoiqdilsxzn.supabase.co";
 
@@ -120,8 +151,43 @@
         const supabaseClient = window.supabase.createClient(
             SUPABASE_URL,
             SUPABASE_KEY
+            
         );
+function updateCanvasHeight() {
 
+    const canvas =
+        document.getElementById("design-canvas");
+
+    if (!canvas) return;
+
+    let requiredHeight = 850;
+
+    const elements =
+        canvas.querySelectorAll(".design-element");
+
+    elements.forEach(function(element) {
+
+        const top =
+            parseFloat(element.style.top) || 0;
+
+        const height =
+            element.offsetHeight || 0;
+
+        const bottom =
+            top + height + 100;
+
+        if (bottom > requiredHeight) {
+            requiredHeight = bottom;
+        }
+
+    });
+
+    canvas.style.height =
+        requiredHeight + "px";
+
+    canvas.style.minHeight =
+        requiredHeight + "px";
+}
 
 
 /* =========================================
@@ -773,8 +839,11 @@ function makeDraggable(element, canvas) {
 
                 isResizing = true;
 
-                const startX = event.clientX;
-                const startY = event.clientY;
+                const startX =
+                    event.clientX;
+
+                const startY =
+                    event.clientY;
 
                 const startWidth =
                     element.offsetWidth;
@@ -796,11 +865,18 @@ function makeDraggable(element, canvas) {
                         (event.clientY - startY);
 
                     element.style.width =
-                        Math.max(120, newWidth) + "px";
+                        Math.max(
+                            120,
+                            newWidth
+                        ) + "px";
 
                     element.style.height =
-                        Math.max(50, newHeight) + "px";
+                        Math.max(
+                            50,
+                            newHeight
+                        ) + "px";
 
+                    updateCanvasHeight();
                 }
 
 
@@ -818,6 +894,7 @@ function makeDraggable(element, canvas) {
                         stopResize
                     );
 
+                    updateCanvasHeight();
                 }
 
 
@@ -875,8 +952,10 @@ function makeDraggable(element, canvas) {
 
         if (!isDragging) return;
 
+
         const canvasRect =
             canvas.getBoundingClientRect();
+
 
         let newLeft =
             event.clientX -
@@ -888,25 +967,28 @@ function makeDraggable(element, canvas) {
             canvasRect.top -
             offsetY;
 
+
         const maxLeft =
             canvas.clientWidth -
             element.offsetWidth;
 
-        const maxTop =
-            canvas.clientHeight -
-            element.offsetHeight;
 
         newLeft =
             Math.max(
                 0,
-                Math.min(newLeft, maxLeft)
+                Math.min(
+                    newLeft,
+                    maxLeft
+                )
             );
+
 
         newTop =
             Math.max(
                 0,
-                Math.min(newTop, maxTop)
+                newTop
             );
+
 
         element.style.left =
             newLeft + "px";
@@ -914,12 +996,17 @@ function makeDraggable(element, canvas) {
         element.style.top =
             newTop + "px";
 
+
+        updateCanvasHeight();
+
     }
 
 
     function stopMoving() {
 
         isDragging = false;
+
+        updateCanvasHeight();
 
     }
 
@@ -935,7 +1022,6 @@ function makeDraggable(element, canvas) {
     );
 
 }
-
 
 /* =========================================
    GET DESIGN DATA
@@ -1167,7 +1253,9 @@ async function saveChanges() {
 }
 
 
-loadArticle();
+loadArticle().then(function() {
+    updateCanvasHeight();
+});
 
 document
     .getElementById("save-changes")
@@ -1175,7 +1263,6 @@ document
         "click",
         saveChanges
     );
-
 </script>
 
 </body>
