@@ -14,7 +14,9 @@
         <a href="FashionExplained.html">Fashion Explained</a>
     </div>
 
-  <a href="account.html" class="login-link" id="login-link">LOGIN</a>
+<div class="account-links">
+    <a href="account.html" class="login-link" id="login-link">LOGIN</a>
+</div>
 </nav>
 <section class="featured-article" id="main-showcase">
 </section>
@@ -28,6 +30,23 @@
     <div class="coming-scroll" id="coming-articles">
 
 </div>
+<section class="member-section">
+
+    <div class="member-content">
+
+        <h2>BECOME A MEMBER</h2>
+
+        <p>
+            Sign up with your email address to receive news and updates, and comment on posts!
+        </p>
+
+        <a href="create-account.html" class="member-button">
+            CREATE ACCOUNT
+        </a>
+
+    </div>
+
+</section>
 
 
 
@@ -56,22 +75,32 @@
 
     async function updateLoginLink() {
 
-        const loginLink = document.getElementById("login-link");
+    const loginLink = document.getElementById("login-link");
 
-        const { data: { user } } =
-            await supabaseClient.auth.getUser();
+    const { data: { user } } =
+        await supabaseClient.auth.getUser();
 
-        if (user) {
+    if (user) {
 
-            const name = user.user_metadata?.name;
+        const name = user.user_metadata?.name;
 
-            if (name) {
-                loginLink.textContent = name;
-            }
+        if (name) {
+            loginLink.textContent = name;
+        }
+
+        if (user.id === "02a09814-bc5a-4b56-81f6-6033176a243f") {
+
+const createLink = document.createElement("a");
+createLink.href = "create-article.html";
+createLink.textContent = "CREATE";
+createLink.className = "create-link";
+
+document.querySelector(".account-links").appendChild(createLink);
         }
     }
+}
 
-    updateLoginLink();
+updateLoginLink();
 </script>
 
 <script>

@@ -33,12 +33,19 @@
 
         <h1>YOUR ACCOUNT</h1>
 
-        <div class="account-details">
+     <div class="account-detail">
+    <span>NAME</span>
 
-            <div class="account-detail">
-                <span>NAME</span>
-                <p id="account-name">Loading...</p>
-            </div>
+    <input
+        type="text"
+        id="account-name"
+        placeholder="Enter your name"
+    >
+
+    <button id="save-name-button">
+        SAVE NAME
+    </button>
+</div>
 
             <div class="account-detail">
                 <span>EMAIL</span>
@@ -100,9 +107,8 @@ async function loadAccount() {
     }
 
     const user = session.user;
-
-    document.getElementById("account-name").textContent =
-        user.user_metadata?.name || "No name added";
+document.getElementById("account-name").value =
+    user.user_metadata?.name || "";
 
     document.getElementById("account-email").textContent =
         user.email;
@@ -111,6 +117,30 @@ async function loadAccount() {
 
 
 loadAccount();
+document.getElementById("save-name-button").addEventListener("click", async function() {
+
+    const name = document.getElementById("account-name").value.trim();
+    const message = document.getElementById("account-message");
+
+    if (!name) {
+        message.textContent = "Please enter a name.";
+        return;
+    }
+
+    const { error } = await supabaseClient.auth.updateUser({
+        data: {
+            name: name
+        }
+    });
+
+    if (error) {
+        message.textContent = error.message;
+        return;
+    }
+
+    message.textContent = "Name updated successfully.";
+
+});
 
 
 document.getElementById("logout-button").addEventListener("click", async function() {

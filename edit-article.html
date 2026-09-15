@@ -47,14 +47,7 @@
             <option value="fashion-explained">Fashion Explained</option>
         </select>
         
-<label for="article-template">ARTICLE LAYOUT</label>
-<select id="article-template">
-    <option value="classic">Classic</option>
-    <option value="editorial">Editorial Split</option>
-    <option value="full-image">Full Image</option>
-    <option value="magazine">Magazine</option>
-    <option value="minimal">Minimal</option>
-</select>
+
 
 
         <label for="article-description">SEO DESCRIPTION</label>
@@ -75,18 +68,36 @@
         <label for="article-standfirst">STANDFIRST</label>
         <textarea id="article-standfirst" rows="4"></textarea>
 
+<label>ARTICLE DESIGN</label>
 
-        <label for="article-content">ARTICLE CONTENT</label>
+<div class="design-builder">
 
-        <div class="editor-toolbar">
-            <button type="button" onclick="formatText('bold')">B</button>
-            <button type="button" onclick="formatText('italic')">I</button>
-            <button type="button" onclick="formatText('formatBlock', 'h2')">H2</button>
-            <button type="button" onclick="formatText('formatBlock', 'p')">P</button>
-            <button type="button" onclick="addLink()">LINK</button>
-        </div>
+    <div class="design-toolbar">
 
-        <div id="article-content" class="article-editor" contenteditable="true"></div>
+        <button type="button" onclick="addElement('text')">
+            + TEXT
+        </button>
+
+        <button type="button" onclick="addElement('heading')">
+            + HEADING
+        </button>
+
+        <button type="button" onclick="addElement('image')">
+            + IMAGE
+        </button>
+
+        <button type="button" onclick="addElement('quote')">
+            + QUOTE
+        </button>
+        <button type="button" onclick="addElement('spacer')">
+    + SPACER
+</button>
+
+    </div>
+
+    <div id="design-canvas" class="design-canvas"></div>
+
+</div>
 
 
         <div class="article-actions">
@@ -112,137 +123,1061 @@
         );
 
 
-        function formatText(command, value = null) {
-            document.execCommand(command, false, value);
-        }
 
+/* =========================================
+   LOAD ARTICLE
+========================================= */
 
-        function addLink() {
+async function loadArticle() {
 
-            const url = prompt("Enter the link:");
-
-            if (url) {
-                document.execCommand("createLink", false, url);
-            }
-
-        }
-
-
-        async function loadArticle() {
-
-            const params = new URLSearchParams(window.location.search);
-
-            const id = params.get("id");
-
-
-            const { data, error } = await supabaseClient
-                .from("Articles")
-                .select("*")
-                .eq("id", id)
-                .single();
-
-
-            if (error) {
-
-                console.error("Could not load article:", error);
-
-                alert("Could not load article.");
-
-                return;
-
-            }
-
-
-            document.getElementById("article-title").value = data.title || "";
-
-            document.getElementById("article-category").value = data.category || "fashion-news";
-            document.getElementById("article-template").value = data.layout || "classic";
-
-            document.getElementById("article-description").value = data.seo_description || "";
-
-            document.getElementById("article-slug").value = data.slug || "";
-
-            document.getElementById("article-status").value = data.status || "draft";
-
-            document.getElementById("article-standfirst").value = data.standfirst || "";
-
-            document.getElementById("article-content").innerHTML = data.content || "";
-
-        }
-
-    async function saveChanges() {
     const params = new URLSearchParams(window.location.search);
     const id = params.get("id");
 
-    const title = document.getElementById("article-title").value;
-    const standfirst = document.getElementById("article-standfirst").value;
-    const content = document.getElementById("article-content").innerHTML;
-    const category = document.getElementById("article-category").value;
-    const slug = document.getElementById("article-slug").value;
-    const seoDescription = document.getElementById("article-description").value;
-    const status = document.getElementById("article-status").value;
-    const layout = document.getElementById("article-template").value;
-    const imageFile = document.getElementById("article-image").files[0];
-
-    let imageUrl = null;
-
-    // Upload a new image if one was selected
-    if (imageFile) {
-        const fileName = Date.now() + "-" + imageFile.name;
-
-        const { data, error } = await supabaseClient
-            .storage
-            .from("article-images")
-            .upload(fileName, imageFile);
-
-        if (error) {
-            console.error("Image upload failed:", error);
-            alert("Image upload failed.");
-            return;
-        }
-
-        imageUrl = data.path;
-    }
-
-const updates = {
-    title: title,
-    standfirst: standfirst,
-    content: content,
-    category: category,
-    slug: slug,
-    seo_description: seoDescription,
-    status: status,
-    layout: layout
-};
-
-    // Only change the image if a new one was selected
-    if (imageUrl) {
-        updates.image_url = imageUrl;
-    }
-
-    const { error } = await supabaseClient
-        .from("Articles")
-        .update(updates)
-        .eq("id", id);
-
-    if (error) {
-        console.error("Could not save changes:", error);
-        alert(error.message);
+    if (!id) {
+        alert("No article selected.");
         return;
     }
 
-    alert("Article updated!");
+    const { data, error } = await supabaseClient
+        .from("Articles")
+        .select("*")
+        .eq("id", id)
+        .single();
+
+    if (error) {
+        console.error("Could not load article:", error);
+        alert("Could not load article.");
+        return;
+    }
+
+    document.getElementById("article-title").value =
+        data.title || "";
+
+    document.getElementById("article-category").value =
+        data.category || "fashion-news";
+
+    document.getElementById("article-description").value =
+        data.seo_description || "";
+
+    document.getElementById("article-slug").value =
+        data.slug || "";
+
+    document.getElementById("article-status").value =
+        data.status || "draft";
+
+    document.getElementById("article-standfirst").value =
+        data.standfirst || "";
+
+    const canvas = document.getElementById("design-canvas");
+
+    canvas.innerHTML = "";
+
+    try {
+
+        const design = JSON.parse(data.content || "[]");
+
+        design.forEach(item => {
+            createElementFromData(item);
+        });
+
+    } catch (error) {
+
+        console.error("Could not load article design:", error);
+
+    }
 }
 
 
-        document
-            .getElementById("save-changes")
-            .addEventListener("click", saveChanges);
+/* =========================================
+   CREATE ELEMENT FROM SAVED DATA
+========================================= */
+
+function createElementFromData(item) {
+
+    const canvas = document.getElementById("design-canvas");
+
+    const element = document.createElement("div");
+
+    element.classList.add("design-element");
+
+    element.dataset.type = item.type || "text";
+
+    element.style.left = item.left || "50px";
+    element.style.top = item.top || "50px";
+    element.style.width = item.width || "400px";
+    element.style.height = item.height || "250px";
 
 
-        loadArticle();
+    if (item.type === "text") {
 
-    </script>
+        element.innerHTML = `
+            <textarea placeholder="Write your text..."></textarea>
+            <div class="resize-handle"></div>
+        `;
+
+    }
+
+
+    else if (item.type === "heading") {
+
+        element.innerHTML = `
+            <input type="text" placeholder="Enter heading...">
+            <div class="resize-handle"></div>
+        `;
+
+    }
+
+
+    else if (item.type === "quote") {
+
+        element.innerHTML = `
+            <textarea placeholder="Enter quote..."></textarea>
+            <div class="resize-handle"></div>
+        `;
+
+    }
+
+
+    else if (item.type === "spacer") {
+
+        element.classList.add("spacer-element");
+
+        element.style.backgroundColor =
+            item.backgroundColor || "transparent";
+
+        element.style.border =
+            item.border || "1px dashed #aaa";
+
+        element.innerHTML = `
+            <div class="resize-handle"></div>
+        `;
+
+    }
+
+
+    else if (item.type === "image") {
+
+        element.innerHTML = `
+            <img src="${item.image || ""}" alt="">
+            <div class="resize-handle"></div>
+        `;
+
+        element.dataset.imagePath =
+            item.imagePath || "";
+
+        const image = element.querySelector("img");
+
+        image.style.width = "100%";
+        image.style.height = "100%";
+        image.style.objectFit = "cover";
+
+    }
+
+
+    const content =
+        element.querySelector("textarea, input[type='text']");
+
+    if (content) {
+
+        content.value = item.text || "";
+
+        content.style.textAlign =
+            item.textAlign || "left";
+
+        content.style.fontSize =
+            item.fontSize || "16px";
+
+        content.style.fontFamily =
+            item.fontFamily || "Arial";
+
+        content.style.fontWeight =
+            item.fontWeight || "normal";
+
+        content.style.fontStyle =
+            item.fontStyle || "normal";
+
+        content.style.textDecoration =
+            item.textDecoration || "none";
+
+        content.style.color =
+            item.color || "#000000";
+    }
+
+
+    canvas.appendChild(element);
+
+    addControls(element, canvas);
+
+    makeDraggable(element, canvas);
+}
+
+
+/* =========================================
+   ADD NEW ELEMENT
+========================================= */
+
+function addElement(type) {
+
+    const canvas = document.getElementById("design-canvas");
+
+    const emptyMessage =
+        canvas.querySelector(".empty-design");
+
+    if (emptyMessage) {
+        emptyMessage.remove();
+    }
+
+    const element = document.createElement("div");
+
+    element.classList.add("design-element");
+
+    element.dataset.type = type;
+
+    element.style.left = "50px";
+    element.style.top = "50px";
+    element.style.width = "400px";
+    element.style.height = "250px";
+
+
+    if (type === "text") {
+
+        element.innerHTML = `
+            <textarea placeholder="Write your text..."></textarea>
+            <div class="resize-handle"></div>
+        `;
+
+    }
+
+
+    else if (type === "heading") {
+
+        element.innerHTML = `
+            <input type="text" placeholder="Enter heading...">
+            <div class="resize-handle"></div>
+        `;
+
+    }
+
+
+    else if (type === "quote") {
+
+        element.innerHTML = `
+            <textarea placeholder="Enter quote..."></textarea>
+            <div class="resize-handle"></div>
+        `;
+
+    }
+
+
+    else if (type === "spacer") {
+
+        element.classList.add("spacer-element");
+
+        element.style.height = "100px";
+        element.style.width = "400px";
+
+        element.innerHTML = `
+            <div class="resize-handle"></div>
+        `;
+
+    }
+
+
+    else if (type === "image") {
+
+        element.innerHTML = `
+            <input type="file" accept="image/*">
+            <div class="resize-handle"></div>
+        `;
+
+        const fileInput =
+            element.querySelector("input[type='file']");
+
+        fileInput.addEventListener("change", async function(event) {
+
+            const file = event.target.files[0];
+
+            if (!file) return;
+
+            const fileName =
+                `${Date.now()}-${file.name}`;
+
+            const { data, error } =
+                await supabaseClient
+                    .storage
+                    .from("article-images")
+                    .upload(fileName, file);
+
+            if (error) {
+
+                console.error("Image upload failed:", error);
+
+                alert("Could not upload image.");
+
+                return;
+            }
+
+            element.dataset.imagePath =
+                data.path;
+
+            const { data: publicUrlData } =
+                supabaseClient
+                    .storage
+                    .from("article-images")
+                    .getPublicUrl(data.path);
+
+            element.innerHTML = `
+                <img src="${publicUrlData.publicUrl}" alt="">
+                <div class="resize-handle"></div>
+            `;
+
+            const image =
+                element.querySelector("img");
+
+            image.style.width = "100%";
+            image.style.height = "100%";
+            image.style.objectFit = "cover";
+
+            addControls(element, canvas);
+
+            makeDraggable(element, canvas);
+
+        });
+
+    }
+
+
+    canvas.appendChild(element);
+
+    addControls(element, canvas);
+
+    makeDraggable(element, canvas);
+}
+
+
+/* =========================================
+   CONTROLS
+========================================= */
+
+function addControls(element, canvas) {
+
+    const oldControls =
+        element.querySelector(".element-controls");
+
+    if (oldControls) {
+        oldControls.remove();
+    }
+
+    const controls = document.createElement("div");
+
+    controls.className = "element-controls";
+
+    controls.innerHTML = `
+        <button type="button" class="align-left">L</button>
+        <button type="button" class="align-center">C</button>
+        <button type="button" class="align-right">R</button>
+
+        <button type="button" class="bold-button">B</button>
+        <button type="button" class="italic-button">I</button>
+        <button type="button" class="underline-button">U</button>
+
+        <select class="font-size-control">
+            <option value="14px">14</option>
+            <option value="16px" selected>16</option>
+            <option value="20px">20</option>
+            <option value="24px">24</option>
+            <option value="32px">32</option>
+            <option value="48px">48</option>
+            <option value="64px">64</option>
+        </select>
+
+        <select class="font-family-control">
+            <option value="Arial">Arial</option>
+            <option value="Georgia">Georgia</option>
+            <option value="Times New Roman">Times New Roman</option>
+            <option value="Helvetica">Helvetica</option>
+            <option value="Courier New">Courier New</option>
+        </select>
+
+        <input type="color"
+               class="text-color-control"
+               value="#000000">
+
+        <input type="color"
+               class="background-color-control"
+               value="#ffffff">
+
+        <button type="button" class="bring-forward">↑</button>
+        <button type="button" class="send-back">↓</button>
+        <button type="button" class="duplicate-element">⧉</button>
+        <button type="button" class="delete-element">×</button>
+    `;
+
+
+    function getContent() {
+
+        return element.querySelector(
+            "textarea, input[type='text']"
+        );
+
+    }
+
+
+    controls.querySelector(".align-left")
+        .addEventListener("click", function(event) {
+
+            event.preventDefault();
+            event.stopPropagation();
+
+            const content = getContent();
+
+            if (content) {
+                content.style.textAlign = "left";
+            }
+
+        });
+
+
+    controls.querySelector(".align-center")
+        .addEventListener("click", function(event) {
+
+            event.preventDefault();
+            event.stopPropagation();
+
+            const content = getContent();
+
+            if (content) {
+                content.style.textAlign = "center";
+            }
+
+        });
+
+
+    controls.querySelector(".align-right")
+        .addEventListener("click", function(event) {
+
+            event.preventDefault();
+            event.stopPropagation();
+
+            const content = getContent();
+
+            if (content) {
+                content.style.textAlign = "right";
+            }
+
+        });
+
+
+    controls.querySelector(".bold-button")
+        .addEventListener("click", function(event) {
+
+            event.preventDefault();
+            event.stopPropagation();
+
+            const content = getContent();
+
+            if (content) {
+
+                content.style.fontWeight =
+                    content.style.fontWeight === "bold"
+                        ? "normal"
+                        : "bold";
+
+            }
+
+        });
+
+
+    controls.querySelector(".italic-button")
+        .addEventListener("click", function(event) {
+
+            event.preventDefault();
+            event.stopPropagation();
+
+            const content = getContent();
+
+            if (content) {
+
+                content.style.fontStyle =
+                    content.style.fontStyle === "italic"
+                        ? "normal"
+                        : "italic";
+
+            }
+
+        });
+
+
+    controls.querySelector(".underline-button")
+        .addEventListener("click", function(event) {
+
+            event.preventDefault();
+            event.stopPropagation();
+
+            const content = getContent();
+
+            if (content) {
+
+                content.style.textDecoration =
+                    content.style.textDecoration === "underline"
+                        ? "none"
+                        : "underline";
+
+            }
+
+        });
+
+
+    controls.querySelector(".font-size-control")
+        .addEventListener("change", function(event) {
+
+            event.preventDefault();
+            event.stopPropagation();
+
+            const content = getContent();
+
+            if (content) {
+                content.style.fontSize = this.value;
+            }
+
+        });
+
+
+    controls.querySelector(".font-family-control")
+        .addEventListener("change", function(event) {
+
+            event.preventDefault();
+            event.stopPropagation();
+
+            const content = getContent();
+
+            if (content) {
+                content.style.fontFamily = this.value;
+            }
+
+        });
+
+
+    controls.querySelector(".text-color-control")
+        .addEventListener("input", function(event) {
+
+            event.preventDefault();
+            event.stopPropagation();
+
+            const content = getContent();
+
+            if (content) {
+                content.style.color = this.value;
+            }
+
+        });
+
+
+    controls.querySelector(".background-color-control")
+        .addEventListener("input", function(event) {
+
+            event.preventDefault();
+            event.stopPropagation();
+
+            element.style.backgroundColor = this.value;
+
+        });
+
+
+    controls.querySelector(".bring-forward")
+        .addEventListener("click", function(event) {
+
+            event.preventDefault();
+            event.stopPropagation();
+
+            element.style.zIndex = 9999;
+
+        });
+
+
+    controls.querySelector(".send-back")
+        .addEventListener("click", function(event) {
+
+            event.preventDefault();
+            event.stopPropagation();
+
+            element.style.zIndex = 0;
+
+        });
+
+
+    controls.querySelector(".delete-element")
+        .addEventListener("click", function(event) {
+
+            event.preventDefault();
+            event.stopPropagation();
+
+            element.remove();
+
+        });
+
+
+    controls.querySelector(".duplicate-element")
+        .addEventListener("click", function(event) {
+
+            event.preventDefault();
+            event.stopPropagation();
+
+            const clone =
+                element.cloneNode(true);
+
+            clone.style.left =
+                (parseInt(element.style.left) + 30) + "px";
+
+            clone.style.top =
+                (parseInt(element.style.top) + 30) + "px";
+
+            canvas.appendChild(clone);
+
+            addControls(clone, canvas);
+
+            makeDraggable(clone, canvas);
+
+        });
+
+
+    element.appendChild(controls);
+}
+
+
+/* =========================================
+   DRAG + RESIZE
+========================================= */
+
+function makeDraggable(element, canvas) {
+
+    let isDragging = false;
+
+    let offsetX = 0;
+    let offsetY = 0;
+
+
+    const resizeHandle =
+        element.querySelector(".resize-handle");
+
+
+    if (resizeHandle) {
+
+        let isResizing = false;
+
+        resizeHandle.addEventListener(
+            "mousedown",
+            function(event) {
+
+                event.preventDefault();
+                event.stopPropagation();
+
+                isResizing = true;
+
+                const startX = event.clientX;
+                const startY = event.clientY;
+
+                const startWidth =
+                    element.offsetWidth;
+
+                const startHeight =
+                    element.offsetHeight;
+
+
+                function resize(event) {
+
+                    if (!isResizing) return;
+
+                    const newWidth =
+                        startWidth +
+                        (event.clientX - startX);
+
+                    const newHeight =
+                        startHeight +
+                        (event.clientY - startY);
+
+                    element.style.width =
+                        Math.max(120, newWidth) + "px";
+
+                    element.style.height =
+                        Math.max(50, newHeight) + "px";
+
+                }
+
+
+                function stopResize() {
+
+                    isResizing = false;
+
+                    document.removeEventListener(
+                        "mousemove",
+                        resize
+                    );
+
+                    document.removeEventListener(
+                        "mouseup",
+                        stopResize
+                    );
+
+                }
+
+
+                document.addEventListener(
+                    "mousemove",
+                    resize
+                );
+
+                document.addEventListener(
+                    "mouseup",
+                    stopResize
+                );
+
+            }
+        );
+
+    }
+
+
+    element.addEventListener(
+        "mousedown",
+        function(event) {
+
+            if (
+                event.target.closest(".element-controls") ||
+                event.target.tagName === "INPUT" ||
+                event.target.tagName === "TEXTAREA" ||
+                event.target.tagName === "SELECT" ||
+                event.target.tagName === "BUTTON"
+            ) {
+                return;
+            }
+
+
+            isDragging = true;
+
+
+            const elementRect =
+                element.getBoundingClientRect();
+
+
+            offsetX =
+                event.clientX -
+                elementRect.left;
+
+            offsetY =
+                event.clientY -
+                elementRect.top;
+
+        }
+    );
+
+
+    function move(event) {
+
+        if (!isDragging) return;
+
+        const canvasRect =
+            canvas.getBoundingClientRect();
+
+        let newLeft =
+            event.clientX -
+            canvasRect.left -
+            offsetX;
+
+        let newTop =
+            event.clientY -
+            canvasRect.top -
+            offsetY;
+
+        const maxLeft =
+            canvas.clientWidth -
+            element.offsetWidth;
+
+        const maxTop =
+            canvas.clientHeight -
+            element.offsetHeight;
+
+        newLeft =
+            Math.max(
+                0,
+                Math.min(newLeft, maxLeft)
+            );
+
+        newTop =
+            Math.max(
+                0,
+                Math.min(newTop, maxTop)
+            );
+
+        element.style.left =
+            newLeft + "px";
+
+        element.style.top =
+            newTop + "px";
+
+    }
+
+
+    function stopMoving() {
+
+        isDragging = false;
+
+    }
+
+
+    document.addEventListener(
+        "mousemove",
+        move
+    );
+
+    document.addEventListener(
+        "mouseup",
+        stopMoving
+    );
+
+}
+
+
+/* =========================================
+   GET DESIGN DATA
+========================================= */
+
+function getDesignData() {
+
+    const elements = [];
+
+    document
+        .querySelectorAll(
+            "#design-canvas .design-element"
+        )
+        .forEach(element => {
+
+            const data = {
+
+                type:
+                    element.dataset.type || "text",
+
+                left:
+                    element.style.left,
+
+                top:
+                    element.style.top,
+
+                width:
+                    element.style.width,
+
+                height:
+                    element.style.height,
+
+                backgroundColor:
+                    element.style.backgroundColor || "",
+
+                border:
+                    element.style.border || ""
+
+            };
+
+
+            const input =
+                element.querySelector(
+                    "textarea, input[type='text']"
+                );
+
+
+            if (input) {
+
+                data.text =
+                    input.value;
+
+                data.textAlign =
+                    input.style.textAlign || "left";
+
+                data.fontSize =
+                    input.style.fontSize || "";
+
+                data.fontFamily =
+                    input.style.fontFamily || "";
+
+                data.fontWeight =
+                    input.style.fontWeight || "";
+
+                data.fontStyle =
+                    input.style.fontStyle || "";
+
+                data.textDecoration =
+                    input.style.textDecoration || "";
+
+                data.color =
+                    input.style.color || "";
+
+            }
+
+
+            const image =
+                element.querySelector("img");
+
+
+            if (image) {
+
+                data.image =
+                    image.src;
+
+                data.imagePath =
+                    element.dataset.imagePath || "";
+
+            }
+
+
+            elements.push(data);
+
+        });
+
+
+    return JSON.stringify(elements);
+
+}
+
+
+/* =========================================
+   SAVE CHANGES
+========================================= */
+
+async function saveChanges() {
+
+    const params =
+        new URLSearchParams(
+            window.location.search
+        );
+
+    const id =
+        params.get("id");
+
+
+    if (!id) {
+
+        alert("No article selected.");
+
+        return;
+
+    }
+
+
+    const updates = {
+
+        title:
+            document.getElementById(
+                "article-title"
+            ).value,
+
+        standfirst:
+            document.getElementById(
+                "article-standfirst"
+            ).value,
+
+        content:
+            getDesignData(),
+
+        category:
+            document.getElementById(
+                "article-category"
+            ).value,
+
+        slug:
+            document.getElementById(
+                "article-slug"
+            ).value,
+
+        seo_description:
+            document.getElementById(
+                "article-description"
+            ).value,
+
+        status:
+            document.getElementById(
+                "article-status"
+            ).value
+
+    };
+
+
+    const imageFile =
+        document.getElementById(
+            "article-image"
+        ).files[0];
+
+
+    if (imageFile) {
+
+        const fileName =
+            `${Date.now()}-${imageFile.name}`;
+
+
+        const { data, error } =
+            await supabaseClient
+                .storage
+                .from("article-images")
+                .upload(
+                    fileName,
+                    imageFile
+                );
+
+
+        if (error) {
+
+            console.error(
+                "Image upload failed:",
+                error
+            );
+
+            alert("Image upload failed.");
+
+            return;
+
+        }
+
+
+        updates.image_url =
+            data.path;
+
+    }
+
+
+    const { error } =
+        await supabaseClient
+            .from("Articles")
+            .update(updates)
+            .eq("id", id);
+
+
+    if (error) {
+
+        console.error(
+            "Could not save changes:",
+            error
+        );
+
+        alert(error.message);
+
+        return;
+
+    }
+
+
+    alert("Article updated!");
+
+}
+
+
+loadArticle();
+
+document
+    .getElementById("save-changes")
+    .addEventListener(
+        "click",
+        saveChanges
+    );
+
+</script>
 
 </body>
 </html>
