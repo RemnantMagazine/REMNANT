@@ -153,6 +153,11 @@
             SUPABASE_KEY
             
         );
+        const GRID_SIZE = 25;
+
+function snapToGrid(value) {
+    return Math.round(value / GRID_SIZE) * GRID_SIZE;
+}
 function updateCanvasHeight() {
 
     const canvas =
@@ -245,6 +250,7 @@ async function loadArticle() {
         design.forEach(item => {
             createElementFromData(item);
         });
+        updateCanvasHeight();
 
     } catch (error) {
 
@@ -816,19 +822,15 @@ function addControls(element, canvas) {
 
 function makeDraggable(element, canvas) {
 
-    let isDragging = false;
-
-    let offsetX = 0;
-    let offsetY = 0;
-
-
     const resizeHandle =
         element.querySelector(".resize-handle");
 
 
-    if (resizeHandle) {
+    /* =========================================
+       RESIZE
+    ========================================= */
 
-        let isResizing = false;
+    if (resizeHandle) {
 
         resizeHandle.addEventListener(
             "mousedown",
@@ -837,13 +839,8 @@ function makeDraggable(element, canvas) {
                 event.preventDefault();
                 event.stopPropagation();
 
-                isResizing = true;
-
-                const startX =
-                    event.clientX;
-
-                const startY =
-                    event.clientY;
+                const startX = event.clientX;
+                const startY = event.clientY;
 
                 const startWidth =
                     element.offsetWidth;
@@ -854,35 +851,41 @@ function makeDraggable(element, canvas) {
 
                 function resize(event) {
 
-                    if (!isResizing) return;
-
-                    const newWidth =
+                    const rawWidth =
                         startWidth +
                         (event.clientX - startX);
 
-                    const newHeight =
+                    const rawHeight =
                         startHeight +
                         (event.clientY - startY);
 
-                    element.style.width =
+
+                    const newWidth =
                         Math.max(
                             120,
-                            newWidth
-                        ) + "px";
+                            snapToGrid(rawWidth)
+                        );
 
-                    element.style.height =
+                    const newHeight =
                         Math.max(
                             50,
-                            newHeight
-                        ) + "px";
+                            snapToGrid(rawHeight)
+                        );
+
+
+                    element.style.width =
+                        newWidth + "px";
+
+                    element.style.height =
+                        newHeight + "px";
+
 
                     updateCanvasHeight();
+
                 }
 
 
                 function stopResize() {
-
-                    isResizing = false;
 
                     document.removeEventListener(
                         "mousemove",
@@ -895,6 +898,7 @@ function makeDraggable(element, canvas) {
                     );
 
                     updateCanvasHeight();
+
                 }
 
 
@@ -914,115 +918,146 @@ function makeDraggable(element, canvas) {
     }
 
 
+    /* =========================================
+       DRAG
+    ========================================= */
+
     element.addEventListener(
         "mousedown",
         function(event) {
 
             if (
                 event.target.closest(".element-controls") ||
-                event.target.tagName === "INPUT" ||
-                event.target.tagName === "TEXTAREA" ||
-                event.target.tagName === "SELECT" ||
-                event.target.tagName === "BUTTON"
+                event.target.closest(".resize-handle") ||
+                event.target.closest("input") ||
+                event.target.closest("textarea") ||
+                event.target.closest("select") ||
+                event.target.closest("button")
             ) {
                 return;
             }
 
 
-            isDragging = true;
-
+            const canvasRect =
+                canvas.getBoundingClientRect();
 
             const elementRect =
                 element.getBoundingClientRect();
 
 
-            offsetX =
-                event.clientX -
-                elementRect.left;
+            const startMouseX =
+                event.clientX;
 
-            offsetY =
-                event.clientY -
-                elementRect.top;
+            const startMouseY =
+                event.clientY;
+
+            const startLeft =
+                elementRect.left -
+                canvasRect.left;
+
+            const startTop =
+                elementRect.top -
+                canvasRect.top;
+
+
+            function move(event) {
+
+                const mouseDifferenceX =
+                    event.clientX -
+                    startMouseX;
+
+                const mouseDifferenceY =
+                    event.clientY -
+                    startMouseY;
+
+
+                const rawLeft =
+                    startLeft +
+                    mouseDifferenceX;
+
+                const rawTop =
+                    startTop +
+                    mouseDifferenceY;
+
+
+                /* SNAP POSITION TO 25PX GRID */
+
+                let newLeft =
+                    snapToGrid(rawLeft);
+
+                let newTop =
+                    snapToGrid(rawTop);
+
+
+                /* KEEP INSIDE CANVAS HORIZONTALLY */
+
+                const maxLeft =
+                    canvas.clientWidth -
+                    element.offsetWidth;
+
+
+                newLeft =
+                    Math.max(
+                        0,
+                        Math.min(
+                            newLeft,
+                            snapToGrid(maxLeft)
+                        )
+                    );
+
+
+                /* ALLOW ARTICLE TO GROW DOWNWARDS */
+
+                newTop =
+                    Math.max(
+                        0,
+                        newTop
+                    );
+
+
+                element.style.left =
+                    newLeft + "px";
+
+                element.style.top =
+                    newTop + "px";
+
+
+                updateCanvasHeight();
+
+            }
+
+
+            function stopMoving() {
+
+                document.removeEventListener(
+                    "mousemove",
+                    move
+                );
+
+                document.removeEventListener(
+                    "mouseup",
+                    stopMoving
+                );
+
+                updateCanvasHeight();
+
+            }
+
+
+            document.addEventListener(
+                "mousemove",
+                move
+            );
+
+            document.addEventListener(
+                "mouseup",
+                stopMoving
+            );
 
         }
     );
 
-
-    function move(event) {
-
-        if (!isDragging) return;
-
-
-        const canvasRect =
-            canvas.getBoundingClientRect();
-
-
-        let newLeft =
-            event.clientX -
-            canvasRect.left -
-            offsetX;
-
-        let newTop =
-            event.clientY -
-            canvasRect.top -
-            offsetY;
-
-
-        const maxLeft =
-            canvas.clientWidth -
-            element.offsetWidth;
-
-
-        newLeft =
-            Math.max(
-                0,
-                Math.min(
-                    newLeft,
-                    maxLeft
-                )
-            );
-
-
-        newTop =
-            Math.max(
-                0,
-                newTop
-            );
-
-
-        element.style.left =
-            newLeft + "px";
-
-        element.style.top =
-            newTop + "px";
-
-
-        updateCanvasHeight();
-
-    }
-
-
-    function stopMoving() {
-
-        isDragging = false;
-
-        updateCanvasHeight();
-
-    }
-
-
-    document.addEventListener(
-        "mousemove",
-        move
-    );
-
-    document.addEventListener(
-        "mouseup",
-        stopMoving
-    );
-
 }
-
 /* =========================================
    GET DESIGN DATA
 ========================================= */
@@ -1263,7 +1298,23 @@ document
         "click",
         saveChanges
     );
+    
 </script>
+<style>
 
+.design-toolbar {
+    position: sticky !important;
+    top: 15px !important;
+    z-index: 100000 !important;
+
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    background: #111;
+    padding: 12px;
+    box-sizing: border-box;
+}
+</style>
 </body>
 </html>
