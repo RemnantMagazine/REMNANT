@@ -1,68 +1,89 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>Remnant</title>
-
     <link rel="stylesheet" href="script.css">
+
     <style>
-    /* VISUAL ARTICLE DESIGN */
+        /* VERTICAL ARTICLE BLOCKS */
 
-    #article-content {
-        position: relative !important;
-        width: 100% !important;
-        min-height: 1200px;
-        margin: 0 !important;
-        padding: 0 !important;
-        overflow: visible !important;
-    }
+        #article-content {
+            width: 100%;
+            margin: 0;
+            padding: 0;
+        }
 
-    .public-design-element {
-        box-sizing: border-box;
-        position: absolute;
-        margin: 0;
-        padding: 0;
-    }
+        .public-block {
+            width: 100%;
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
-    .public-design-element p,
-    .public-design-element h2,
-    .public-design-element blockquote {
-        margin: 0;
-        padding: 0;
-    }
+        .public-block-text,
+        .public-block-heading,
+        .public-block-quote {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            box-sizing: border-box;
+        }
 
-    .public-design-element img {
-        display: block;
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-    }
+        .public-block-text {
+            font-family: "Space Grotesk", sans-serif;
+            font-size: 16px;
+            line-height: 1.6;
+        }
 
-    /* Don't let the old article layout interfere */
-    .dynamic-article > #article-title,
-    .dynamic-article > #article-standfirst {
-        display: none !important;
-    }
-</style>
+        .public-block-heading {
+            font-family: "Archivo Black", sans-serif;
+            font-size: 36px;
+            line-height: 1.05;
+        }
+
+        .public-block-quote {
+            font-family: Georgia, serif;
+            font-size: 24px;
+            line-height: 1.4;
+            font-style: italic;
+        }
+
+        .public-block-image {
+            display: block;
+            width: 100%;
+            height: auto;
+            max-height: 800px;
+            object-fit: cover;
+            margin: 0;
+        }
+
+        .public-block-spacer {
+            width: 100%;
+            display: block;
+        }
+
+        .dynamic-article > #article-title,
+        .dynamic-article > #article-standfirst {
+            display: none !important;
+        }
+    </style>
 </head>
 
 <body>
 
-   
-    <nav>
-        <a href="index.html" class="logo">REMNANT</a>
+<nav>
+    <a href="index.html" class="logo">REMNANT</a>
 
-        <div class="NavLinks">
-            <a href="FashionNew.html">Fashion News</a>
-            <a href="PeopleInFashion.html">People In Fashion</a>
-            <a href="FashionExplained.html">Fashion Explained</a>
-        </div>
+    <div class="NavLinks">
+        <a href="FashionNew.html">Fashion News</a>
+        <a href="PeopleInFashion.html">People In Fashion</a>
+        <a href="FashionExplained.html">Fashion Explained</a>
+    </div>
 
-       <a href="account.html" class="login-link" id="login-link">LOGIN</a>
-    </nav>
+    <a href="account.html" class="login-link" id="login-link">LOGIN</a>
+</nav>
 
 <main class="dynamic-article" id="article-page">
 
@@ -74,35 +95,38 @@
 
     <section class="comments-section">
 
-    <h2>COMMENTS</h2>
+        <h2>COMMENTS</h2>
 
-    <div id="comments-list"></div>
+        <div id="comments-list"></div>
 
-    <div id="comment-form-container">
-        <textarea
-            id="comment-input"
-            placeholder="Write a comment..."
-            rows="4">
-        </textarea>
+        <div id="comment-form-container">
+            <textarea
+                id="comment-input"
+                placeholder="Write a comment..."
+                rows="4"></textarea>
 
-        <button id="comment-submit">
-            POST COMMENT
-        </button>
-    </div>
+            <button id="comment-submit">
+                POST COMMENT
+            </button>
+        </div>
 
-    <p id="comment-message"></p>
+        <p id="comment-message"></p>
 
-</section>
-    </main>
+    </section>
 
+</main>
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-    <script>
-    const SUPABASE_URL = "https://ghnjdfmnsmoiqdilsxzn.supabase.co";
-    const SUPABASE_KEY = "sb_publishable_bh-ZnMGseMcTzemZMq8QVQ_5mEXim9w";
+<script>
+const SUPABASE_URL = "https://ghnjdfmnsmoiqdilsxzn.supabase.co";
 
-   const supabaseClient = window.supabase.createClient(
+/*
+    Paste your existing Supabase publishable key here.
+*/
+const SUPABASE_KEY = "sb_publishable_bh-ZnMGseMcTzemZMq8QVQ_5mEXim9w";
+
+const supabaseClient = window.supabase.createClient(
     SUPABASE_URL,
     SUPABASE_KEY,
     {
@@ -114,264 +138,339 @@
     }
 );
 
-    async function updateLoginLink() {
 
-        const loginLink = document.getElementById("login-link");
+/* LOGIN */
 
-        const { data: { user } } =
-            await supabaseClient.auth.getUser();
+async function updateLoginLink() {
 
-        if (user) {
+    const loginLink = document.getElementById("login-link");
 
-            const name = user.user_metadata?.name;
+    const {
+        data: { user }
+    } = await supabaseClient.auth.getUser();
 
-            if (name) {
-                loginLink.textContent = name;
-            }
+    if (user) {
+
+        const name = user.user_metadata?.name;
+
+        if (name) {
+            loginLink.textContent = name;
         }
     }
-
-    updateLoginLink();
-
-
-
-        async function loadArticle() {
-
-            const params = new URLSearchParams(window.location.search);
-
-            const slug = params.get("slug");
-
-
-            const { data, error } = await supabaseClient
-                .from("Articles")
-                .select("*")
-                .eq("slug", slug)
-                .eq("status", "published")
-                .single();
-
-
-            if (error) {
-                console.error("Could not load article:", error);
-                return;
-            }
-
-
-            document.title = data.title;
-            document.getElementById("article-page").classList.add(`layout-${data.layout || "classic"}`);
-
-            document.getElementById("article-title").textContent = data.title;
-
-            document.getElementById("article-standfirst").textContent = data.standfirst;
-const articleContent = document.getElementById("article-content");
-
-try {
-
-    const design = JSON.parse(data.content);
-
-    if (Array.isArray(design) && design.length > 0) {
-
-        articleContent.innerHTML = "";
-
-        let canvasHeight = 1200;
-
-        design.forEach(item => {
-
-            const element = document.createElement("div");
-
-            element.className = "public-design-element";
-
-            element.style.position = "absolute";
-            element.style.left = item.left || "0px";
-            element.style.top = item.top || "0px";
-            element.style.width = item.width || "300px";
-            element.style.height = item.height || "100px";
-            element.style.zIndex = item.zIndex || "1";
-
-            /* TEXT */
-            if (item.type === "text") {
-
-                element.innerHTML = `
-                    <p>${item.text || ""}</p>
-                `;
-
-            }
-
-            /* HEADING */
-            else if (item.type === "heading") {
-
-                element.innerHTML = `
-                    <h2>${item.text || ""}</h2>
-                `;
-
-            }
-
-            /* QUOTE */
-            else if (item.type === "quote") {
-
-                element.innerHTML = `
-                    <blockquote>${item.text || ""}</blockquote>
-                `;
-
-            }
-
-            /* IMAGE */
-            else if (item.type === "image") {
-
-                element.innerHTML = `
-                    <img src="${item.image || ""}" alt="">
-                `;
-
-            }
-
-            /* SPACER */
-            else if (item.type === "spacer") {
-
-                element.innerHTML = "";
-
-            }
-
-
-            /* APPLY SAVED TEXT STYLING */
-
-            const contentElement =
-                element.querySelector("p, h2, blockquote");
-
-            if (contentElement) {
-
-                contentElement.style.textAlign =
-                    item.textAlign || "left";
-
-                if (item.fontSize) {
-                    contentElement.style.fontSize =
-                        item.fontSize;
-                }
-
-                if (item.fontFamily) {
-                    contentElement.style.fontFamily =
-                        item.fontFamily;
-                }
-
-                if (item.fontWeight) {
-                    contentElement.style.fontWeight =
-                        item.fontWeight;
-                }
-
-                if (item.fontStyle) {
-                    contentElement.style.fontStyle =
-                        item.fontStyle;
-                }
-
-                if (item.textDecoration) {
-                    contentElement.style.textDecoration =
-                        item.textDecoration;
-                }
-
-                if (item.color) {
-                    contentElement.style.color =
-                        item.color;
-                }
-
-            }
-
-
-            articleContent.appendChild(element);
-
-
-            /* Make canvas tall enough for every element */
-
-            const top =
-                parseFloat(item.top) || 0;
-
-            const height =
-                parseFloat(item.height) || 0;
-
-            canvasHeight =
-                Math.max(
-                    canvasHeight,
-                    top + height + 100
-                );
-
-        });
-
-
-        articleContent.style.minHeight =
-            canvasHeight + "px";
-
-        articleContent.style.height =
-            canvasHeight + "px";
-
-
-    } else {
-
-        articleContent.innerHTML = data.content || "";
-
-    }
-
-} catch (error) {
-
-    console.error("Could not load visual article design:", error);
-
-    /* Old articles still use normal HTML */
-    articleContent.innerHTML = data.content || "";
-
 }
 
-
-    document.getElementById("article-image").alt = data.title;
-
-loadComments(data.id);
-
-}
-
-        
+updateLoginLink();
 
 
-        loadArticle();
+/* LOAD ARTICLE */
 
-        // COMMENTS
-async function loadComments(articleId) {
+async function loadArticle() {
 
-    const commentsList = document.getElementById("comments-list");
+    const params = new URLSearchParams(window.location.search);
+    const slug = params.get("slug");
 
-    const { data, error } = await supabaseClient
-        .from("comments")
-        .select("id, user_name, content, created_at, user_id")
-        .eq("article_id", articleId)
-        .order("created_at", { ascending: true });
-
-    if (error) {
-        console.error("Error loading comments:", error);
+    if (!slug) {
+        console.error("No article slug found.");
         return;
     }
 
+    const {
+        data,
+        error
+    } = await supabaseClient
+        .from("Articles")
+        .select("*")
+        .eq("slug", slug)
+        .eq("status", "published")
+        .single();
+
+    if (error) {
+        console.error("Could not load article:", error);
+        return;
+    }
+
+
+    document.title = data.title;
+
+    document.getElementById("article-title").textContent =
+        data.title;
+
+    document.getElementById("article-standfirst").textContent =
+        data.standfirst || "";
+
+
+    const articleContent =
+        document.getElementById("article-content");
+
+
+    /*
+        NEW VERTICAL BLOCK FORMAT
+
+        Each item saved by the block editor becomes
+        one block underneath the previous block.
+    */
+
+    try {
+
+        const design = JSON.parse(data.content);
+
+        if (Array.isArray(design) && design.length > 0) {
+
+            articleContent.innerHTML = "";
+
+
+            design.forEach(function(item) {
+
+                const block =
+                    document.createElement("div");
+
+                block.className = "public-block";
+
+
+                /* TEXT */
+
+                if (item.type === "text") {
+
+                    const text =
+                        document.createElement("div");
+
+                    text.className =
+                        "public-block-text";
+
+                    text.innerHTML =
+                        item.text || "";
+
+                    applyTextStyles(text, item);
+
+                    block.appendChild(text);
+                }
+
+
+                /* HEADING */
+
+                else if (item.type === "heading") {
+
+                    const heading =
+                        document.createElement("h2");
+
+                    heading.className =
+                        "public-block-heading";
+
+                    heading.innerHTML =
+                        item.text || "";
+
+                    applyTextStyles(heading, item);
+
+                    block.appendChild(heading);
+                }
+
+
+                /* QUOTE */
+
+                else if (item.type === "quote") {
+
+                    const quote =
+                        document.createElement("blockquote");
+
+                    quote.className =
+                        "public-block-quote";
+
+                    quote.innerHTML =
+                        item.text || "";
+
+                    applyTextStyles(quote, item);
+
+                    block.appendChild(quote);
+                }
+
+
+                /* IMAGE */
+
+                else if (item.type === "image") {
+
+                    if (item.image) {
+
+                        const image =
+                            document.createElement("img");
+
+                        image.className =
+                            "public-block-image";
+
+                        image.src = item.image;
+
+                        image.alt = data.title || "";
+
+                        block.appendChild(image);
+                    }
+                }
+
+
+                /* SPACER */
+
+                else if (item.type === "spacer") {
+
+                    const spacer =
+                        document.createElement("div");
+
+                    spacer.className =
+                        "public-block-spacer";
+
+                    const spacing =
+                        item.spacing || "50px";
+
+                    spacer.style.height =
+                        spacing;
+
+                    block.appendChild(spacer);
+                }
+
+
+                articleContent.appendChild(block);
+
+            });
+
+        } else {
+
+            /*
+                FALLBACK FOR OLDER ARTICLES
+            */
+
+            articleContent.innerHTML =
+                data.content || "";
+
+        }
+
+    } catch (error) {
+
+        console.error(
+            "Could not load article blocks:",
+            error
+        );
+
+        /*
+            FALLBACK FOR OLDER ARTICLES
+        */
+
+        articleContent.innerHTML =
+            data.content || "";
+    }
+
+
+    loadComments(data.id);
+}
+
+
+/* APPLY SAVED TEXT FORMATTING */
+
+function applyTextStyles(element, item) {
+
+    element.style.textAlign =
+        item.textAlign || "left";
+
+    if (item.fontSize) {
+        element.style.fontSize =
+            item.fontSize;
+    }
+
+    if (item.fontFamily) {
+        element.style.fontFamily =
+            item.fontFamily;
+    }
+
+    if (item.fontWeight) {
+        element.style.fontWeight =
+            item.fontWeight;
+    }
+
+    if (item.fontStyle) {
+        element.style.fontStyle =
+            item.fontStyle;
+    }
+
+    if (item.textDecoration) {
+        element.style.textDecoration =
+            item.textDecoration;
+    }
+
+    if (item.color) {
+        element.style.color =
+            item.color;
+    }
+}
+
+
+loadArticle();
+
+
+/* COMMENTS */
+
+async function loadComments(articleId) {
+
+    const commentsList =
+        document.getElementById("comments-list");
+
+    const {
+        data,
+        error
+    } = await supabaseClient
+        .from("comments")
+        .select(
+            "id, user_name, content, created_at, user_id"
+        )
+        .eq("article_id", articleId)
+        .order("created_at", {
+            ascending: true
+        });
+
+    if (error) {
+
+        console.error(
+            "Error loading comments:",
+            error
+        );
+
+        return;
+    }
+
+
     commentsList.innerHTML = "";
 
+
     if (data.length === 0) {
+
         commentsList.innerHTML = `
             <p class="no-comments">
                 No comments yet. Be the first to comment.
             </p>
         `;
+
         return;
     }
+
 
     const {
         data: { session }
     } = await supabaseClient.auth.getSession();
 
-    data.forEach(comment => {
 
-        const date = new Date(comment.created_at).toLocaleDateString(
-            "en-GB",
-            {
-                day: "numeric",
-                month: "long",
-                year: "numeric"
-            }
-        );
+    data.forEach(function(comment) {
+
+        const date =
+            new Date(comment.created_at)
+                .toLocaleDateString(
+                    "en-GB",
+                    {
+                        day: "numeric",
+                        month: "long",
+                        year: "numeric"
+                    }
+                );
+
 
         const canDelete =
-            session && session.user.id === comment.user_id;
+            session &&
+            session.user.id === comment.user_id;
+
 
         commentsList.innerHTML += `
             <div class="comment">
@@ -402,103 +501,173 @@ async function loadComments(articleId) {
     });
 
 
-    document.querySelectorAll(".delete-comment").forEach(button => {
+    document
+        .querySelectorAll(".delete-comment")
+        .forEach(function(button) {
 
-        button.addEventListener("click", async function() {
+            button.addEventListener(
+                "click",
+                async function() {
 
-            const commentId = this.dataset.id;
+                    const commentId =
+                        this.dataset.id;
 
-            const confirmed = confirm(
-                "Are you sure you want to delete this comment?"
+                    const confirmed =
+                        confirm(
+                            "Are you sure you want to delete this comment?"
+                        );
+
+                    if (!confirmed) {
+                        return;
+                    }
+
+
+                    const {
+                        error
+                    } = await supabaseClient
+                        .from("comments")
+                        .delete()
+                        .eq("id", commentId);
+
+
+                    if (error) {
+
+                        console.error(
+                            "Error deleting comment:",
+                            error
+                        );
+
+                        return;
+                    }
+
+
+                    loadComments(articleId);
+
+                }
             );
 
-            if (!confirmed) {
+        });
+}
+
+
+/* POST COMMENT */
+
+document
+    .getElementById("comment-submit")
+    .addEventListener(
+        "click",
+        async function() {
+
+            const input =
+                document.getElementById(
+                    "comment-input"
+                );
+
+            const message =
+                document.getElementById(
+                    "comment-message"
+                );
+
+            const content =
+                input.value.trim();
+
+
+            if (!content) {
+
+                message.textContent =
+                    "Please write a comment first.";
+
                 return;
             }
 
-            const { error } = await supabaseClient
+
+            const {
+                data: { session }
+            } =
+                await supabaseClient.auth.getSession();
+
+
+            if (!session) {
+
+                message.textContent =
+                    "Please log in to comment.";
+
+                return;
+            }
+
+
+            const user =
+                session.user;
+
+
+            const name =
+                user.user_metadata?.name ||
+                "Remnant Reader";
+
+
+            const params =
+                new URLSearchParams(
+                    window.location.search
+                );
+
+            const slug =
+                params.get("slug");
+
+
+            const {
+                data: article,
+                error: articleError
+            } =
+                await supabaseClient
+                    .from("Articles")
+                    .select("id")
+                    .eq("slug", slug)
+                    .single();
+
+
+            if (articleError) {
+
+                message.textContent =
+                    "Could not find this article.";
+
+                return;
+            }
+
+
+            const {
+                error
+            } = await supabaseClient
                 .from("comments")
-                .delete()
-                .eq("id", commentId);
+                .insert({
+                    article_id: article.id,
+                    user_id: user.id,
+                    user_name: name,
+                    content: content
+                });
+
 
             if (error) {
-                console.error("Error deleting comment:", error);
+
+                console.error(error);
+
+                message.textContent =
+                    error.message;
+
                 return;
             }
 
-            loadComments(articleId);
 
-        });
+            input.value = "";
 
-    });
+            message.textContent =
+                "Comment posted.";
 
 
-}
-document.getElementById("comment-submit").addEventListener("click", async function() {
+            loadComments(article.id);
 
-    const input = document.getElementById("comment-input");
-    const message = document.getElementById("comment-message");
-
-    const content = input.value.trim();
-
-    if (!content) {
-        message.textContent = "Please write a comment first.";
-        return;
-    }
-
-    const {
-        data: { session }
-    } = await supabaseClient.auth.getSession();
-
-    if (!session) {
-        message.textContent = "Please log in to comment.";
-        return;
-    }
-
-    const user = session.user;
-
-    const name =
-        user.user_metadata?.name || "Remnant Reader";
-
-    const params = new URLSearchParams(window.location.search);
-    const slug = params.get("slug");
-
-    const {
-        data: article,
-        error: articleError
-    } = await supabaseClient
-        .from("Articles")
-        .select("id")
-        .eq("slug", slug)
-        .single();
-
-    if (articleError) {
-        message.textContent = "Could not find this article.";
-        return;
-    }
-
-    const { error } = await supabaseClient
-        .from("comments")
-        .insert({
-            article_id: article.id,
-            user_id: user.id,
-            user_name: name,
-            content: content
-        });
-
-    if (error) {
-        console.error(error);
-        message.textContent = error.message;
-        return;
-    }
-
-    input.value = "";
-    message.textContent = "Comment posted.";
-
-    loadComments(article.id);
-
-});
-    </script>
+        }
+    );
+</script>
 
 </body>
 </html>

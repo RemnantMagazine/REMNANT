@@ -1,1097 +1,275 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Create Article | Remnant</title>
-
-    <link rel="stylesheet" href="script.css">
-
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Create Article | Remnant</title>
+<link rel="stylesheet" href="script.css">
 <style>
-/* REMNANT VISUAL BUILDER - OVERRIDES */
-.design-builder{margin-top:30px!important;width:100%!important}
-.design-toolbar{display:flex!important;gap:8px!important;flex-wrap:wrap!important;padding:14px!important;background:#111!important;border-radius:10px 10px 0 0!important}
-.design-toolbar button{background:#fff!important;color:#000!important;border:0!important;padding:11px 16px!important;border-radius:4px!important;font-family:"Space Grotesk",sans-serif!important;font-size:12px!important;font-weight:700!important;cursor:pointer!important}
-.design-canvas{
-    position:relative!important;
-    width:100%!important;
-height:850px;
-min-height:850px;
-    margin:0!important;
-    padding:0!important;
-    background-color:#fafafa!important;
-    background-image:linear-gradient(#e5e5e5 1px,transparent 1px),linear-gradient(90deg,#e5e5e5 1px,transparent 1px)!important;
-    background-size:25px 25px!important;
-    border:2px solid #111!important;
-    border-top:0!important;
-    overflow:visible!important;
-}
-.empty-design{position:absolute!important;top:50%!important;left:50%!important;transform:translate(-50%,-50%)!important;width:300px!important;padding:30px!important;border:2px dashed #aaa!important;background:#fff!important;color:#777!important;text-align:center!important;font-family:"Space Grotesk",sans-serif!important;font-size:12px!important;z-index:0!important}
-.design-element{position:absolute!important;min-width:120px!important;min-height:60px!important;padding:18px!important;background:#fff!important;border:2px solid #111!important;border-radius:0!important;box-sizing:border-box!important;cursor:grab!important;box-shadow:5px 5px 0 #ddd!important;overflow:visible!important;user-select:none!important}
-.design-element:active{cursor:grabbing!important}
-.design-element.selected{border:2px solid #000!important;box-shadow:6px 6px 0 #000!important}
-.element-body{width:100%!important;height:100%!important}
-.element-content{width:100%!important;min-height:30px!important;outline:none!important;font-family:"Space Grotesk",sans-serif!important;font-size:16px!important;line-height:1.5!important;color:#000!important;cursor:text!important;white-space:pre-wrap!important;overflow-wrap:break-word!important;user-select:text!important}
-.heading-content{font-family:"Archivo Black",sans-serif!important;font-size:36px!important;line-height:1.05!important}
-.quote-content{font-family:Georgia,serif!important;font-size:24px!important;font-style:italic!important;line-height:1.4!important}
-.element-controls{position:absolute!important;top:-55px!important;left:0!important;display:flex!important;gap:3px!important;padding:5px!important;background:#000!important;border-radius:4px!important;z-index:99999!important;white-space:nowrap!important;opacity:0!important;pointer-events:none!important}
-.design-element.selected .element-controls,.design-element:hover .element-controls{opacity:1!important;pointer-events:auto!important}
-.element-controls button,.element-controls select,.element-controls input[type=color]{height:28px!important;border:0!important;border-radius:3px!important;background:#fff!important;color:#000!important;font-family:"Space Grotesk",sans-serif!important;font-size:10px!important;cursor:pointer!important}
-.element-controls button{min-width:28px!important;padding:0 7px!important}.element-controls select{padding:0 6px!important}.element-controls input[type=color]{width:32px!important;padding:2px!important}
-.resize-handle{position:absolute!important;right:6px!important;bottom:6px!important;width:18px!important;height:18px!important;background:#000!important;border:2px solid #fff!important;border-radius:50%!important;cursor:nwse-resize!important;z-index:100000!important}
-.element-body img{display:block!important;width:100%!important;height:100%!important;object-fit:cover!important;pointer-events:none!important}
-.image-placeholder{width:100%!important;height:100%!important;min-height:200px!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:15px!important;border:1px dashed #aaa!important;background:#f7f7f7!important;box-sizing:border-box!important;font-family:"Space Grotesk",sans-serif!important;font-size:11px!important;letter-spacing:1px!important}
-.spacer-preview{width:100%!important;height:100%!important;min-height:40px!important;display:flex!important;align-items:center!important;justify-content:center!important;border:1px dashed #aaa!important;background:#eee!important;color:#888!important;font-family:"Space Grotesk",sans-serif!important;font-size:10px!important;letter-spacing:1px!important}
+.design-builder{width:100%;margin-top:30px}
+.design-toolbar{position:sticky;top:15px;z-index:1000;display:flex;gap:8px;flex-wrap:wrap;padding:14px;background:#111;border-radius:10px;margin-bottom:25px}
+.design-toolbar button{background:#fff;color:#000;border:0;padding:11px 16px;border-radius:4px;font-family:"Space Grotesk",sans-serif;font-size:12px;font-weight:700;cursor:pointer}
+.design-canvas{width:100%;box-sizing:border-box}
+.empty-design{padding:55px 30px;border:2px dashed #aaa;background:#fafafa;color:#777;text-align:center;font:12px "Space Grotesk",sans-serif}
+.design-element{position:relative;width:100%;margin:0;padding:24px;background:#fff;border:2px solid transparent;box-sizing:border-box}
+.design-element:hover,.design-element.selected{border-color:#111;box-shadow:5px 5px 0 #ddd}
+.element-body{width:100%;box-sizing:border-box}
+.element-content{width:100%;min-height:35px;outline:none;border:0;background:transparent;font-family:"Space Grotesk",sans-serif;font-size:16px;line-height:1.6;color:#000;white-space:pre-wrap;overflow-wrap:break-word;box-sizing:border-box}
+.element-content:empty:before{content:attr(data-placeholder);color:#999}
+.heading-content{font-family:"Archivo Black",sans-serif;font-size:36px;line-height:1.05}
+.quote-content{font-family:Georgia,serif;font-size:24px;font-style:italic;line-height:1.4}
+.element-body>img{display:block;width:100%;height:auto;max-height:800px;object-fit:cover}
+.image-placeholder{width:100%;min-height:280px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:15px;border:1px dashed #aaa;background:#f7f7f7;font:11px "Space Grotesk",sans-serif;letter-spacing:1px;box-sizing:border-box}
+.spacer-element{padding:10px 24px}
+.spacer-preview{width:100%;display:flex;align-items:center;justify-content:center;border:1px dashed #aaa;background:#f5f5f5;color:#888;font:10px "Space Grotesk",sans-serif;letter-spacing:1px;box-sizing:border-box}
+.spacer-controls{display:flex;align-items:center;gap:10px;margin-top:12px;font:11px "Space Grotesk",sans-serif}
+.spacer-controls select,.spacer-controls input{padding:7px 9px;border:1px solid #aaa;background:#fff;font:11px "Space Grotesk",sans-serif}
+.element-controls{position:absolute;top:-42px;left:0;display:flex;align-items:center;gap:3px;padding:5px;background:#000;border-radius:4px;z-index:100;white-space:nowrap;opacity:0;pointer-events:none}
+.design-element.selected .element-controls,.design-element:hover .element-controls{opacity:1;pointer-events:auto}
+.element-controls button,.element-controls select,.element-controls input[type=color]{height:28px;border:0;border-radius:3px;background:#fff;color:#000;font:10px "Space Grotesk",sans-serif;cursor:pointer}
+.element-controls button{min-width:28px;padding:0 7px}.element-controls select{padding:0 6px}.element-controls input[type=color]{width:32px;padding:2px}
+@media(max-width:700px){.design-toolbar{top:8px}.design-toolbar button{flex:1 1 auto;padding:10px 11px;font-size:10px}.design-element{padding:18px}.heading-content{font-size:28px}.quote-content{font-size:20px}.element-controls{position:relative;top:auto;left:auto;width:100%;margin-bottom:15px;flex-wrap:wrap}.design-element.selected .element-controls,.design-element:hover .element-controls{display:flex}}
 </style>
 </head>
-
 <body>
-
-    <nav>
-        <a href="index.html" class="logo">REMNANT</a>
-
-        <div class="NavLinks">
-            <a href="FashionNew.html">Fashion News</a>
-            <a href="PeopleInFashion.html">People In Fashion</a>
-            <a href="FashionExplained.html">Fashion Explained</a>
-        </div>
-
-        <a href="admin.html" class="login-link">Admin</a>
-    </nav>
-
-
-    <main class="create-article-page">
-
-        <h1>CREATE ARTICLE</h1>
-
-        <p>Build a new article for Remnant.</p>
-        <label for="article-title">ARTICLE TITLE</label>
-
-<input
-    type="text"
-    id="article-title"
-    name="article-title"
-    placeholder="Enter your article title"
->
-
-    <label for="article-image">HERO IMAGE</label>
-
-<input
-    type="file"
-    id="article-image"
-    name="article-image"
-    accept="image/*"
->
-
-<label for="article-category">ARTICLE CATEGORY</label>
-
-<select id="article-category" name="article-category">
-    <option value="fashion-news">Fashion News</option>
-    <option value="people-in-fashion">People In Fashion</option>
-    <option value="fashion-explained">Fashion Explained</option>
-</select>
-
-
-
-<label for="homepage-placement">HOMEPAGE PLACEMENT</label>
-<select id="homepage-placement">
-    <option value="none">Don't feature on homepage</option>
-    <option value="main-showcase">Main Event</option>
-    <option value="new-trends">New Trends</option>
-</select>
-
-<label for="article-description">SEO DESCRIPTION</label>
-
-<textarea
-    id="article-description"
-    name="article-description"
-    placeholder="Write a short description for search engines..."
-    rows="3"
-></textarea>
-
-<label for="article-slug">ARTICLE URL</label>
-
-<input
-    type="text"
-    id="article-slug"
-    name="article-slug"
-    placeholder="e.g. animal-print-winter-2026"
-
->
-<label for="article-status">ARTICLE STATUS</label>
-
-<select id="article-status" name="article-status">
-    <option value="draft">Draft</option>
-    <option value="published">Published</option>
-</select>
-<label for="article-standfirst">STANDFIRST</label>
-
-<textarea
-    id="article-standfirst"
-    name="article-standfirst"
-    placeholder="Enter your article standfirst"
-    rows="4"
-></textarea>
-
+<nav>
+<a href="index.html" class="logo">REMNANT</a>
+<div class="NavLinks"><a href="FashionNew.html">Fashion News</a><a href="PeopleInFashion.html">People In Fashion</a><a href="FashionExplained.html">Fashion Explained</a></div>
+<a href="admin.html" class="login-link">Admin</a>
+</nav>
+<main class="create-article-page">
+<h1>CREATE ARTICLE</h1><p>Build a new article for Remnant.</p>
+<label>ARTICLE TITLE</label><input type="text" id="article-title" placeholder="Enter your article title">
+<label>HERO IMAGE</label><input type="file" id="article-image" accept="image/*">
+<label>ARTICLE CATEGORY</label><select id="article-category"><option value="fashion-news">Fashion News</option><option value="people-in-fashion">People In Fashion</option><option value="fashion-explained">Fashion Explained</option></select>
+<label>HOMEPAGE PLACEMENT</label><select id="homepage-placement"><option value="none">Don't feature on homepage</option><option value="main-showcase">Main Event</option><option value="new-trends">New Trends</option></select>
+<label>SEO DESCRIPTION</label><textarea id="article-description" rows="3"></textarea>
+<label>ARTICLE URL</label><input type="text" id="article-slug" placeholder="e.g. animal-print-winter-2026">
+<label>ARTICLE STATUS</label><select id="article-status"><option value="draft">Draft</option><option value="published">Published</option></select>
+<label>STANDFIRST</label><textarea id="article-standfirst" rows="4"></textarea>
 <label>ARTICLE DESIGN</label>
-
 <div class="design-builder">
-
-    <div class="design-toolbar">
-        <button type="button" onclick="addElement('text')">+ TEXT</button>
-        <button type="button" onclick="addElement('heading')">+ HEADING</button>
-        <button type="button" onclick="addElement('image')">+ IMAGE</button>
-        <button type="button" onclick="addElement('quote')">+ QUOTE</button>
-        <button type="button" onclick="addElement('spacer')">+ SPACER</button>
-    </div>
-
-    <div id="design-canvas" class="design-canvas">
-        <div class="empty-design">
-            Add an element to start designing your article.
-        </div>
-    </div>
-
+<div class="design-toolbar">
+<button type="button" id="add-text">+ TEXT</button><button type="button" id="add-heading">+ HEADING</button><button type="button" id="add-image">+ IMAGE</button><button type="button" id="add-quote">+ QUOTE</button><button type="button" id="add-spacer">+ SPACER</button>
 </div>
-<div class="article-actions">
-    <button type="button" class="save-draft">SAVE DRAFT</button>
-    <button type="button" class="publish-article">PUBLISH ARTICLE</button>
+<div id="design-canvas" class="design-canvas"><div class="empty-design">Add an element to start designing your article.</div></div>
 </div>
-    </main>
-
-
-
+<div class="article-actions"><button type="button" class="save-draft">SAVE DRAFT</button><button type="button" class="publish-article">PUBLISH ARTICLE</button></div>
+</main>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
 <script>
-const SUPABASE_URL = "https://ghnjdfmnsmoiqdilsxzn.supabase.co";
-const SUPABASE_KEY = "sb_publishable_bh-ZnMGseMcTzemZMq8QVQ_5mEXim9w";
+const SUPABASE_URL="https://ghnjdfmnsmoiqdilsxzn.supabase.co";
+const SUPABASE_KEY="sb_publishable_bh-ZnMGseMcTzemZMq8QVQ_5mEXim9w";
+const supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+const canvas=document.getElementById("design-canvas");
+let selectedElement=null;
 
-const supabaseClient = window.supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_KEY
-);
+function removeEmptyMessage(){const e=canvas.querySelector(".empty-design");if(e)e.remove();}
+function showEmptyMessage(){if(!canvas.querySelector(".design-element"))canvas.innerHTML='<div class="empty-design">Add an element to start designing your article.</div>';}
 
-function updateCanvasHeight() {
-
-    const canvas = document.getElementById("design-canvas");
-
-    if (!canvas) return;
-
-    let requiredHeight = 850;
-
-    const elements =
-        canvas.querySelectorAll(".design-element");
-
-    elements.forEach(function(element) {
-
-        const top =
-            parseFloat(element.style.top) || 0;
-
-        const height =
-            element.offsetHeight || 0;
-
-        const bottom =
-            top + height + 100;
-
-        if (bottom > requiredHeight) {
-            requiredHeight = bottom;
-        }
-
-    });
-
-    canvas.style.height = requiredHeight + "px";
-    canvas.style.minHeight = requiredHeight + "px";
+function controlsHTML(){
+return '<div class="element-controls">'+
+'<button type="button" data-action="bold"><strong>B</strong></button>'+
+'<button type="button" data-action="italic"><em>I</em></button>'+
+'<button type="button" data-action="underline"><u>U</u></button>'+
+'<select data-action="fontSize"><option value="">SIZE</option><option value="14px">14</option><option value="16px">16</option><option value="20px">20</option><option value="28px">28</option><option value="36px">36</option><option value="48px">48</option><option value="64px">64</option></select>'+
+'<select data-action="fontFamily"><option value="">FONT</option><option value="Space Grotesk">SPACE</option><option value="Archivo Black">ARCHIVO</option><option value="Jura">JURA</option><option value="Oswald">OSWALD</option><option value="Georgia">GEORGIA</option></select>'+
+'<select data-action="textAlign"><option value="left">LEFT</option><option value="center">CENTRE</option><option value="right">RIGHT</option><option value="justify">JUSTIFY</option></select>'+
+'<input type="color" value="#000000" data-action="color">'+
+'<button type="button" data-action="moveUp">↑</button><button type="button" data-action="moveDown">↓</button>'+
+'<button type="button" data-action="duplicate">DUP</button><button type="button" data-action="delete">×</button></div>';
 }
 
-
-/* =========================================================
-   VISUAL ARTICLE BUILDER
-========================================================= */
-
-let selectedElement = null;
-let highestZIndex = 1;
-
-const canvas = document.getElementById("design-canvas");
-
-
-function removeEmptyMessage() {
-    const empty = canvas.querySelector(".empty-design");
-    if (empty) empty.remove();
+function contentHTML(type){
+if(type==="text")return '<div class="element-content text-content" contenteditable="true" data-placeholder="Write your text..."></div>';
+if(type==="heading")return '<div class="element-content heading-content" contenteditable="true" data-placeholder="Enter heading..."></div>';
+if(type==="quote")return '<div class="element-content quote-content" contenteditable="true" data-placeholder="Enter quote..."></div>';
+if(type==="image")return '<div class="image-placeholder"><span>CHOOSE IMAGE</span><input type="file" accept="image/*" class="design-image-input"></div>';
+if(type==="spacer")return '<div class="spacer-preview" style="height:50px">50px SPACING</div><div class="spacer-controls"><label>SPACING</label><select class="spacing-control"><option value="25px">25px</option><option value="50px" selected>50px</option><option value="75px">75px</option><option value="100px">100px</option><option value="150px">150px</option><option value="200px">200px</option><option value="250px">250px</option><option value="300px">300px</option><option value="custom">CUSTOM</option></select><input class="custom-spacing" type="number" min="1" step="1" placeholder="px" style="display:none;width:80px"></div>';
+return "";
 }
 
-
-function showEmptyMessage() {
-    if (!canvas.querySelector(".design-element")) {
-        if (!canvas.querySelector(".empty-design")) {
-            canvas.insertAdjacentHTML(
-                "afterbegin",
-                '<div class="empty-design">Add an element to start designing your article.</div>'
-            );
-        }
-    }
+function addElement(type,data=null,before=null){
+removeEmptyMessage();
+const el=document.createElement("div");
+el.className="design-element";
+el.dataset.type=type;
+if(type==="spacer")el.classList.add("spacer-element");
+el.innerHTML=controlsHTML()+'<div class="element-body">'+contentHTML(type)+"</div>";
+if(before)canvas.insertBefore(el,before);else canvas.appendChild(el);
+if(data)restoreElement(el,data);
+attachElementEvents(el);
+selectElement(el);
+const editable=el.querySelector(".element-content");
+if(editable&&!data)setTimeout(()=>editable.focus(),0);
+return el;
 }
 
-
-/* =========================================================
-   ADD ELEMENT
-========================================================= */
-
-function addElement(type, savedData = null) {
-
-    removeEmptyMessage();
-
-    const element = document.createElement("div");
-
-    element.className = "design-element";
-    element.dataset.type = type;
-
-    element.style.left = savedData?.left || "60px";
-    element.style.top = savedData?.top || `${60 + canvas.querySelectorAll(".design-element").length * 30}px`;
-    element.style.width = savedData?.width || "420px";
-    element.style.height = savedData?.height || (
-        type === "heading" ? "100px" :
-        type === "quote" ? "130px" :
-        type === "image" ? "350px" :
-        type === "spacer" ? "80px" : "150px"
-    );
-
-    element.style.zIndex = savedData?.zIndex || ++highestZIndex;
-
-
-    let content = "";
-
-    if (type === "text") {
-        content = `
-            <div class="element-content text-content"
-                 contenteditable="true"
-                 data-placeholder="Write your text..."></div>
-        `;
-    }
-
-    if (type === "heading") {
-        content = `
-            <div class="element-content heading-content"
-                 contenteditable="true"
-                 data-placeholder="Enter heading..."></div>
-        `;
-    }
-
-    if (type === "quote") {
-        content = `
-            <div class="element-content quote-content"
-                 contenteditable="true"
-                 data-placeholder="Enter quote..."></div>
-        `;
-    }
-
-    if (type === "spacer") {
-        content = `<div class="spacer-preview">SPACER</div>`;
-    }
-
-    if (type === "image") {
-        content = `
-            <div class="image-placeholder">
-                <span>CHOOSE IMAGE</span>
-                <input type="file" accept="image/*" class="design-image-input">
-            </div>
-        `;
-    }
-
-
-    element.innerHTML = `
-        <div class="element-controls">
-
-            <button type="button" data-action="bold"><strong>B</strong></button>
-            <button type="button" data-action="italic"><em>I</em></button>
-            <button type="button" data-action="underline"><u>U</u></button>
-
-            <select data-action="fontSize">
-                <option value="">SIZE</option>
-                <option value="14px">14</option>
-                <option value="16px">16</option>
-                <option value="20px">20</option>
-                <option value="28px">28</option>
-                <option value="36px">36</option>
-                <option value="48px">48</option>
-                <option value="64px">64</option>
-            </select>
-
-            <select data-action="fontFamily">
-                <option value="">FONT</option>
-                <option value="Space Grotesk">SPACE</option>
-                <option value="Archivo Black">ARCHIVO</option>
-                <option value="Jura">JURA</option>
-                <option value="Oswald">OSWALD</option>
-                <option value="Georgia">GEORGIA</option>
-            </select>
-
-            <select data-action="textAlign">
-                <option value="left">LEFT</option>
-                <option value="center">CENTRE</option>
-                <option value="right">RIGHT</option>
-                <option value="justify">JUSTIFY</option>
-            </select>
-
-            <input type="color" value="#000000" data-action="color">
-
-            <button type="button" data-action="back">↓</button>
-            <button type="button" data-action="front">↑</button>
-            <button type="button" data-action="duplicate">DUP</button>
-            <button type="button" data-action="delete">×</button>
-
-        </div>
-
-        <div class="element-body">
-            ${content}
-        </div>
-
-        <div class="resize-handle"></div>
-    `;
-
-    canvas.appendChild(element);
-
-    applySavedStyles(element, savedData);
-    attachElementEvents(element);
-
-    if (savedData?.image) {
-        const body = element.querySelector(".element-body");
-        body.innerHTML = `
-            <img src="${savedData.image}" alt="">
-        `;
-    }
-
-   selectElement(element);
-
-updateCanvasHeight();
-
-return element;
+function restoreElement(el,data){
+const c=el.querySelector(".element-content");
+if(c){
+c.innerHTML=data.text||"";
+if(data.textAlign)c.style.textAlign=data.textAlign;
+if(data.fontSize)c.style.fontSize=data.fontSize;
+if(data.fontFamily)c.style.fontFamily=data.fontFamily;
+if(data.fontWeight)c.style.fontWeight=data.fontWeight;
+if(data.fontStyle)c.style.fontStyle=data.fontStyle;
+if(data.textDecoration)c.style.textDecoration=data.textDecoration;
+if(data.color)c.style.color=data.color;
+}
+if(data.type==="image"&&data.image)el.querySelector(".element-body").innerHTML='<img src="'+data.image+'" alt="">';
+if(data.type==="spacer"){
+const spacing=data.spacing||"50px";
+const preview=el.querySelector(".spacer-preview");
+const select=el.querySelector(".spacing-control");
+const custom=el.querySelector(".custom-spacing");
+preview.style.height=spacing;
+preview.textContent=spacing+" SPACING";
+const presets=["25px","50px","75px","100px","150px","200px","250px","300px"];
+if(presets.includes(spacing)){select.value=spacing;custom.style.display="none";}
+else{select.value="custom";custom.style.display="inline-block";custom.value=parseInt(spacing,10)||50;}
+el.dataset.spacing=spacing;
+}
 }
 
-
-/* =========================================================
-   SAVED STYLES
-========================================================= */
-
-function applySavedStyles(element, data) {
-
-    if (!data) return;
-
-    const content = element.querySelector(".element-content");
-
-    if (content) {
-        content.innerHTML = data.text || "";
-
-        if (data.textAlign) content.style.setProperty("text-align", data.textAlign, "important");
-        if (data.fontSize) content.style.setProperty("font-size", data.fontSize, "important");
-        if (data.fontFamily) content.style.setProperty("font-family", data.fontFamily, "important");
-        if (data.fontWeight) content.style.setProperty("font-weight", data.fontWeight, "important");
-        if (data.fontStyle) content.style.setProperty("font-style", data.fontStyle, "important");
-        if (data.textDecoration) content.style.setProperty("text-decoration", data.textDecoration, "important");
-        if (data.color) content.style.setProperty("color", data.color, "important");
-    }
+function selectElement(el){
+document.querySelectorAll(".design-element").forEach(x=>x.classList.remove("selected"));
+selectedElement=el;
+if(el)el.classList.add("selected");
 }
 
-
-/* =========================================================
-   SELECT ELEMENT
-========================================================= */
-
-function selectElement(element) {
-
-    if (selectedElement) {
-        selectedElement.classList.remove("selected");
-    }
-
-    selectedElement = element;
-
-    if (selectedElement) {
-        selectedElement.classList.add("selected");
-        selectedElement.style.zIndex = ++highestZIndex;
-    }
+function setSpacerHeight(el,value){
+const preview=el.querySelector(".spacer-preview");
+if(!preview)return;
+preview.style.height=value;
+preview.textContent=value+" SPACING";
+el.dataset.spacing=value;
 }
 
-
-/* =========================================================
-   ELEMENT EVENTS
-========================================================= */
-
-function attachElementEvents(element) {
-
-    const controls = element.querySelector(".element-controls");
-
-    element.addEventListener("mousedown", function(event) {
-
-        if (event.target.closest(".element-content")) {
-            return;
-        }
-
-        if (
-            event.target.closest(".element-controls") ||
-            event.target.closest(".resize-handle") ||
-            event.target.closest("input") ||
-            event.target.closest("textarea") ||
-            event.target.closest("select") ||
-            event.target.closest("button")
-        ) {
-            return;
-        }
-
-        selectElement(element);
-        startDrag(event, element);
-    });
-
-
-    element.addEventListener("click", function(event) {
-
-        if (!event.target.closest(".element-controls")) {
-            selectElement(element);
-        }
-    });
-
-
-    const imageInput = element.querySelector(".design-image-input");
-
-    if (imageInput) {
-
-        imageInput.addEventListener("change", function(event) {
-
-            const file = event.target.files[0];
-
-            if (!file) return;
-
-            const reader = new FileReader();
-
-            reader.onload = function(e) {
-
-                const body = element.querySelector(".element-body");
-
-                body.innerHTML = `
-                    <img src="${e.target.result}" alt="">
-                `;
-
-                selectElement(element);
-            };
-
-            reader.readAsDataURL(file);
-        });
-    }
-
-
-    if (controls) {
-
-        controls.addEventListener("click", function(event) {
-
-            const control = event.target.closest("[data-action]");
-
-            if (!control) return;
-
-            event.preventDefault();
-            event.stopPropagation();
-
-            const action = control.dataset.action;
-            const content = element.querySelector(".element-content");
-
-
-            if (action === "delete") {
-                element.remove();
-                selectedElement = null;
-                showEmptyMessage();
-                return;
-            }
-
-
-            if (action === "duplicate") {
-
-                const data = elementToData(element);
-
-                data.left =
-                    (parseFloat(element.style.left) + 30) + "px";
-
-                data.top =
-                    (parseFloat(element.style.top) + 30) + "px";
-
-                addElement(data.type, data);
-                return;
-            }
-
-
-            if (action === "back") {
-
-                element.style.zIndex =
-                    Math.max(
-                        1,
-                        parseInt(element.style.zIndex || 1) - 1
-                    );
-
-                return;
-            }
-
-
-            if (action === "front") {
-                element.style.zIndex = ++highestZIndex;
-                return;
-            }
-
-
-            if (!content) return;
-
-
-            if (action === "bold") {
-
-                const current =
-                    window.getComputedStyle(content).fontWeight;
-
-                content.style.setProperty(
-                    "font-weight",
-                    current === "700" || current === "bold"
-                        ? "400"
-                        : "700",
-                    "important"
-                );
-
-                return;
-            }
-
-
-            if (action === "italic") {
-
-                const current =
-                    window.getComputedStyle(content).fontStyle;
-
-                content.style.setProperty(
-                    "font-style",
-                    current === "italic" ? "normal" : "italic",
-                    "important"
-                );
-
-                return;
-            }
-
-
-            if (action === "underline") {
-
-                const current =
-                    window.getComputedStyle(content).textDecorationLine;
-
-                content.style.setProperty(
-                    "text-decoration",
-                    current.includes("underline")
-                        ? "none"
-                        : "underline",
-                    "important"
-                );
-
-                return;
-            }
-
-        });
-
-
-        controls.addEventListener("change", function(event) {
-
-            const control = event.target.closest("[data-action]");
-
-            if (!control) return;
-
-            event.stopPropagation();
-
-            const action = control.dataset.action;
-            const content = element.querySelector(".element-content");
-
-            if (!content) return;
-
-
-            if (action === "fontSize") {
-
-                if (control.value) {
-                    content.style.setProperty(
-                        "font-size",
-                        control.value,
-                        "important"
-                    );
-                }
-
-                return;
-            }
-
-
-            if (action === "fontFamily") {
-
-                if (control.value) {
-                    content.style.setProperty(
-                        "font-family",
-                        control.value,
-                        "important"
-                    );
-                }
-
-                return;
-            }
-
-
-            if (action === "textAlign") {
-
-                content.style.setProperty(
-                    "text-align",
-                    control.value,
-                    "important"
-                );
-
-                return;
-            }
-
-
-            if (action === "color") {
-
-                content.style.setProperty(
-                    "color",
-                    control.value,
-                    "important"
-                );
-
-                return;
-            }
-
-        });
-    }
-
-
-    const resizeHandle =
-        element.querySelector(".resize-handle");
-
-
-    if (resizeHandle) {
-
-        resizeHandle.addEventListener(
-            "mousedown",
-            function(event) {
-
-                event.preventDefault();
-                event.stopPropagation();
-
-                selectElement(element);
-
-                startResize(event, element);
-            }
-        );
-    }
+function attachElementEvents(el){
+el.addEventListener("click",e=>{if(!e.target.closest(".element-controls"))selectElement(el);});
+const imageInput=el.querySelector(".design-image-input");
+if(imageInput)imageInput.addEventListener("change",async e=>{
+const file=e.target.files[0];if(!file)return;
+try{
+const fileName="design-"+Date.now()+"-"+file.name.replace(/\s+/g,"-");
+const result=await supabaseClient.storage.from("article-images").upload(fileName,file);
+if(result.error)throw result.error;
+const pub=supabaseClient.storage.from("article-images").getPublicUrl(result.data.path);
+el.dataset.imagePath=result.data.path;
+el.querySelector(".element-body").innerHTML='<img src="'+pub.data.publicUrl+'" alt="">';
+selectElement(el);
+}catch(err){console.error(err);alert("Could not upload image: "+err.message);}
+});
+const spacing=el.querySelector(".spacing-control");
+const custom=el.querySelector(".custom-spacing");
+if(spacing)spacing.addEventListener("change",()=>{
+if(spacing.value==="custom"){custom.style.display="inline-block";custom.focus();}
+else{custom.style.display="none";setSpacerHeight(el,spacing.value);}
+selectElement(el);
+});
+if(custom)custom.addEventListener("input",()=>{
+const n=parseInt(custom.value,10);if(!isNaN(n)&&n>0)setSpacerHeight(el,n+"px");
+});
+const controls=el.querySelector(".element-controls");
+controls.addEventListener("click",e=>{
+const control=e.target.closest("[data-action]");if(!control)return;
+e.preventDefault();e.stopPropagation();
+const action=control.dataset.action;
+const c=el.querySelector(".element-content");
+if(action==="delete"){el.remove();selectedElement=null;showEmptyMessage();return;}
+if(action==="moveUp"){const p=el.previousElementSibling;if(p&&p.classList.contains("design-element"))canvas.insertBefore(el,p);selectElement(el);return;}
+if(action==="moveDown"){const n=el.nextElementSibling;if(n&&n.classList.contains("design-element"))canvas.insertBefore(n,el);selectElement(el);return;}
+if(action==="duplicate"){const d=elementToData(el);addElement(d.type,d,el.nextElementSibling);return;}
+if(!c)return;
+if(action==="bold")c.style.fontWeight=getComputedStyle(c).fontWeight==="700"?"400":"700";
+if(action==="italic")c.style.fontStyle=getComputedStyle(c).fontStyle==="italic"?"normal":"italic";
+if(action==="underline")c.style.textDecoration=getComputedStyle(c).textDecorationLine.includes("underline")?"none":"underline";
+});
+controls.addEventListener("change",e=>{
+const control=e.target.closest("[data-action]");if(!control)return;
+const c=el.querySelector(".element-content");if(!c)return;
+if(control.dataset.action==="fontSize")c.style.fontSize=control.value;
+if(control.dataset.action==="fontFamily")c.style.fontFamily=control.value;
+if(control.dataset.action==="textAlign")c.style.textAlign=control.value;
+if(control.dataset.action==="color")c.style.color=control.value;
+});
 }
 
-/* =========================================================
-   DRAGGING
-========================================================= */
-
-function startDrag(event, element) {
-
-    event.preventDefault();
-
-    const startX = event.clientX;
-    const startY = event.clientY;
-
-    const startLeft =
-        parseFloat(element.style.left) || 0;
-
-    const startTop =
-        parseFloat(element.style.top) || 0;
-
-
-    function move(e) {
-
-        let left =
-            startLeft + (e.clientX - startX);
-
-        let top =
-            startTop + (e.clientY - startY);
-
-
-        const maxLeft =
-            canvas.clientWidth - element.offsetWidth;
-
-
-        left =
-            Math.max(
-                0,
-                Math.min(left, maxLeft)
-            );
-
-
-        top =
-            Math.max(0, top);
-
-
-        element.style.left =
-            left + "px";
-
-        element.style.top =
-            top + "px";
-
-
-        updateCanvasHeight();
-    }
-
-
-    function stop() {
-
-        document.removeEventListener(
-            "mousemove",
-            move
-        );
-
-        document.removeEventListener(
-            "mouseup",
-            stop
-        );
-
-        updateCanvasHeight();
-    }
-
-
-    document.addEventListener(
-        "mousemove",
-        move
-    );
-
-    document.addEventListener(
-        "mouseup",
-        stop
-    );
+function elementToData(el){
+const c=el.querySelector(".element-content");
+const img=el.querySelector(".element-body img");
+const spacing=el.querySelector(".spacing-control");
+return {
+type:el.dataset.type||"text",
+text:c?c.innerHTML:"",
+textAlign:c?c.style.textAlign:"",
+fontSize:c?c.style.fontSize:"",
+fontFamily:c?c.style.fontFamily:"",
+fontWeight:c?c.style.fontWeight:"",
+fontStyle:c?c.style.fontStyle:"",
+textDecoration:c?c.style.textDecoration:"",
+color:c?c.style.color:"",
+image:img?img.src:"",
+imagePath:el.dataset.imagePath||"",
+spacing:el.dataset.spacing||(spacing?spacing.value:"")
+};
 }
 
-/* =========================================================
-   RESIZING
-========================================================= */
-
-function startResize(event, element) {
-
-    const startX = event.clientX;
-    const startY = event.clientY;
-
-    const startWidth =
-        element.offsetWidth;
-
-    const startHeight =
-        element.offsetHeight;
-
-
-    function resize(e) {
-
-        const width =
-            Math.max(
-                120,
-                startWidth + e.clientX - startX
-            );
-
-        const height =
-            Math.max(
-                60,
-                startHeight + e.clientY - startY
-            );
-
-
-        element.style.width =
-            width + "px";
-
-        element.style.height =
-            height + "px";
-
-
-        updateCanvasHeight();
-    }
-
-
-    function stop() {
-
-        document.removeEventListener(
-            "mousemove",
-            resize
-        );
-
-        document.removeEventListener(
-            "mouseup",
-            stop
-        );
-
-        updateCanvasHeight();
-    }
-
-
-    document.addEventListener(
-        "mousemove",
-        resize
-    );
-
-    document.addEventListener(
-        "mouseup",
-        stop
-    );
+function getDesignData(){
+return JSON.stringify(Array.from(canvas.querySelectorAll(":scope > .design-element")).map(elementToData));
 }
 
-
-/* =========================================================
-   SERIALISE DESIGN
-========================================================= */
-
-function elementToData(element) {
-
-    const content = element.querySelector(".element-content");
-    const image = element.querySelector(".element-body img");
-
-    return {
-        type: element.dataset.type || "text",
-
-        left: element.style.left,
-        top: element.style.top,
-        width: element.style.width,
-        height: element.style.height,
-        zIndex: element.style.zIndex || "1",
-
-        text: content ? content.innerHTML : "",
-
-        textAlign: content?.style.textAlign || "left",
-        fontSize: content?.style.fontSize || "",
-        fontFamily: content?.style.fontFamily || "",
-        fontWeight: content?.style.fontWeight || "",
-        fontStyle: content?.style.fontStyle || "",
-        textDecoration: content?.style.textDecoration || "",
-        color: content?.style.color || "",
-
-        image: image ? image.src : ""
-    };
-
+async function uploadHeroImage(){
+const file=document.getElementById("article-image").files[0];
+if(!file)return null;
+const result=await supabaseClient.storage.from("article-images").upload(Date.now()+"-"+file.name.replace(/\s+/g,"-"),file);
+if(result.error)throw result.error;
+return result.data.path;
 }
 
-
-function getDesignData() {
-
-    const elements = [];
-
-    document
-        .querySelectorAll("#design-canvas .design-element")
-        .forEach(element => {
-
-            elements.push(elementToData(element));
-
-        });
-
-    return JSON.stringify(elements);
-
+async function prepareHomepagePlacement(placement){
+if(placement==="main-showcase"||placement==="new-trends"){
+const result=await supabaseClient.from("Articles").update({homepage_placement:"none"}).eq("homepage_placement",placement);
+if(result.error)throw result.error;
+}
 }
 
-
-/* =========================================================
-   SAVE / PUBLISH
-========================================================= */
-
-async function uploadDesignImages() {
-
-    const elements = document.querySelectorAll(
-        "#design-canvas .design-element"
-    );
-
-    for (const element of elements) {
-
-        const image = element.querySelector(".element-body img");
-
-        if (!image) continue;
-
-        if (!image.src.startsWith("data:image/")) continue;
-
-        const response = await fetch(image.src);
-        const blob = await response.blob();
-
-        const fileName =
-            "design-" +
-            Date.now() +
-            "-" +
-            Math.random().toString(36).slice(2) +
-            ".png";
-
-        const { data, error } =
-            await supabaseClient
-                .storage
-                .from("article-images")
-                .upload(fileName, blob);
-
-        if (error) throw error;
-
-        image.src =
-            `${SUPABASE_URL}/storage/v1/object/public/article-images/${data.path}`;
-
-    }
-
+async function saveArticle(status){
+const title=document.getElementById("article-title").value.trim();
+const standfirst=document.getElementById("article-standfirst").value.trim();
+const category=document.getElementById("article-category").value;
+const slug=document.getElementById("article-slug").value.trim();
+const seoDescription=document.getElementById("article-description").value.trim();
+const homepagePlacement=document.getElementById("homepage-placement").value;
+if(!title){alert("Please enter an article title.");return;}
+if(!slug){alert("Please enter an article URL.");return;}
+try{
+const heroImagePath=await uploadHeroImage();
+await prepareHomepagePlacement(homepagePlacement);
+const result=await supabaseClient.from("Articles").insert([{
+title:title,standfirst:standfirst,category:category,slug:slug,
+seo_description:seoDescription,image_url:heroImagePath,
+content:getDesignData(),homepage_placement:homepagePlacement,status:status
+}]);
+if(result.error)throw result.error;
+alert(status==="published"?"Article published!":"Draft saved!");
+window.location.href="edit-articles.html";
+}catch(err){console.error(err);alert("Something went wrong: "+err.message);}
 }
 
-
-async function uploadHeroImage() {
-
-    const file =
-        document.getElementById("article-image").files[0];
-
-    if (!file) return null;
-
-    const fileName =
-        Date.now() + "-" + file.name.replace(/\s+/g, "-");
-
-    const { data, error } =
-        await supabaseClient
-            .storage
-            .from("article-images")
-            .upload(fileName, file);
-
-    if (error) throw error;
-
-    return data.path;
-
-}
-
-
-async function prepareHomepagePlacement(placement) {
-
-    if (placement === "main-showcase") {
-
-        const { error } =
-            await supabaseClient
-                .from("Articles")
-                .update({ homepage_placement: "none" })
-                .eq("homepage_placement", "main-showcase");
-
-        if (error) throw error;
-    }
-
-
-    if (placement === "new-trends") {
-
-        const { error } =
-            await supabaseClient
-                .from("Articles")
-                .update({ homepage_placement: "none" })
-                .eq("homepage_placement", "new-trends");
-
-        if (error) throw error;
-    }
-
-}
-
-
-async function saveArticle(status) {
-
-    const title =
-        document.getElementById("article-title").value.trim();
-
-    const standfirst =
-        document.getElementById("article-standfirst").value.trim();
-
-    const category =
-        document.getElementById("article-category").value;
-
-    const slug =
-        document.getElementById("article-slug").value.trim();
-
-    const seoDescription =
-        document.getElementById("article-description").value.trim();
-
-    const homepagePlacement =
-        document.getElementById("homepage-placement").value;
-
-
-    if (!title) {
-        alert("Please enter an article title.");
-        return;
-    }
-
-    if (!slug) {
-        alert("Please enter an article URL.");
-        return;
-    }
-
-
-    try {
-
-        await uploadDesignImages();
-
-        const heroImagePath =
-            await uploadHeroImage();
-
-        await prepareHomepagePlacement(homepagePlacement);
-
-
-        const { error } =
-            await supabaseClient
-                .from("Articles")
-                .insert([{
-
-                    title: title,
-                    standfirst: standfirst,
-                    category: category,
-                    slug: slug,
-                    seo_description: seoDescription,
-                    image_url: heroImagePath,
-                    content: getDesignData(),
-                    homepage_placement: homepagePlacement,
-                    status: status
-
-                }]);
-
-
-        if (error) throw error;
-
-
-        alert(
-            status === "published"
-                ? "Article published!"
-                : "Draft saved!"
-        );
-
-
-        window.location.href = "edit-articles.html";
-
-    } catch (error) {
-
-        console.error(error);
-
-        alert(
-            "Something went wrong: " +
-            error.message
-        );
-
-    }
-
-}
-
-
-document
-    .querySelector(".save-draft")
-    .addEventListener("click", function() {
-
-        saveArticle("draft");
-
-    });
-
-
-document
-    .querySelector(".publish-article")
-    .addEventListener("click", function() {
-
-        saveArticle("published");
-
-    });
-
-
-/* Prevent accidental text selection while dragging */
-
-document.addEventListener("selectstart", function(event) {
-
-    if (
-        event.target.closest(".design-element") &&
-        !event.target.closest(".element-content")
-    ) {
-        event.preventDefault();
-    }
-
+document.getElementById("add-text").addEventListener("click",()=>addElement("text"));
+document.getElementById("add-heading").addEventListener("click",()=>addElement("heading"));
+document.getElementById("add-image").addEventListener("click",()=>addElement("image"));
+document.getElementById("add-quote").addEventListener("click",()=>addElement("quote"));
+document.getElementById("add-spacer").addEventListener("click",()=>addElement("spacer"));
+document.querySelector(".save-draft").addEventListener("click",()=>saveArticle("draft"));
+document.querySelector(".publish-article").addEventListener("click",()=>saveArticle("published"));
+document.addEventListener("mousedown",e=>{
+if(e.target.closest(".design-element")||e.target.closest(".design-toolbar"))return;
+document.querySelectorAll(".design-element").forEach(x=>x.classList.remove("selected"));
+selectedElement=null;
 });
 </script>
 </body>
-
 </html>
