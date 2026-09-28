@@ -647,46 +647,28 @@ footer {
 /* =========================================================
    LEOPARD PRINT
    ========================================================= */
-
 .leopard-section-2 {
-    width: 100%;
-    max-width: 1350px;
-    margin: 0 auto 150px;
-    padding: 0 40px;
-    display: grid;
-    grid-template-columns: 1fr 480px;
-    gap: 100px;
-    align-items: start;
+    display: flex;
+    flex-direction: column;
 }
-
-
-/* LEOPARD TEXT */
 
 .leopard-text-2 {
     width: 100%;
 }
 
-.leopard-text-2 h2 {
-    font-family: "Archivo Black", sans-serif;
-    font-size: clamp(30px, 3vw, 43px);
-    line-height: 1.05;
-    text-transform: uppercase;
-
-    color: #000000;
-
-    margin-bottom: 50px;
+.leopard-images-2 {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    gap: 30px;
+    margin-top: 40px;
 }
 
-.leopard-text-2 p {
-    font-family: "Space Grotesk", sans-serif;
-    font-size: 17px;
-    line-height: 1.7;
-
-    color: #111111;
-
-    margin-bottom: 27px;
-
-    text-align: justify;
+.leopard-images-2 img {
+    width: calc(50% - 15px);
+    height: auto;
+    display: block;
+    object-fit: cover;
 }
 
 
