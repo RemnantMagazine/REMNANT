@@ -16,13 +16,12 @@
         /* -----------------------------------
            CUSTOM ARTICLE AREA
         ----------------------------------- */
-
-  #article-code-frame {
+#article-code-frame {
     display: block;
-    width: calc(100% - 40px);
+    width: 100%;
     min-height: 1000px;
     border: none;
-    margin: 0 20px;
+    margin: 0;
     padding: 0;
     background: #ffffff;
 }
@@ -277,16 +276,20 @@ async function loadArticle() {
 
             <style>
 
-                html,
-                body {
+              html,
+body {
 
-                    margin: 0;
-                    padding: 0;
-                    width: 100%;
+    margin: 0;
+    padding: 0 20px;
+    width: 100%;
+    min-height: 100%;
 
-                    background: #ffffff;
+    background: #ffffff;
 
-                }
+    box-sizing: border-box;
+
+    overflow-x: auto;
+}
 
 
                 /*
