@@ -1,178 +1,172 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
     <meta charset="UTF-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Remnant</title>
+
+    <title>REMNANT</title>
+
     <link rel="stylesheet" href="script.css">
 
     <style>
-        /* VERTICAL ARTICLE BLOCKS */
 
-        #article-content {
+        /* -----------------------------------
+           CUSTOM ARTICLE AREA
+        ----------------------------------- */
+
+        #article-code-frame {
+            display: block;
             width: 100%;
+            min-height: 1000px;
+            border: none;
             margin: 0;
             padding: 0;
+            background: #ffffff;
         }
 
-        .public-block {
+        #article-loading {
             width: 100%;
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        .public-block-text,
-        .public-block-heading,
-        .public-block-quote {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            box-sizing: border-box;
-        }
-
-        .public-block-text {
+            min-height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             font-family: "Space Grotesk", sans-serif;
-            font-size: 16px;
-            line-height: 1.6;
+            font-size: 14px;
         }
 
-        .public-block-heading {
-            font-family: "Archivo Black", sans-serif;
-            font-size: 36px;
-            line-height: 1.05;
-        }
-
-        .public-block-quote {
-            font-family: Georgia, serif;
-            font-size: 24px;
-            line-height: 1.4;
-            font-style: italic;
-        }
-
-        .public-block-image {
-            display: block;
-            width: 100%;
-            height: auto;
-            max-height: 800px;
-            object-fit: cover;
-            margin: 0;
-        }
-
-        .public-block-spacer {
-            width: 100%;
-            display: block;
-        }
-
-        .dynamic-article > #article-title,
-        .dynamic-article > #article-standfirst {
-            display: none !important;
-        }
     </style>
+
 </head>
+
 
 <body>
 
+
 <nav>
-    <a href="index.html" class="logo">REMNANT</a>
+
+    <a href="index.html" class="logo">
+        REMNANT
+    </a>
 
     <div class="NavLinks">
-        <a href="FashionNew.html">Fashion News</a>
-        <a href="PeopleInFashion.html">People In Fashion</a>
-        <a href="FashionExplained.html">Fashion Explained</a>
+
+        <a href="FashionNew.html">
+            Fashion News
+        </a>
+
+        <a href="PeopleInFashion.html">
+            People In Fashion
+        </a>
+
+        <a href="FashionExplained.html">
+            Fashion Explained
+        </a>
+
     </div>
 
-    <a href="account.html" class="login-link" id="login-link">LOGIN</a>
+    <div class="account-links">
+
+        <a
+            href="account.html"
+            class="login-link"
+            id="login-link"
+        >
+            LOGIN
+        </a>
+
+    </div>
+
 </nav>
 
-<main class="dynamic-article" id="article-page">
 
-    <h1 id="article-title"></h1>
+<!--
+    The article is deliberately kept separate
+    from the main Remnant website CSS.
+-->
 
-    <p id="article-standfirst" class="standfirst"></p>
+<main id="article-code-content">
 
-    <div id="article-content"></div>
-
-    <section class="comments-section">
-
-        <h2>COMMENTS</h2>
-
-        <div id="comments-list"></div>
-
-        <div id="comment-form-container">
-            <textarea
-                id="comment-input"
-                placeholder="Write a comment..."
-                rows="4"></textarea>
-
-            <button id="comment-submit">
-                POST COMMENT
-            </button>
-        </div>
-
-        <p id="comment-message"></p>
-
-    </section>
+    <div id="article-loading">
+        Loading article...
+    </div>
 
 </main>
 
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
+
 <script>
+
 const SUPABASE_URL = "https://ghnjdfmnsmoiqdilsxzn.supabase.co";
 
 /*
-    Paste your existing Supabase publishable key here.
+    Keep your existing publishable key here.
 */
-const SUPABASE_KEY = "sb_publishable_bh-ZnMGseMcTzemZMq8QVQ_5mEXim9w";
-
-const supabaseClient = window.supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_KEY,
-    {
-        auth: {
-            persistSession: true,
-            autoRefreshToken: true,
-            detectSessionInUrl: true
-        }
-    }
-);
+const SUPABASE_KEY = "PASTE_YOUR_EXISTING_PUBLISHABLE_KEY_HERE";
 
 
-/* LOGIN */
+const supabaseClient =
+    window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+    );
+
+
+/* -----------------------------------
+   LOGIN
+----------------------------------- */
 
 async function updateLoginLink() {
 
-    const loginLink = document.getElementById("login-link");
-
     const {
-        data: { user }
+        data: {
+            user
+        }
     } = await supabaseClient.auth.getUser();
 
-    if (user) {
 
-        const name = user.user_metadata?.name;
+    if (
+        user &&
+        user.user_metadata?.name
+    ) {
 
-        if (name) {
-            loginLink.textContent = name;
-        }
+        document.getElementById(
+            "login-link"
+        ).textContent =
+            user.user_metadata.name;
+
     }
+
 }
 
-updateLoginLink();
 
-
-/* LOAD ARTICLE */
+/* -----------------------------------
+   LOAD ARTICLE
+----------------------------------- */
 
 async function loadArticle() {
 
-    const params = new URLSearchParams(window.location.search);
-    const slug = params.get("slug");
+    const slug =
+        new URLSearchParams(
+            location.search
+        ).get("slug");
+
 
     if (!slug) {
-        console.error("No article slug found.");
+
+        document.getElementById(
+            "article-code-content"
+        ).textContent =
+            "Article not found.";
+
         return;
+
     }
+
 
     const {
         data,
@@ -184,490 +178,275 @@ async function loadArticle() {
         .eq("status", "published")
         .single();
 
-    if (error) {
-        console.error("Could not load article:", error);
+
+    if (
+        error ||
+        !data
+    ) {
+
+        document.getElementById(
+            "article-code-content"
+        ).textContent =
+            "Article not found.";
+
         return;
+
     }
 
 
-    document.title = data.title;
+    /* Update browser title */
 
-    document.getElementById("article-title").textContent =
-        data.title;
-
-    document.getElementById("article-standfirst").textContent =
-        data.standfirst || "";
-
-
-    const articleContent =
-        document.getElementById("article-content");
+    document.title =
+        data.title +
+        " | REMNANT";
 
 
     /*
-        NEW VERTICAL BLOCK FORMAT
+        Create an iframe.
 
-        Each item saved by the block editor becomes
-        one block underneath the previous block.
+        This completely separates the article
+        design from Remnant's main CSS.
     */
 
-    try {
-
-        const design = JSON.parse(data.content);
-
-        if (Array.isArray(design) && design.length > 0) {
-
-            articleContent.innerHTML = "";
+    const iframe =
+        document.createElement("iframe");
 
 
-            design.forEach(function(item) {
-
-                const block =
-                    document.createElement("div");
-
-                block.className = "public-block";
+    iframe.id =
+        "article-code-frame";
 
 
-                /* TEXT */
+    iframe.title =
+        data.title;
 
-                if (item.type === "text") {
 
-                    const text =
-                        document.createElement("div");
+    iframe.setAttribute(
+        "scrolling",
+        "no"
+    );
 
-                    text.className =
-                        "public-block-text";
 
-                    text.innerHTML =
-                        item.text || "";
+    /*
+        Allow the article to use its own
+        complete width.
+    */
 
-                    applyTextStyles(text, item);
+    iframe.style.width =
+        "100%";
 
-                    block.appendChild(text);
+
+    iframe.style.border =
+        "none";
+
+
+    iframe.style.display =
+        "block";
+
+
+    iframe.style.margin =
+        "0";
+
+
+    iframe.style.padding =
+        "0";
+
+
+    iframe.style.background =
+        "#ffffff";
+
+
+    /*
+        Put the exact article code
+        inside the iframe.
+    */
+
+    iframe.srcdoc = `
+
+        <!DOCTYPE html>
+
+        <html lang="en">
+
+        <head>
+
+            <meta charset="UTF-8">
+
+            <meta
+                name="viewport"
+                content="width=device-width, initial-scale=1.0"
+            >
+
+            <style>
+
+                html,
+                body {
+
+                    margin: 0;
+                    padding: 0;
+                    width: 100%;
+
+                    background: #ffffff;
+
                 }
 
 
-                /* HEADING */
+                /*
+                    Important:
 
-                else if (item.type === "heading") {
+                    The article is allowed to use
+                    its own full available width.
 
-                    const heading =
-                        document.createElement("h2");
+                    Nothing from script.css can
+                    interfere with it.
+                */
 
-                    heading.className =
-                        "public-block-heading";
+                * {
 
-                    heading.innerHTML =
-                        item.text || "";
+                    box-sizing: border-box;
 
-                    applyTextStyles(heading, item);
-
-                    block.appendChild(heading);
                 }
 
+            </style>
 
-                /* QUOTE */
+        </head>
 
-                else if (item.type === "quote") {
+        <body>
 
-                    const quote =
-                        document.createElement("blockquote");
+            ${data.content}
 
-                    quote.className =
-                        "public-block-quote";
+        </body>
 
-                    quote.innerHTML =
-                        item.text || "";
+        </html>
 
-                    applyTextStyles(quote, item);
-
-                    block.appendChild(quote);
-                }
+    `;
 
 
-                /* IMAGE */
+    /*
+        Add iframe to page.
+    */
 
-                else if (item.type === "image") {
-
-                    if (item.image) {
-
-                        const image =
-                            document.createElement("img");
-
-                        image.className =
-                            "public-block-image";
-
-                        image.src = item.image;
-
-                        image.alt = data.title || "";
-
-                        block.appendChild(image);
-                    }
-                }
-
-
-                /* SPACER */
-
-                else if (item.type === "spacer") {
-
-                    const spacer =
-                        document.createElement("div");
-
-                    spacer.className =
-                        "public-block-spacer";
-
-                    const spacing =
-                        item.spacing || "50px";
-
-                    spacer.style.height =
-                        spacing;
-
-                    block.appendChild(spacer);
-                }
-
-
-                articleContent.appendChild(block);
-
-            });
-
-        } else {
-
-            /*
-                FALLBACK FOR OLDER ARTICLES
-            */
-
-            articleContent.innerHTML =
-                data.content || "";
-
-        }
-
-    } catch (error) {
-
-        console.error(
-            "Could not load article blocks:",
-            error
+    const container =
+        document.getElementById(
+            "article-code-content"
         );
 
-        /*
-            FALLBACK FOR OLDER ARTICLES
-        */
 
-        articleContent.innerHTML =
-            data.content || "";
-    }
+    container.innerHTML = "";
 
 
-    loadComments(data.id);
-}
+    container.appendChild(
+        iframe
+    );
 
 
-/* APPLY SAVED TEXT FORMATTING */
+    /*
+        Automatically resize the iframe
+        to the height of the article.
 
-function applyTextStyles(element, item) {
+        This prevents an iframe scrollbar
+        appearing inside the article.
+    */
 
-    element.style.textAlign =
-        item.textAlign || "left";
+    iframe.addEventListener(
+        "load",
+        function () {
 
-    if (item.fontSize) {
-        element.style.fontSize =
-            item.fontSize;
-    }
+            try {
 
-    if (item.fontFamily) {
-        element.style.fontFamily =
-            item.fontFamily;
-    }
-
-    if (item.fontWeight) {
-        element.style.fontWeight =
-            item.fontWeight;
-    }
-
-    if (item.fontStyle) {
-        element.style.fontStyle =
-            item.fontStyle;
-    }
-
-    if (item.textDecoration) {
-        element.style.textDecoration =
-            item.textDecoration;
-    }
-
-    if (item.color) {
-        element.style.color =
-            item.color;
-    }
-}
+                const articleDocument =
+                    iframe.contentDocument ||
+                    iframe.contentWindow.document;
 
 
-loadArticle();
+                function resizeArticle() {
+
+                    const height =
+                        articleDocument.documentElement
+                            .scrollHeight;
 
 
-/* COMMENTS */
-
-async function loadComments(articleId) {
-
-    const commentsList =
-        document.getElementById("comments-list");
-
-    const {
-        data,
-        error
-    } = await supabaseClient
-        .from("comments")
-        .select(
-            "id, user_name, content, created_at, user_id"
-        )
-        .eq("article_id", articleId)
-        .order("created_at", {
-            ascending: true
-        });
-
-    if (error) {
-
-        console.error(
-            "Error loading comments:",
-            error
-        );
-
-        return;
-    }
-
-
-    commentsList.innerHTML = "";
-
-
-    if (data.length === 0) {
-
-        commentsList.innerHTML = `
-            <p class="no-comments">
-                No comments yet. Be the first to comment.
-            </p>
-        `;
-
-        return;
-    }
-
-
-    const {
-        data: { session }
-    } = await supabaseClient.auth.getSession();
-
-
-    data.forEach(function(comment) {
-
-        const date =
-            new Date(comment.created_at)
-                .toLocaleDateString(
-                    "en-GB",
-                    {
-                        day: "numeric",
-                        month: "long",
-                        year: "numeric"
-                    }
-                );
-
-
-        const canDelete =
-            session &&
-            session.user.id === comment.user_id;
-
-
-        commentsList.innerHTML += `
-            <div class="comment">
-
-                <div class="comment-name">
-                    ${comment.user_name || "Remnant Reader"}
-                </div>
-
-                <div class="comment-date">
-                    ${date}
-                </div>
-
-                <p class="comment-text">
-                    ${comment.content}
-                </p>
-
-                ${
-                    canDelete
-                        ? `<button class="delete-comment" data-id="${comment.id}">
-                            DELETE
-                           </button>`
-                        : ""
-                }
-
-            </div>
-        `;
-
-    });
-
-
-    document
-        .querySelectorAll(".delete-comment")
-        .forEach(function(button) {
-
-            button.addEventListener(
-                "click",
-                async function() {
-
-                    const commentId =
-                        this.dataset.id;
-
-                    const confirmed =
-                        confirm(
-                            "Are you sure you want to delete this comment?"
-                        );
-
-                    if (!confirmed) {
-                        return;
-                    }
-
-
-                    const {
-                        error
-                    } = await supabaseClient
-                        .from("comments")
-                        .delete()
-                        .eq("id", commentId);
-
-
-                    if (error) {
-
-                        console.error(
-                            "Error deleting comment:",
-                            error
-                        );
-
-                        return;
-                    }
-
-
-                    loadComments(articleId);
+                    iframe.style.height =
+                        Math.max(
+                            height,
+                            500
+                        ) + "px";
 
                 }
-            );
-
-        });
-}
 
 
-/* POST COMMENT */
+                resizeArticle();
 
-document
-    .getElementById("comment-submit")
-    .addEventListener(
-        "click",
-        async function() {
 
-            const input =
-                document.getElementById(
-                    "comment-input"
+                /*
+                    Resize again shortly after loading
+                    in case images change the height.
+                */
+
+                setTimeout(
+                    resizeArticle,
+                    100
                 );
 
-            const message =
-                document.getElementById(
-                    "comment-message"
+
+                setTimeout(
+                    resizeArticle,
+                    500
                 );
 
-            const content =
-                input.value.trim();
 
-
-            if (!content) {
-
-                message.textContent =
-                    "Please write a comment first.";
-
-                return;
-            }
-
-
-            const {
-                data: { session }
-            } =
-                await supabaseClient.auth.getSession();
-
-
-            if (!session) {
-
-                message.textContent =
-                    "Please log in to comment.";
-
-                return;
-            }
-
-
-            const user =
-                session.user;
-
-
-            const name =
-                user.user_metadata?.name ||
-                "Remnant Reader";
-
-
-            const params =
-                new URLSearchParams(
-                    window.location.search
+                setTimeout(
+                    resizeArticle,
+                    1000
                 );
 
-            const slug =
-                params.get("slug");
+
+                /*
+                    Resize when images finish loading.
+                */
+
+                const images =
+                    articleDocument.querySelectorAll(
+                        "img"
+                    );
 
 
-            const {
-                data: article,
-                error: articleError
-            } =
-                await supabaseClient
-                    .from("Articles")
-                    .select("id")
-                    .eq("slug", slug)
-                    .single();
+                images.forEach(
+                    function (image) {
+
+                        image.addEventListener(
+                            "load",
+                            resizeArticle
+                        );
+
+                    }
+                );
 
 
-            if (articleError) {
+            } catch (error) {
 
-                message.textContent =
-                    "Could not find this article.";
+                console.error(
+                    "Could not resize article:",
+                    error
+                );
 
-                return;
             }
-
-
-            const {
-                error
-            } = await supabaseClient
-                .from("comments")
-                .insert({
-                    article_id: article.id,
-                    user_id: user.id,
-                    user_name: name,
-                    content: content
-                });
-
-
-            if (error) {
-
-                console.error(error);
-
-                message.textContent =
-                    error.message;
-
-                return;
-            }
-
-
-            input.value = "";
-
-            message.textContent =
-                "Comment posted.";
-
-
-            loadComments(article.id);
 
         }
     );
+
+}
+
+
+/* -----------------------------------
+   START
+----------------------------------- */
+
+updateLoginLink();
+
+loadArticle();
+
 </script>
 
+
 </body>
+
 </html>
