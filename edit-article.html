@@ -6,12 +6,83 @@
 <title>Edit Article | Remnant</title>
 <link rel="stylesheet" href="script.css">
 <style>
-.article-code-box{width:100%;min-height:650px;padding:18px;box-sizing:border-box;border:1px solid #ccc;background:#111;color:#fff;font-family:"Courier New",monospace;font-size:14px;line-height:1.5;resize:vertical}
-.code-help{margin:8px 0 12px;font-size:14px;line-height:1.5}
-.preview-wrapper{width:100%;margin-top:30px;border:1px solid #ddd;background:#fff}
-.preview-heading{padding:12px 16px;background:#111;color:#fff;font-family:"Space Grotesk",sans-serif;font-size:12px;font-weight:700;letter-spacing:1px}
-#article-preview{display:block;width:100%;min-height:700px;border:0;background:#fff}
-#article-message{margin-top:20px;font-family:"Space Grotesk",sans-serif}
+
+.article-code-box {
+    display: block !important;
+    width: 100% !important;
+    min-height: 650px !important;
+
+    box-sizing: border-box !important;
+
+    margin: 0 !important;
+    padding: 18px !important;
+
+    background: #111111 !important;
+    color: #ffffff !important;
+
+    border: 2px solid #000000 !important;
+
+    font-family: "Courier New", monospace !important;
+    font-size: 14px !important;
+    line-height: 1.5 !important;
+
+    resize: vertical !important;
+
+    cursor: text !important;
+
+    pointer-events: auto !important;
+
+    user-select: text !important;
+    -webkit-user-select: text !important;
+
+    white-space: pre !important;
+    overflow: auto !important;
+
+    position: relative !important;
+    z-index: 100 !important;
+}
+
+.article-code-box:focus {
+    outline: 2px solid #000000 !important;
+    outline-offset: 2px !important;
+}
+
+.code-help {
+    margin: 8px 0 12px;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.preview-wrapper {
+    width: 100%;
+    margin-top: 30px;
+    border: 1px solid #ddd;
+    background: #fff;
+}
+
+.preview-heading {
+    padding: 12px 16px;
+    background: #111;
+    color: #fff;
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+#article-preview {
+    display: block;
+    width: 100%;
+    min-height: 700px;
+    border: 0;
+    background: #fff;
+}
+
+#article-message {
+    margin-top: 20px;
+    font-family: "Space Grotesk", sans-serif;
+}
+
 </style>
 </head>
 <body>
@@ -57,7 +128,16 @@
 <input type="file" id="article-image" accept="image/*">
 <label for="article-code">ARTICLE CODE</label>
 <p class="code-help">Edit the complete article HTML and CSS here. Each article can have its own design. Keep it as an article fragment with HTML + CSS only — do not include html, head or body tags.</p>
-<textarea id="article-code" class="article-code-box" spellcheck="false" placeholder="Your article HTML + CSS will load here..."></textarea>
+<textarea
+    id="article-code"
+    class="article-code-box"
+    spellcheck="false"
+    autocomplete="off"
+    autocorrect="off"
+    autocapitalize="off"
+    wrap="off"
+    placeholder="Your article HTML + CSS will load here..."
+></textarea>
 <button type="button" id="preview-button">ARTICLE PREVIEW</button>
 <div class="preview-wrapper">
 <div class="preview-heading">PREVIEW</div>
